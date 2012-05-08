@@ -1,5 +1,6 @@
 #!/bin/bash
 rm tmp/*.out > /dev/null 2>&1
+
 ami='ami-a4ca8df6'
 region='ap-southeast-1'
 key='velniukasEC2'
@@ -36,7 +37,8 @@ echo $instance > tmp/ec2instance.out
 FILE_DATA=( $( /bin/cat tmp/publicip.out ) )
 publicip=${FILE_DATA[0]}
 
-// now run the vagrant-ec2 code
+# now run the vagrant-ec2 code
 ./setup.sh $publicip ../a_vagrant_machine/
 
+# optional ssh into the machine
 # ./ec2ssh.sh

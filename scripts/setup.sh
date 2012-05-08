@@ -22,7 +22,6 @@ ADDR=$1
 IP=${ADDR%:*}
 PORT=${ADDR#*:}
 if [ "$IP" == "$PORT" ] ; then
-  
     PORT=22
 fi
 
