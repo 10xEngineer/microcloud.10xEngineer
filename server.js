@@ -2,8 +2,8 @@ var restify = require('restify');
 var routes = require('routes');
 
 var server = restify.createServer({
-	name: 'backend.10xengineer.me',
-	version: '1.0.0'
+	name: 'microcloud.10xengineer.me',
+	version: '0.0.1'
 });
 server.use(restify.acceptParser(server.acceptable));
 server.use(restify.authorizationParser());
