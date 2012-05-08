@@ -38,7 +38,7 @@ FILE_DATA=( $( /bin/cat tmp/publicip.out ) )
 publicip=${FILE_DATA[0]}
 
 # now run the vagrant-ec2 code
-./setup.sh $publicip ../a_vagrant_machine/
+../a_vagrant_machine/setup.sh $publicip ../a_vagrant_machine/
 
 # optional ssh into the machine
 # ./ec2ssh.sh
