@@ -1,10 +1,14 @@
 #!/bin/bash
 rm tmp/*.out > /dev/null 2>&1
+ami='ami-a4ca8df6'
+region='ap-southeast-1'
+key='velniukasEC2'
+type='t1.micro'
 
-ec2-run-instances ami-a4ca8df6			\
-  --instance-type t1.micro			\
-  --key velniukasEC2				\
-  --region ap-southeast-1			\
+ec2-run-instances $ami			\
+  --instance-type $type			\
+  --key $key					\
+  --region $region				\
   --user-data-file bootstrap.sh > tmp/ec2.out
 
 RESULT=''
@@ -18,7 +22,8 @@ if [ -z "$RESULT" ];
 then
   echo "SUCCESS.. STARTED"
 else
-  echo "FAILED"
+  echo "FAILED ec2-run-instances to start "
+  exit 1
 fi
 
 FILE_DATA=( $( /bin/cat tmp/ec2.out ) )
@@ -28,16 +33,10 @@ echo $instance > tmp/ec2instance.out
 
 ./ec2status.sh $instance
 
-FILE_DATA=( $( /bin/cat tmp/publicdns.out ) )
-publicdns=${FILE_DATA[0]}
-echo "Connecting via SSH to " $publicdns
+FILE_DATA=( $( /bin/cat tmp/publicip.out ) )
+publicip=${FILE_DATA[0]}
 
-# need to wait for the status checks to pass before being able to ssh in
-sleep 30
-# attempts=0
-# while [ $attempts -ne 3 ]
-# do
-	# attempts+=1	
-	ssh -o "StrictHostKeyChecking no" -i ~/.ec2/velniukasEC2.pem ubuntu@$publicdns
-	# sleep 5
-# done
+// now run the vagrant-ec2 code
+./setup.sh $publicip ../a_vagrant_machine/
+
+# ./ec2ssh.sh
