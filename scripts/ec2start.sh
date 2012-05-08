@@ -28,14 +28,38 @@ else
 fi
 
 FILE_DATA=( $( /bin/cat tmp/ec2.out ) )
+if [ -z $FILE_DATA ]
+then
+	Echo "ec2.out is not found. No instances available. Aborting."
+	exit 1
+fi
 instance=${FILE_DATA[5]}
+if [ -z "$instance" ]
+then
+	echo "Instance id not found in the ec2.out file. Aborting."
+	exit 1
+fi
+
 echo "INSTANCE = " $instance
 echo $instance > tmp/ec2instance.out
 
 ./ec2status.sh $instance
 
+
 FILE_DATA=( $( /bin/cat tmp/publicip.out ) )
+if [ -z $FILE_DATA ]
+then
+	Echo "publicip.out is not found. No ip address is available. Aborting."
+	exit 1
+fi
+
 publicip=${FILE_DATA[0]}
+
+if [ -z "$publicip" ]
+then
+	echo "Public IP is not available from the publicip.out file. Aborting."
+	exit 1
+fi
 
 # now run the vagrant-ec2 code
 ../a_vagrant_machine/setup.sh $publicip ../a_vagrant_machine/

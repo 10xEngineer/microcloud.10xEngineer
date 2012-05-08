@@ -11,9 +11,11 @@ then
 	cd a_vagrant_machine
 	vagrant up
 	vagrant ssh
-else if [ "$1" = "ec2" ]
-	scripts/ec2start.sh
-	scripts/ec2ssh.sh
+elif [ "$1" = "ec2" ]
+then
+	cd scripts/
+	./ec2start.sh
+	./ec2ssh.sh
 else
 	echo "Invalid destination $1 selected. Please choose local or ec2"
 	exit 1
