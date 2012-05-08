@@ -1,0 +1,1 @@
+{"run_list":["recipe[apt]","recipe[git]","recipe[monit]"],"monit":{"interval":30,"web":{"enabled":true},"start_delay":15}}
