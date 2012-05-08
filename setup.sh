@@ -10,12 +10,14 @@ then
   exit 1
 fi
 
-
+echo "in " pwd
 
 #Run the Ruby script that reads Vagrantfile to make dna.json and cookbook tarball
 echo "Making cookbooks tarball and dna.json"
+echo "ruby `dirname $0`/ec2_package.rb $2"
 ruby `dirname $0`/ec2_package.rb $2
 
+exit 1
 
 #Try to match and extract a port provided to the script
 ADDR=$1
@@ -34,10 +36,14 @@ CHEF_FILE_CACHE_PATH=/tmp/cheftime
 
 #Upload everything to the home directory (need to use sudo to copy over to $CHEF_FILE_CACHE_PATH and run chef)
 echo "Uploading cookbooks tarball and dna.json"
-scp -i $EC2_SSH_PRIVATE_KEY -r -P $PORT \
+scp -v -i ~/.ec2/velniukasEC2.pem -r -P $PORT \
   $COOKBOOK_TARBALL \
   $DNA \
   $USERNAME@$IP:.
+#scp -v -i $EC2_SSH_PRIVATE_KEY -r -P $PORT \
+#  $COOKBOOK_TARBALL \
+#  $DNA \
+#  $USERNAME@$IP:.
 
 echo "Running chef-solo"
 

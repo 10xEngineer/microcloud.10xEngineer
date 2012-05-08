@@ -13,7 +13,7 @@ then
 	vagrant ssh
 elif [ "$1" = "ec2" ]
 then
-	cd scripts/
+	# cd scripts/
 	./ec2start.sh
 	./ec2ssh.sh
 else

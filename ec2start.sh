@@ -1,4 +1,7 @@
 #!/bin/bash
+echo "ec2start"
+echo "============================================="
+
 rm tmp/*.out > /dev/null 2>&1
 
 ami='ami-a4ca8df6'
@@ -6,11 +9,11 @@ region='ap-southeast-1'
 key='velniukasEC2'
 type='t1.micro'
 
-ec2-run-instances $ami			\
-  --instance-type $type			\
-  --key $key					\
-  --region $region				\
-  --user-data-file bootstrap.sh > tmp/ec2.out
+ec2-run-instances ${ami}							\
+  --instance-type ${type}							\
+  --key ${key}									\
+  --region ${region}								\
+  --user-data-file a_vagrant_machine/bootstrap.sh > tmp/ec2.out
 
 RESULT=''
 for job in `jobs -p`
@@ -43,6 +46,8 @@ fi
 echo "INSTANCE = " $instance
 echo $instance > tmp/ec2instance.out
 
+echo "ec2status"
+echo "============================================="
 ./ec2status.sh $instance
 
 
@@ -61,8 +66,13 @@ then
 	exit 1
 fi
 
+echo "setup.sh"
+echo "============================================="
+echo "Waiting 30s for the server to finish initializing."
+sleep 30
+
 # now run the vagrant-ec2 code
-../a_vagrant_machine/setup.sh $publicip ../a_vagrant_machine/
+./setup.sh $publicip a_vagrant_machine/
 
 # optional ssh into the machine
 # ./ec2ssh.sh
