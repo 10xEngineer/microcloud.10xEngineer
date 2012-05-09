@@ -13,7 +13,7 @@ ec2-run-instances ${ami}							\
   --instance-type ${type}							\
   --key ${key}									\
   --region ${region}								\
-  --user-data-file a_vagrant_machine/bootstrap.sh > tmp/ec2.out
+  --user-data-file bootstrap.sh > tmp/ec2.out
 
 RESULT=''
 for job in `jobs -p`
@@ -72,7 +72,7 @@ echo "Waiting 30s for the server to finish initializing."
 sleep 30
 
 # now run the vagrant-ec2 code
-./setup.sh $publicip a_vagrant_machine/
+./setup.sh $publicip a_vagrant_machine
 
 # optional ssh into the machine
-# ./ec2ssh.sh
+# ./ec2ssh.sh -a $publicip
