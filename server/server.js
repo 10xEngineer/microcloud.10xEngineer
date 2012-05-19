@@ -1,12 +1,12 @@
 var restify = require('restify');
-var routes = require('routes');
+var routes = require('./routes');
 
 var server = restify.createServer({
 	name: 'microcloud.10xengineer.me',
 	version: '0.0.1'
 });
 server.use(restify.acceptParser(server.acceptable));
-server.use(restify.authorizationParser());
+//server.use(restify.authorizationParser());
 server.use(restify.dateParser());
 server.use(restify.queryParser());
 server.use(restify.bodyParser());
