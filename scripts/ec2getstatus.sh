@@ -1,11 +1,13 @@
 # Argument = (-i <instance-id> | -f filename-containing-instance-id)
+rm tmp/ec2getstatus.out > /dev/null 2>&1
+
 
 usage()
 {
 cat << EOF
 usage: $0 options
 
-This script will stop the specified ec2 server.
+This script will get the status of the specified ec2 server.
 
 OPTIONS:
    -h      Show this message
@@ -62,9 +64,16 @@ then
 	fi
 fi
 
-echo "shutting down " $instance
+echo "getting status for " $instance
 
-#  --private-key '/Users/velniukas/.ec2/velniukasEC2.pem'		\
-ec2-terminate-instances 					\
-  --region ap-southeast-1			\
-  $instance
+ec2-describe-instances --region ap-southeast-1 $1 > tmp/ec2getstatus.out
+
+FILE_DATA=( $( /bin/cat tmp/ec2status.out ) )
+status=${FILE_DATA[9]}
+echo -n "."
+sleep 2
+echo "INSTANCE = " $1
+echo "STATUS = " ${FILE_DATA[9]}
+echo "PUBLIC IP = " ${FILE_DATA[17]}
+echo "PUBLIC DNS = " ${FILE_DATA[7]}
+

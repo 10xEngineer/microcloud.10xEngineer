@@ -5,7 +5,7 @@ usage()
 cat << EOF
 usage: $0 options
 
-This script will stop the specified ec2 server.
+This script will restart the specified ec2 server.
 
 OPTIONS:
    -h      Show this message
@@ -62,9 +62,9 @@ then
 	fi
 fi
 
-echo "shutting down " $instance
+echo "restarting down " $instance
 
 #  --private-key '/Users/velniukas/.ec2/velniukasEC2.pem'		\
-ec2-terminate-instances 					\
+ec2-reboot-instances 					\
   --region ap-southeast-1			\
   $instance

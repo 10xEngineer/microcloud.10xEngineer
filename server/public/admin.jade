@@ -1,0 +1,31 @@
+- function APIrequest(_url, args) {
+	var client = restify.createJsonClient({ url: _url });
+	client.basicAuth('$login', '$password');
+	client.get('/my/machines', function(err, req, res, obj) {
+		assert.ifError(err);
+		var output = JSON.stringify(obj, null, 1);
+		console.log(output);
+		return output;
+	});
+- function Request(_url, args, output) {
+	var out = APIrequest(_url, args);
+	$(output).text = out;
+	}
+
+.container.container-fluid
+	.row.row-fluid
+		.span3
+		.span6
+			h1.strong Hello, world
+		.span3
+	.row.row-fluid
+		.span3
+		.span6
+			a.btn.btn-large.btn-primary(src="javascript:Request('/ping', {}, 'output')") PING: 
+		.span3
+	.row.row-fluid
+		.span3
+		.span6
+			#output.well
+		.span3
+

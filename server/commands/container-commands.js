@@ -1,100 +1,6 @@
 module.exports = function() {};
 
-var child_process = require('child_process');
-var underscore = require('underscore');
-
-child_process.spawn = underscore.wrap(child_process.spawn, function(func) {
-  // We have to strip arguments[0] out, because that is the function
-  // actually being wrapped. Unfortunately, 'arguments' is no real array,
-  // so shift() won't work. That's why we have to use Array.prototype.splice 
-  // or loop over the arguments. Of course splice is cleaner. Thx to Ryan
-  // McGrath for this optimization.
-  Array.prototype.splice.call(arguments, 0, 1);
-  // Call the wrapped function with our now cleaned args array
-  var childProcess = func.apply(this, args);
-
-  childProcess.stdout.on('data', function(data) {
-    process.stdout.write('' + data);
-  });
-
-  childProcess.stderr.on('data', function(data) {
-    process.stderr.write('' + data);
-  });
-
-  return childProcess;
-});
-
-// execute the following cmds on the appropriate server (note this is for container management - need to duplicate this for container level)
-function execute_command(server, cmd, args) {
-  // connect to the server
-  // ....
-
-  // run the command
-  var tail_child = child_process.spawn(cmd, args.split(' '), {
-  	cwd: '.'
-  });
-
-  tail_child.stdout.on('data', function(data) {
-  	return ('' + data);	
-  });
-}
-
-// Execute a command and stream the results back to the requester, also shut down the command when the client disconnects
-module.exports.respond = function(req, res, next) {
-  var tail_child = child_process.spawn(req.params.cmd, req.params.args.split(' '), {
-  	cwd: '.'
-  });
-
-  tail_child.stdout.on('data', function(data) {
-  	res.send('' + data);	
-  });
-}
-
-module.exports.pool_status = function(req, res, next) {
-	res.send('pool_status NOT IMPLEMENTED');
-}
-
-module.exports.pool_startup = function(req, res, next) {
-	res.send('pool_startup NOT IMPLEMENTED');
-}
-
-module.exports.pool_shutdown = function(req, res, next) {
-	res.send('pool_shutdown NOT IMPLEMENTED');
-}
-
-module.exports.pool_addserver = function(req, res, next) {
-	res.send('pool_addserver NOT IMPLEMENTED');
-}
-
-module.exports.pool_removeserver = function(req, res, next) {
-	res.send('pool_removeserver NOT IMPLEMENTED');
-}
-
-module.exports.pool_allocate = function(req, res, next) {
-	res.send('pool_allocate NOT IMPLEMENTED');
-}
-
-module.exports.pool_deallocate = function(req, res, next) {
-	res.send('pool_deallocate NOT IMPLEMENTED');
-}
-
-module.exports.server_start = function(req, res, next) {
-	res.send('server_start NOT IMPLEMENTED');
-}
-
-module.exports.server_stop = function(req, res, next) {
-	res.send('server_stop NOT IMPLEMENTED');
-}
-
-module.exports.server_status = function(req, res, next) {
-	res.send('server_status NOT IMPLEMENTED');
-}
-
-module.exports.server_restart = function(req, res, next) {
-	res.send('server_restart NOT IMPLEMENTED');
-}
-
-module.exports.container_create = function(req, res, next) {
+module.exports.create = function(req, res, next) {
 	var server = pool.findServerFromContainer(req.params.container);
 	var containerCount = pool.containerCount(server);
 	var result = execute_command(server, {
@@ -106,11 +12,11 @@ module.exports.container_create = function(req, res, next) {
     res.send('' + result);
 }
 
-module.exports.container_delete = function(req, res, next) {
+module.exports.delete = function(req, res, next) {
 	res.send('container_delete NOT IMPLEMENTED');
 }
 
-module.exports.container_clone = function(req, res, next) {
+module.exports.clone = function(req, res, next) {
 	var server = pool.findServerFromContainer(req.params.container);
 	var containerCount = pool.containerCount(server);
 	var result = execute_command(server, {
@@ -126,7 +32,7 @@ module.exports.container_clone = function(req, res, next) {
     res.send('' + result);
 }
 
-module.exports.container_start = function(req, res, next) {
+module.exports.start = function(req, res, next) {
 	var server = pool.findServerFromContainer(req.params.container);
 	var containerCount = pool.containerCount(server);
 	var result = execute_command(server, {
@@ -138,7 +44,7 @@ module.exports.container_start = function(req, res, next) {
     res.send('' + result);
 }
 
-module.exports.container_stop = function(req, res, next) {
+module.exports.stop = function(req, res, next) {
 	var server = pool.findServerFromContainer(req.params.container);
 	var result = execute_command(server, {
 		commands: [{
@@ -149,7 +55,7 @@ module.exports.container_stop = function(req, res, next) {
     res.send('' + result);
 }
 
-module.exports.container_info = function(req, res, next) {
+module.exports.info = function(req, res, next) {
 	var server = pool.findServerFromContainer(req.params.container);
 	var result = execute_command(server, {
 		commands: [{
@@ -160,7 +66,7 @@ module.exports.container_info = function(req, res, next) {
     res.send('' + result);
 }
 
-module.exports.container_save = function(req, res, next) {
+module.exports.save = function(req, res, next) {
 	var server = pool.findServerFromContainer(req.params.container);
 	var result = execute_command(server, {
 		commands: [{
@@ -171,7 +77,7 @@ module.exports.container_save = function(req, res, next) {
     res.send('' + result);
 }
 
-module.exports.container_restore = function(req, res, next) {
+module.exports.restore = function(req, res, next) {
 	var server = pool.findServerFromContainer(req.params.container);
 	var result = execute_command(server, {
 		commands: [{
@@ -182,11 +88,11 @@ module.exports.container_restore = function(req, res, next) {
     res.send('' + result);
 }
 
-module.exports.container_init = function(req, res, next) {
+module.exports.init = function(req, res, next) {
 	res.send('container_init NOT IMPLEMENTED');
 }
 
-module.exports.container_exposeservice = function(req, res, next) {
+module.exports.exposeservice = function(req, res, next) {
 	var server = pool.findServerFromContainer(req.params.container);
 	var result = execute_command(server, {
 		commands: [{
@@ -197,7 +103,7 @@ module.exports.container_exposeservice = function(req, res, next) {
     res.send('' + result);
 }
 
-module.exports.container_setcpulimit = function(req, res, next) {
+module.exports.setcpulimit = function(req, res, next) {
 	var server = pool.findServerFromContainer(req.params.container);
 	var result = execute_command(server, {
 		commands: [{
@@ -208,7 +114,7 @@ module.exports.container_setcpulimit = function(req, res, next) {
     res.send('' + result);
 }
 
-module.exports.container_setcpuaffinity = function(req, res, next) {
+module.exports.setcpuaffinity = function(req, res, next) {
 	var server = pool.findServerFromContainer(req.params.container);
 	var result = execute_command(server, {
 		commands: [{
@@ -219,7 +125,7 @@ module.exports.container_setcpuaffinity = function(req, res, next) {
     res.send('' + result);
 }
 
-module.exports.container_setramlimit = function(req, res, next) {
+module.exports.setramlimit = function(req, res, next) {
 	var server = pool.findServerFromContainer(req.params.container);
 	var result = execute_command(server, {
 		commands: [{
@@ -230,7 +136,7 @@ module.exports.container_setramlimit = function(req, res, next) {
     res.send('' + result);
 }
 
-module.exports.container_setswaplimit = function(req, res, next) {
+module.exports.setswaplimit = function(req, res, next) {
 	var server = pool.findServerFromContainer(req.params.container);
 	var result = execute_command(server, {
 		commands: [{
@@ -241,7 +147,7 @@ module.exports.container_setswaplimit = function(req, res, next) {
     res.send('' + result);
 }
 
-module.exports.container_setfilelimit = function(req, res, next) {
+module.exports.setfilelimit = function(req, res, next) {
 	var server = pool.findServerFromContainer(req.params.container);
 	var file = 'vm' + req.params.container + '.img';
 	var result = execute_command(server, {
@@ -257,7 +163,7 @@ module.exports.container_setfilelimit = function(req, res, next) {
     res.send('' + result);
 }
 
-module.exports.container_setnetworklimit = function(req, res, next) {
+module.exports.setnetworklimit = function(req, res, next) {
 	res.send('container_setnetworklimit NOT IMPLEMENTED');
 	/*
 	to limit network bandwidth per container, you'll want to use the tc utility.
