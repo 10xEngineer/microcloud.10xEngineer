@@ -1,7 +1,10 @@
 var restify = require('restify');
+var log = require('log4js').getLogger();
+
 var routes = require('./routes');
 
-var server = restify.createServer({
+// Setup the REST API
+var server = module.exports = restify.createServer({
 	name: 'microcloud.10xengineer.me',
 	version: '0.0.1'
 });
@@ -15,7 +18,11 @@ server.use(restify.throttle({
 	rate: 50,
 	ip: true,
 	overrides: {
-		'192.168.1.1': {
+		'192.168.1.106': {
+			rate: 0, //unlimited
+			burst: 0
+		},
+		'127.0.0.1': {
 			rate: 0, //unlimited
 			burst: 0
 		}
@@ -30,3 +37,9 @@ server.listen(8080, function() {
   console.log('%s listening at %s', server.name, server.url);
 });
 
+// ------------------------------------------------------------------------------------
+// Return the admin page
+
+server.get( {url : '/admin'}, function(req, res, next) {
+	res.render('ADMIN PAGE TO GO HERE');
+});

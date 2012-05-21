@@ -1,0 +1,21 @@
+!!! 5
+html(lang="en")
+	head
+		meta(charset="utf-8")
+		-if(typeof(title) != 'undefined') 
+			title #{title}
+		link(rel="stylesheet", href="/bootstrap/css/bootstrap.min.css")
+		link(rel='stylesheet', type='text/css', href='/bootstrap/css/bootstrap-responsive.min.css')
+		script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js')
+		script(type='text/javascript', src='/bootstrap/js/bootstrap.min.js')
+		body
+			.container
+				section#navbar
+					include _header
+			.container
+					section#content!= body
+					section#sidebar
+					footer
+						p 
+						strong &copy;2012 10xEngineer.me. 
+						| All rights reserved.
