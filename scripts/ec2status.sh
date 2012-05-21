@@ -11,7 +11,7 @@ fi
 
 status=''
 count=0
-echo "Starting up"
+echo "Getting status"
 while [ "$status" != "running" ]
 do
 	ec2-describe-instances --region ap-southeast-1 $1 > tmp/ec2status.out
