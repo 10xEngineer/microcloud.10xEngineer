@@ -6,7 +6,7 @@ module.exports.registerRoutes = function(server) {
 	server.get('/ping', commands.get_ping);
 	server.post('/ping', commands.post_ping);
 	server.get('/command/exectest', commands.test_cli_exec); 
-	// spawn (for tail ... etc streaming still doesn't work)
+	//TODO: spawn (for tail ... etc streaming still doesn't work)
 	//server.get('/command/spawntest', commands.test_cli_spawn);
 	// run a shell command
 	server.get('/command/:cmd/:args', commands.cli.call_cli);
@@ -23,7 +23,10 @@ module.exports.registerRoutes = function(server) {
 	server.get('/pool/:server/allocate', commands.pool.allocate);
 	server.get('/pool/:server/:container/deallocate', commands.pool.deallocate);
 
-	// (ec2) server instance verbs
+	// (vagrant|ec2) server instance verbs
+	//TODO: Allow specific instances, not just the last one started
+	//TODO: Fix status calls for vagrant and ec2
+	//TODO: Fix feedback and termination to client for all calls
 	server.get('/server/start/:destination', commands.server.start);
 	server.get('/server/stop/:destination/:server', commands.server.stop);
 	server.get('/server/stop/:destination', commands.server.stop);
