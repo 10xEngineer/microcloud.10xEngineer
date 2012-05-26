@@ -69,6 +69,7 @@ fi
 echo "setup.sh"
 echo "============================================="
 echo "Waiting 30s for the server to finish initializing."
+# Make this properly async instead of sleep
 sleep 30
 
 echo "in folder: ${PWD##*/}"
