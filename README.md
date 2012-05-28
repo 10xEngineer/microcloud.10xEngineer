@@ -13,6 +13,22 @@ It consists of:
     - It's a cool concept :)
 - We use http://github.com/LiftOff/GateOne to provide the terminal in a browser connectivity
 
+To setup your environment
+=========================
+- Download the git repo: 
+    '''git clone git@github.com:velniukas/microcloud.10xEngineer.git'''
+
+- Install node.js & npm 
+
+- Install vagrant http://vagrantup.com and VirtualBox 
+    http://vagrantup.com/v1/docs/getting-started/index.html
+
+- Run node.js REST server
+    '''cd microcloud.10xEngineer
+    node server.js'''
+
+- From the command line test the server will instantiate a new vm on demand
+    '''curl -O http://localhost:3000/server/start/local'''
 
 (c) 2012 All works in this repository are the sole ownership and use jointly by 10xEngineer.me, Messina Ltd and Steve Messina.
 And may not be reproduced, reused, stolen for commercial or non-commercial means without explicit written permission from Steve Messina.
