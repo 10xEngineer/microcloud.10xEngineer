@@ -13,3 +13,6 @@ It consists of:
     - It's a cool concept :)
 - We use http://github.com/LiftOff/GateOne to provide the terminal in a browser connectivity
 
+
+(c) 2012 All works in this repository are the sole ownership and use jointly by 10xEngineer.me, Messina Ltd and Steve Messina.
+And may not be reproduced, reused, stolen for commercial or non-commercial means without explicit written permission from Steve Messina.
