@@ -30,8 +30,10 @@ module.exports.post_ping = function(req, res, next) {
 
 module.exports.test_cli_exec = function(req, res, next) {
 	log.info('running ls -l to test the cli command interface.');
-//	var child = cli.execute_command( 'localhost', 'ls', ['-lh', '/usr'] );
-	var child = cli.execute_command( 'localhost', 'pwd', [] );
+	var child = cli.execute_command( 'localhost', 'ls', ['-lh', '/usr'], function(output) {
+		res.send(output);
+	} );
+//	var child = cli.execute_command( 'localhost', 'pwd', [] );
 	
 	child.stdout.on('data', function(data) {
 		res.send(data);

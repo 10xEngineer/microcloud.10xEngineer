@@ -93,7 +93,10 @@ var Pool = module.exports = function(_destination, _maxHosts, _maxContainersPerH
 		// Add a new host
 		//TODO: This really needs to be async and fixed!!!!
 		// it should call something like commands.server.start(:destination)
-		var child = commands.cli.execute_command( 'localhost', './scripts/startserver.sh', [destination] );
+		var child = commands.cli.execute_command( 'localhost', './scripts/startserver.sh', [destination], function(output) {
+			log.debug(output);
+			//TODO : do something with this data
+		} );
 		hosts.push(new Host({
 				id: hosts.length + 1,
 				containers = []; // starts off empty

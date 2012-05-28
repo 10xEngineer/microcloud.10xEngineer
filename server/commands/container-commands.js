@@ -8,8 +8,9 @@ module.exports.create = function(req, res, next) {
 			command: 'lxc-ubuntu',
 			args: '-p /mnt/vm' + (containerCount+1) + ' -n vm' + (containerCount+1)
 		}]
-	});
-    res.send('' + result);
+	}	, function(output) {
+			res.send(output);
+		});
 }
 
 module.exports.delete = function(req, res, next) {
@@ -28,8 +29,9 @@ module.exports.clone = function(req, res, next) {
 			command: 'lxc-create',
 			args: '-n /mnt/vm' + (containerCount+1) + ' -f /mnt/vm' + (containerCount+1) + '/config'	
 		}]
-	});
-    res.send('' + result);
+	}	, function(output) {
+			res.send(output);
+		});
 }
 
 module.exports.start = function(req, res, next) {
@@ -40,8 +42,9 @@ module.exports.start = function(req, res, next) {
 			command: 'lxc-start',
 			args: '-n vm' + (containerCount+1) + ' -d'
 		}]
-	});
-    res.send('' + result);
+	}	, function(output) {
+			res.send(output);
+		});
 }
 
 module.exports.stop = function(req, res, next) {
@@ -51,8 +54,9 @@ module.exports.stop = function(req, res, next) {
 			command: 'lxc-stop',
 			args: '-n vm' + req.params.container
 		}]
-	});
-    res.send('' + result);
+	}	, function(output) {
+			res.send(output);
+		});
 }
 
 module.exports.info = function(req, res, next) {
@@ -62,8 +66,9 @@ module.exports.info = function(req, res, next) {
 			command: 'lxc-info',
 			args: '-n vm' + req.params.container
 		}]
-	});
-    res.send('' + result);
+	}	, function(output) {
+			res.send(output);
+		});
 }
 
 module.exports.save = function(req, res, next) {
@@ -73,8 +78,9 @@ module.exports.save = function(req, res, next) {
 			command: 'lxc-freeze',
 			args: '-n vm' + req.params.container
 		}]
-	});
-    res.send('' + result);
+	}	, function(output) {
+			res.send(output);
+		});
 }
 
 module.exports.restore = function(req, res, next) {
@@ -84,8 +90,9 @@ module.exports.restore = function(req, res, next) {
 			command: 'lxc-unfreeze',
 			args: '-n vm' + req.params.container
 		}]
-	});
-    res.send('' + result);
+	}	, function(output) {
+			res.send(output);
+		});
 }
 
 module.exports.init = function(req, res, next) {
@@ -99,8 +106,9 @@ module.exports.exposeservice = function(req, res, next) {
 			command: 'iptables',
 			args: '-t nat -A PREROUTING -p tcp --dport ' + req.params.port + ' -j DNAT --to-destination vm' + req.params.container + ':' + req.params.internalport
 		}]
-	});
-    res.send('' + result);
+	}	, function(output) {
+			res.send(output);
+		});
 }
 
 module.exports.setcpulimit = function(req, res, next) {
@@ -110,8 +118,9 @@ module.exports.setcpulimit = function(req, res, next) {
 			command: 'lxc.cgroup.cpu.shares',
 			args: '' + (req.params.cpushare * 1024)
 		}]
-	});
-    res.send('' + result);
+	}	, function(output) {
+			res.send(output);
+		});
 }
 
 module.exports.setcpuaffinity = function(req, res, next) {
@@ -121,8 +130,9 @@ module.exports.setcpuaffinity = function(req, res, next) {
 			command: 'lxc.cgroup.cpuset.cpus',
 			args: '' + (req.params.cpus * 1024)
 		}]
-	});
-    res.send('' + result);
+	}	, function(output) {
+			res.send(output);
+		});
 }
 
 module.exports.setramlimit = function(req, res, next) {
@@ -132,8 +142,9 @@ module.exports.setramlimit = function(req, res, next) {
 			command: 'lxc.cgroup.memory.limit_in_bytes',
 			args: '' + (req.params.ram) // e.g. 256M 
 		}]
-	});
-    res.send('' + result);
+	}	, function(output) {
+			res.send(output);
+		});
 }
 
 module.exports.setswaplimit = function(req, res, next) {
@@ -143,8 +154,9 @@ module.exports.setswaplimit = function(req, res, next) {
 			command: 'lxc.cgroup.memory.memsw.limit_in_bytes',
 			args: '' + (req.params.swap) // e.g. 1G
 		}]
-	});
-    res.send('' + result);
+	}	, function(output) {
+			res.send(output);
+		});
 }
 
 module.exports.setfilelimit = function(req, res, next) {
@@ -159,8 +171,9 @@ module.exports.setfilelimit = function(req, res, next) {
 				+ ' && mount -o loop ' + file
 				+ ' /mnt/vm' + req.params.container + '/rootfs'
 		}]
-	});
-    res.send('' + result);
+	}	, function(output) {
+			res.send(output);
+		});
 }
 
 module.exports.setnetworklimit = function(req, res, next) {

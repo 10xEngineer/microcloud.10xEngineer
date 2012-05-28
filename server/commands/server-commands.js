@@ -5,7 +5,9 @@ var commands = require('./commands');
 //==================================================================================================================================
 module.exports.start = function(req, res, next) {
 	log.info('starting a server on : ' + req.params.destination);
-	var child = commands.cli.execute_command( 'localhost', './scripts/startserver.sh', [req.params.destination] );
+	var child = commands.cli.execute_command( 'localhost', './scripts/startserver.sh', [req.params.destination], function(output) {
+		res.send(output);
+	} );
 	
 	child.stdout.on('data', function(data) {
 		//res.send(data);
@@ -28,7 +30,9 @@ module.exports.start = function(req, res, next) {
 //==================================================================================================================================
 module.exports.stop = function(req, res, next) {
 	log.info('stopping a server ' + req.params.server + ' on : ' + req.params.destination);
-	var child = commands.cli.execute_command( 'localhost', './scripts/stopserver.sh', [req.params.destination] );
+	var child = commands.cli.execute_command( 'localhost', './scripts/stopserver.sh', [req.params.destination], function(output) {
+		res.send(output);
+	} );
 	
 	child.stdout.on('data', function(data) {
 		//res.send(data);
@@ -51,7 +55,9 @@ module.exports.stop = function(req, res, next) {
 //==================================================================================================================================
 module.exports.status = function(req, res, next) {
 	log.info('stopping a server ' + req.params.server + ' on : ' + req.params.destination);
-	var child = commands.cli.execute_command( 'localhost', './scripts/getstatusserver.sh', [req.params.destination] );
+	var child = commands.cli.execute_command( 'localhost', './scripts/getstatusserver.sh', [req.params.destination], function(output) {
+		res.send(output);
+	} );
 	
 	child.stdout.on('data', function(data) {
 		//res.send(data);

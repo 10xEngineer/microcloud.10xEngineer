@@ -59,7 +59,7 @@ module.exports.spawn_command = function(server, cmd, args) {
 }
 
 // execute the following cmds on the appropriate server (note this is also for container management - need to duplicate this for container level)
-module.exports.execute_command = function(callback, server, cmd, args) {
+module.exports.execute_command = function(server, cmd, args, callback) {
 
 	//TODO: connect to the server
 	// ....
@@ -91,7 +91,9 @@ module.exports.call_cli = function(req, res, next) {
 
   var tail_child = execute_command( localhost, req.params.cmd, req.params.args.split(' '), {
   	cwd: '.' || req.params.workingdir
-  });
+  }, function(output) {
+		res.send(output);
+	});
 
   tail_child.stdout.on('data', function(data) {
   	res.send('' + data);	
