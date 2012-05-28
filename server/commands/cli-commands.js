@@ -89,7 +89,7 @@ module.exports.call_cli = function(req, res, next) {
   //TODO: connect to server
 //  if( req.params.server != null ) {  }
 
-  var tail_child = execute_command( localhost, req.params.cmd, req.params.args.split(' ') {
+  var tail_child = execute_command( localhost, req.params.cmd, req.params.args.split(' '), {
   	cwd: '.' || req.params.workingdir
   });
 
