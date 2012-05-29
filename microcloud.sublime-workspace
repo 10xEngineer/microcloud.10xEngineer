@@ -1,0 +1,443 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"alb",
+				"albumItem"
+			],
+			[
+				"al",
+				"albumItem"
+			],
+			[
+				"album",
+				"albums"
+			],
+			[
+				"order",
+				"order_id"
+			],
+			[
+				"crea",
+				"createNewCartOrder"
+			],
+			[
+				"paypal",
+				"paypal_purchase"
+			],
+			[
+				"pay",
+				"paypal_purchase"
+			],
+			[
+				"action",
+				"actionShow"
+			],
+			[
+				"orde",
+				"orderItem"
+			],
+			[
+				"form",
+				"formValues"
+			],
+			[
+				"saleOr",
+				"saleOrderItem"
+			],
+			[
+				"sale",
+				"saleOrderItem"
+			],
+			[
+				"getSale",
+				"getSaleOrderItems"
+			],
+			[
+				"user",
+				"userName"
+			],
+			[
+				"is",
+				"isOwner"
+			],
+			[
+				"PRO",
+				"PRODUCT_TYPE_ALBUM"
+			],
+			[
+				"cam",
+				"campaign_type_id"
+			],
+			[
+				"camp",
+				"campaign_type_id"
+			],
+			[
+				"type",
+				"type_id"
+			],
+			[
+				"end",
+				"end_date"
+			],
+			[
+				"number",
+				"number_id"
+			],
+			[
+				"json",
+				"json_encode"
+			],
+			[
+				"phone",
+				"PhoneNumber"
+			],
+			[
+				"update",
+				"updateNumber"
+			],
+			[
+				"slide",
+				"slideUp"
+			],
+			[
+				"lo",
+				"localSearchKey"
+			],
+			[
+				"local",
+				"localSearchKey"
+			],
+			[
+				"localSear",
+				"localSearchKey"
+			],
+			[
+				"num",
+				"number_model"
+			],
+			[
+				"dia",
+				"dialCallStatus"
+			],
+			[
+				"updat",
+				"update_data"
+			],
+			[
+				"numbe",
+				"number_id"
+			],
+			[
+				"load",
+				"loadNewsFeed"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 367.0,
+		"selected_items":
+		[
+			[
+				"inde",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"ind",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"Package Control: remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"ine",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"indetn",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"indent",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"indeent",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"inden",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Remove Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"in",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"tab",
+				"Indentation: Convert to Tabs"
+			],
+			[
+				"space",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"i",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"ident",
+				"Indentation: Reindent Lines"
+			],
+			[
+				"list",
+				"Package Control: List Packages"
+			],
+			[
+				"format",
+				"Format: Php"
+			],
+			[
+				"for",
+				"Format: Php"
+			],
+			[
+				"php",
+				"Format: Php"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"fomr",
+				"Format: Javascript"
+			],
+			[
+				"form",
+				"Format: Php"
+			],
+			[
+				"Package Control: inst",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: insta",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 593.0
+	},
+	"console":
+	{
+		"height": 139.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/anderson/Projects/zeteor/protected/controllers/OrderController.php",
+		"/Users/anderson/Projects/zeteor/protected/views/media/song/edit.haml",
+		"/Users/anderson/Projects/zeteor/protected/controllers/MediaController.php",
+		"/Users/anderson/Projects/zeteor/protected/models/AlbumForm.php",
+		"/Users/anderson/Projects/zeteor/protected/controllers/AlbumController.php",
+		"/Users/anderson/Projects/zeteor/protected/views/album/edit.haml",
+		"/Users/anderson/Projects/zeteor/protected/models/SongForm.php",
+		"/Users/anderson/Projects/zeteor/protected/controllers/UserController.php",
+		"/Users/anderson/Projects/zeteor/protected/views/user/show.haml",
+		"/Users/anderson/Projects/zeteor/protected/views/album/new.haml",
+		"/Users/anderson/Projects/zeteor/protected/views/user/_tracks.haml",
+		"/Users/anderson/Projects/zeteor/protected/views/order/success.haml",
+		"/Users/anderson/Projects/zeteor/protected/controllers/CartController.php",
+		"/Users/anderson/Projects/zeteor/protected/views/order/error.haml",
+		"/Users/anderson/Projects/zeteor/protected/models/PayPal_Purchase.php",
+		"/Users/anderson/Projects/zeteor/protected/models/Paypal.php",
+		"/Users/anderson/Projects/zeteor/protected/views/site/index.haml",
+		"/Users/anderson/Socrates/socrates.sublime-workspace"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"$song",
+			"&nbsp;",
+			"$product",
+			"return_url",
+			"redirect",
+			"_GET",
+			"$_SESSION",
+			"$",
+			"buy",
+			"PayPal_Digital_Goods_Configuration",
+			"logger",
+			"getId",
+			"Yii::app()->user->getState('user_name')",
+			"get_state",
+			"zeteor",
+			"footer",
+			"%a",
+			"about",
+			"user_name",
+			"prodct",
+			"background-image",
+			"local",
+			"home2_files",
+			"html2",
+			"point",
+			"ordersend",
+			"POINT",
+			"MAGIC"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"$album",
+			"",
+			"$track",
+			"Yii::app()->session",
+			"PayPalConfiguration",
+			"Yii::app()->session['userName']",
+			"tollFree",
+			"home_files"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.sftp":
+	{
+		"height": 181.0
+	},
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": false,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"appli",
+				"protected/runtime/application.log"
+			],
+			[
+				"camp",
+				"talktracer.com/application/models/campaign_model.php"
+			],
+			[
+				"user_mo",
+				"talktracer.com/application/models/user_model.php"
+			],
+			[
+				"dash",
+				"talktracer.com/application/controllers/dashboard.php"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 311.0,
+	"status_bar_visible": true
+}
