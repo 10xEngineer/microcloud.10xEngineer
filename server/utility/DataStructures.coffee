@@ -1,7 +1,5 @@
-module.export = ->
-
-dataStructures = module.export =
-	node: (data) ->
+dataStructures = module.exports = 
+	node : (data) ->
 		@data = data
 		@previous = null
 		@next = null
@@ -100,8 +98,8 @@ dataStructures = module.export =
 				callback current
 				current = current.previous
 
-	stack: ->
-		elements = undefined
+	stack : ->
+		elements = []
 		@push = (element) ->
 			elements = []  if typeof (elements) is "undefined"
 			elements.push element
@@ -111,6 +109,9 @@ dataStructures = module.export =
 
 		@stackTop = (element) ->
 			elements[elements.length - 1]
+
+		@length = ->
+			elements.length
 
 	queue: ->
 		elements = undefined

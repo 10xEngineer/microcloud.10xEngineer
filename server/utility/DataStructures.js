@@ -1,9 +1,7 @@
 (function() {
   var dataStructures;
 
-  module["export"] = function() {};
-
-  dataStructures = module["export"] = {
+  dataStructures = module.exports = {
     node: function(data) {
       this.data = data;
       this.previous = null;
@@ -130,7 +128,7 @@
     },
     stack: function() {
       var elements;
-      elements = void 0;
+      elements = [];
       this.push = function(element) {
         if (typeof elements === "undefined") elements = [];
         return elements.push(element);
@@ -138,8 +136,11 @@
       this.pop = function() {
         return elements.pop();
       };
-      return this.stackTop = function(element) {
+      this.stackTop = function(element) {
         return elements[elements.length - 1];
+      };
+      return this.length = function() {
+        return elements.length;
       };
     },
     queue: function() {

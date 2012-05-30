@@ -1,2 +1,3 @@
-pool = require("../utility/ServerPool.js")("local", 5, 4)
-console.log pool.allocate(3, "anderson", "session1")
+Pool = require("../utility/ServerPool.js")
+pool = new Pool("local", 5, 4)
+pool.allocate(3, "anderson", "session1")
