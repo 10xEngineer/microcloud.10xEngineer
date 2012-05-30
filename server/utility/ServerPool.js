@@ -1,7 +1,9 @@
 (function() {
-  var Host, Pool, commands, dataStructures, destination, maxContainersPerHost, maxHosts;
+  var Pool, commands, dataStructures, destination, log, maxContainersPerHost, maxHosts;
 
   module.exports = function() {};
+
+  log = require("log4js").getLogger();
 
   commands = require("../commands/commands");
 
@@ -13,28 +15,9 @@
 
   destination = "local";
 
-  Host = (function() {
-
-    function Host(id, containers) {
-      this.id = id;
-      this.containers = containers;
-    }
-
-    return Host;
-
-  })();
-
   /*
-  Container =
-  	id: String
-  	status: String
-  	host_id: String
-  	owner_id: String
-  	session_id: String
-  	prevHost_id: String
   
-  class Session =
-  	constructor: (_destination, _maxHosts, _maxContainersPerHost) ->
+  Session =
   	id: String
   	owner_id: String
   	status: String
@@ -57,34 +40,53 @@
       this.containers = [];
     }
 
+    Pool.prototype._allocate = function(i, numContainers, owner_id, session_id) {
+      var containers, n;
+      log.debug("before: hosts[" + i + "] = " + this.hosts[i].containers.length);
+      n = 0;
+      containers = [];
+      while (n < numContainers) {
+        this.allocatedContainers = this.allocatedContainers + 1;
+        this.hosts[i].containers.push({
+          id: this.allocatedContainers,
+          status: "Allocated",
+          host_id: this.hosts[i].id,
+          owner_id: owner_id,
+          session_id: session_id,
+          prevHost_id: null
+        });
+        n++;
+      }
+      log.debug(numContainers + " allocated on Host [" + this.hosts[i].id + "] for owner: " + owner_id + ", session: " + session_id);
+      log.debug("after:  hosts[" + i + "] = " + this.hosts[i].containers.length);
+      return this.hosts[i].containers;
+    };
+
     Pool.prototype.allocate = function(numContainers, owner_id, session_id) {
-      var i, n;
+      var i;
       if ((this.allocatedContainers + numContainers) > this.maxAllowedContainers) {
-        return "Maximum Containers and/or Hosts exceeded. No allocation allowed.";
+        log.debug("Maximum Containers and/or Hosts exceeded. No allocation allowed.");
+        return [];
       }
-      i = 0;
-      this.hosts.push(new Host(this.hosts.length + 1, []));
-      this.hosts.push(new Host(this.hosts.length + 1, []));
-      this.hosts.push(new Host(this.hosts.length + 1, []));
-      while (i++ < this.hosts.length && (this.maxContainersPerHost - this.hosts[i].containers.length) >= numContainers) {
-        console.log("hosts[" + i + "] = " + this.hosts[i].containers.length);
-        n = 0;
-        while (n < numContainers) {
-          this.allocatedContainers = this.allocatedContainers + 1;
-          this.hosts[i].containers.push(new Container({
-            id: this.allocatedContainers,
-            status: "Allocated",
-            host_id: this.hosts[i].id,
-            owner_id: owner_id,
-            session_id: session_id,
-            prevHost_id: null
-          }));
-          n++;
+      while (true) {
+        i = 0;
+        while (i < this.hosts.length) {
+          if ((this.maxContainersPerHost - this.hosts[i].containers.length) >= numContainers) {
+            return this._allocate(i, numContainers, owner_id, session_id);
+          }
+          i++;
         }
-        console.log(numContainers + " allocated on Host [" + this.hosts[i].id + "] for owner: " + owner_id + ", session: " + session_id);
-        return;
+        if (this.hosts.length < this.maxHosts) {
+          this.hosts.push({
+            id: this.hosts.length + 1,
+            containers: []
+          });
+          return this._allocate(this.hosts.length - 1, numContainers, owner_id, session_id);
+        } else {
+          log.debug("reach max hosts, still cannot allocated " + numContainers);
+          return [];
+        }
       }
-      this.hosts.push(new Host(this.hosts.length + 1, []));
     };
 
     Pool.prototype.restore = function(containersIds, owner_id, session_id) {
