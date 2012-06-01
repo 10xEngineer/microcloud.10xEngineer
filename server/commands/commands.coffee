@@ -5,6 +5,7 @@ cli = module.exports.cli = require("./cli-commands")
 pool = module.exports.pool = require("./pool-commands")
 server = module.exports.server = require("./server-commands")
 container = module.exports.container = require("./container-commands")
+notification = module.exports.notifications = require("./notification-commands")
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 #

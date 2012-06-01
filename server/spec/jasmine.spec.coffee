@@ -1,5 +1,5 @@
 describe "Allocation and Deallocation", ->
-	Pool = require("../utility/ServerPool.js")
+	Pool = require("../utility/ServerPool.coffee")
 	
 	it "Allocation", ->
 		pool = new Pool("local", 3, 5)

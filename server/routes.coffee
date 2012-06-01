@@ -6,6 +6,12 @@ commands = require './commands/commands'
 module.exports.registerRoutes = (server)->
 	server.get '/ping', commands.get_ping
 	server.post '/ping', commands.post_ping
+
+	# nowjs notification (subscribe/unsubscribe)
+	server.post '/subscribe/:userid', commands.notifications.subscribe
+	server.post '/unsubscribe/:userid', commands.notifications.unsubscribe
+
+	# clie command
 	server.get '/command/exectest', commands.test_cli_exec 
 	#TODO: spawn  for tail ... etc streaming still doesn't work)
 	#server.get '/command/spawntest', commands.test_cli_spawn
