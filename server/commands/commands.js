@@ -1,70 +1,62 @@
-module.exports.command = function() {};
-var log = require('log4js').getLogger();
+(function() {
+  var cli, container, log, pool, server;
 
-var cli = module.exports.cli = require('./cli-commands');
-var pool = module.exports.pool = require('./pool-commands');
-var server = module.exports.server = require('./server-commands');
-var container = module.exports.container = require('./container-commands');
+  module.exports.command = function() {};
 
-// --------------------------------------------------------------------------------------------------------------------------------------------------------
-//
-//  Heartbeat
-//
-// =========================================================================================================================================================
+  log = require("log4js").getLogger();
 
-module.exports.get_ping = function(req, res, next) {
-	log.info('ping received.');
-	res.send( {pong: true} );
-}
+  cli = module.exports.cli = require("./cli-commands");
 
-module.exports.post_ping = function(req, res, next) {
-	log.info('ping _post_ received');
-	res.send( 200, {}, req.data );
-}
+  pool = module.exports.pool = require("./pool-commands");
 
-// --------------------------------------------------------------------------------------------------------------------------------------------------------
-//
-//  Test CLI commands
-//
-// =========================================================================================================================================================
+  server = module.exports.server = require("./server-commands");
 
-module.exports.test_cli_exec = function(req, res, next) {
-	log.info('running ls -l to test the cli command interface.');
-	var child = cli.execute_command( 'localhost', 'ls', ['-lh', '/usr'], function(output) {
-		res.send(output);
-	} );
-//	var child = cli.execute_command( 'localhost', 'pwd', [] );
-	
-	child.stdout.on('data', function(data) {
-		res.send(data);
-	});
+  container = module.exports.container = require("./container-commands");
 
-	child.stderr.on('data', function(data) {
-		res.send(data);
-	});
-	
-	child.on('exit', function(code) {
-		child.stdin.end();
-	});
-	
-	return next();
-}
+  module.exports.get_ping = function(req, res, next) {
+    log.info("ping received.");
+    return res.send({
+      pong: true
+    });
+  };
 
-module.exports.test_cli_spawn = function(req, res, next) {
-	log.info('running top to test the cli command interface.');
-	var child = cli.spawn_command( 'localhost', 'top', [] );
-	
-	child.stdout.on('data', function(data) {
-		res.send(data);
-	});
+  module.exports.post_ping = function(req, res, next) {
+    log.info("ping _post_ received");
+    return res.send(200, {}, req.data);
+  };
 
-	child.stderr.on('data', function(data) {
-		res.send(data);
-	});
-	
-	child.on('exit', function(code) {
-		child.stdin.end();
-	});
-	
-	return next();
-}
+  module.exports.test_cli_exec = function(req, res, next) {
+    var child;
+    log.info("running ls -l to test the cli command interface.");
+    child = cli.execute_command("localhost", "ls", ["-lh", "/usr"], function(output) {
+      return res.send(output);
+    });
+    child.stdout.on("data", function(data) {
+      return res.send(data);
+    });
+    child.stderr.on("data", function(data) {
+      return res.send(data);
+    });
+    child.on("exit", function(code) {
+      return child.stdin.end();
+    });
+    return next();
+  };
+
+  module.exports.test_cli_spawn = function(req, res, next) {
+    var child;
+    log.info("running top to test the cli command interface.");
+    child = cli.spawn_command("localhost", "top", []);
+    child.stdout.on("data", function(data) {
+      return res.send(data);
+    });
+    child.stderr.on("data", function(data) {
+      return res.send(data);
+    });
+    child.on("exit", function(code) {
+      return child.stdin.end();
+    });
+    return next();
+  };
+
+}).call(this);
