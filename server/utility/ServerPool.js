@@ -1,129 +1,156 @@
-/*
-	Manage a pool of virtual machines, which are the hosts to a sub-pool of virtual containers
-	Each VM has a specific capacity of containers, and new VM's are allocated/returned as the containers are added/removed
+(function() {
+  var HashTable, Pool, commands, dataStructures, destination, log, maxContainersPerHost, maxHosts;
 
-	Hosts: Vagrant or EC2 servers running Ubuntu
-	Containers: LXC containers running on a host
+  module.exports = function() {};
 
-	NOTES:
-	Ideally we want to keep all containers for a session on a single machine so that we can restore/hibernate quickly to make it UX friendly for the user
-	However, we need a decent strategy to handle fragmentation, so that we always have the minimum number of Hosts running at any time.
+  log = require("log4js").getLogger();
 
-*/
+  commands = require("../commands/commands");
 
-module.exports = function() {}
-var server = require('./server');
-var commands = require('./commands/commands');
-var dataStructures = require('./DataStructures');
+  dataStructures = require("./DataStructures");
 
-var maxHosts = 3;
-var maxContainersPerHost = 5; //TODO: Make this dynamic depending on the host / container capability/requirements
-var destination = "local"; // or ec2
+  HashTable = require("./HashTable");
 
-var Host = function() {
-	  id : String // e.g. the EC2 instance id
-	, containers = dataStructures.stack() // stack of containers
-}
+  maxHosts = 3;
 
-var Container = function() {
-	  id : String
-	, status : String // empty, [Allocated, Running, Hibernating]
-	, host_id : String // The id of the host 
-	, owner_id : String // The id of the owner/user of this instance
-	, session_id : String // The id of the session (a user may have many sessions)
-	, prevHost_id : String // if the container has been hibernating, then the prevHost will have a cache of the container, so try that first
-}
+  maxContainersPerHost = 5;
 
-// A session is equivalent to a lesson where the user has undertaken a task, we want to preserve the state of their work, 
-// which might have needed N containers, eg. as in "install LAMP servers on a 3 tier setup"
-var Session = function() {
-	  id : String
-	, owner_id : String // The id of the owner
-	, status : String // InUse, Hibernating, Terminated
-	, numContainers : int // The number of containers
-	, containers = [] // The containers list
-	, storageURL : String // Where the containers will get stored
-}
+  destination = "local";
 
-// destination = local | ec2
-var Pool = module.exports = function(_destination, _maxHosts, _maxContainersPerHost) {
-	maxHosts = _maxHosts;
-	maxContainersPerHost = _maxContainersPerHost;
-	destination = _destination; // local or ec2
-	
-	var allocatedContainers = 0;
-	var maxContainers = maxHosts * maxContainersPerHost;
-	var sessions = [];
-	var owners = [];
-	
-	var hosts = dataStructures.stack();
-	var containers = [];
+  /*
+  
+  Session =
+  	id: String
+  	owner_id: String
+  	status: String
+  	numContainers: 0
+  	containers: []
+  	storageURL: String
+  */
 
-	// Allocate new containers from an available host or start a new host if needed
-	var allocate = function(numContainers, owner_id, session_id) {
-		// Check for max hosts and containers reached first
-		if( (allocatedContainers + numContainers) > maxAllowedContainers ) {
-			return "Maximum Containers and/or Hosts exceeded. No allocation allowed."
-		}
-		
-		// Iterate through the sorted hosts list (descending by allocated Containers), looking for the first host with the required number of containers available
-		// else startup another host - if below max host limit
-		var h=0;
-		// Is there free space?
-		while( h < hosts.length && (maxContainersPerHost - hosts[i].containers.length) >= numContainers ) {
-			log.debug("hosts["+n"] = "+hosts[i].containers.length);
-			// allocate new containers
-			for(n=0;n<numContainers;n++) {
-				allocatedContainers = allocatedContainers + 1;
-				hosts[i].containers.push( new Container({
-						id : allocatedContainers,
-						status : "Allocated",
-						host_id : hosts[i].id,
-						owner_id : owner_id,
-						session_id : session_id,
-						prevHost_id : null
-					});
-				);
-			}
-			// All allocated so break out of the loop successfully
-			return numContainers + " allocated on Host [" + hosts[i].id + "] for owner: " + owner_id + ", session: " + session_id;
-		}
-		
-		// No hosts with the min required container space
-		// Add a new host
-		//TODO: This really needs to be async and fixed!!!!
-		// it should call something like commands.server.start(:destination)
-		var child = commands.cli.execute_command( 'localhost', './scripts/startserver.sh', [destination], function(output) {
-			log.debug(output);
-			//TODO : do something with this data
-		} );
-		hosts.push(new Host({
-				id: hosts.length + 1,
-				containers = []; // starts off empty
-			});
-		);
-	}
+  Pool = (function() {
 
-	// Restore the LXC images from storage
-	var restore = function([containersIds], owner_id, session_id) {
-		return "NOT IMPLEMENTED YET";
-	}
+    function Pool(_destination, _maxHosts, _maxContainersPerHost) {
+      this.maxHosts = _maxHosts;
+      this.maxContainersPerHost = _maxContainersPerHost;
+      this.destination = _destination;
+      this.allocatedContainers = 0;
+      this.maxAllowedContainers = maxHosts * maxContainersPerHost;
+      this.sessions = [];
+      this.owners = [];
+      this.hosts = [];
+      this.containers = [];
+      this.hostIdSequence = 0;
+      this.containerIdSequence = 0;
+    }
 
-	// action here is: Return to pool, save to storage
-	var deallocateByOwner = module.exports = function(owner_id, action) {
-		return "NOT IMPLEMENTED YET";
-	}
+    Pool.prototype._allocate = function(i, numContainers, owner_id, session_id) {
+      var container, container_id, containers, n, _i, _len;
+      log.debug("before: hosts[" + i + "] = " + this.hosts[i].containers.length);
+      n = 0;
+      containers = [];
+      while (n < numContainers) {
+        this.allocatedContainers = this.allocatedContainers + 1;
+        container_id = this.containerIdSequence++;
+        containers.push({
+          container_id: container_id,
+          status: "Allocated",
+          host_id: i,
+          owner_id: owner_id,
+          session_id: session_id,
+          prevHost_id: null
+        });
+        n++;
+      }
+      for (_i = 0, _len = containers.length; _i < _len; _i++) {
+        container = containers[_i];
+        this.hosts[i].containers.setItem(container.container_id, container);
+      }
+      log.debug(numContainers + " allocated on Host [" + this.hosts[i].id + "] for owner: " + owner_id + ", session: " + session_id);
+      log.debug("after:  hosts[" + i + "] = " + this.hosts[i].containers.length);
+      log.debug(this.hosts);
+      return containers;
+    };
 
-	// action here is: Return to pool, save to storage
-	var deallocateBySession = module.exports = function(session_id, action) {
-		return "NOT IMPLEMENTED YET";
-	}
+    Pool.prototype.allocate = function(numContainers, owner_id, session_id) {
+      var host_id, i;
+      if ((this.allocatedContainers + numContainers) > this.maxAllowedContainers) {
+        log.debug("Maximum Containers and/or Hosts exceeded. No allocation allowed.");
+        return [];
+      }
+      while (true) {
+        i = 0;
+        while (i < this.hosts.length) {
+          if ((this.maxContainersPerHost - this.hosts[i].containers.length) >= numContainers) {
+            return this._allocate(i, numContainers, owner_id, session_id);
+          }
+          i++;
+        }
+        if (this.hosts.length < this.maxHosts) {
+          host_id = this.hostIdSequence++;
+          this.hosts[host_id] = {
+            id: host_id,
+            containers: new HashTable()
+          };
+          return this._allocate(host_id, numContainers, owner_id, session_id);
+        } else {
+          log.debug("reach max hosts, still cannot allocated " + numContainers);
+          return [];
+        }
+      }
+    };
 
-	var hibernate = function([containerIds], storageURL) {
-		return "NOT IMPLEMENTED YET";
-	}
-	
-	var shutdown = function([containerIds]) {
-		return "NOT IMPLEMENTED YET";
-	}
-}
+    Pool.prototype.deallocate = function(containers) {
+      var container, _i, _j, _len, _len2, _ref;
+      if (containers instanceof HashTable) {
+        log.debug('is HashTable');
+        _ref = containers.values();
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          container = _ref[_i];
+          log.debug("delete container " + container.container_id + " from host " + container.host_id);
+          delete this.hosts[container.host_id].containers.removeItem(container.container_id);
+          this.allocatedContainers--;
+        }
+      } else if (containers instanceof Array) {
+        log.debug('is array');
+        for (_j = 0, _len2 = containers.length; _j < _len2; _j++) {
+          container = containers[_j];
+          log.debug("delete container " + container.container_id + " from host " + container.host_id);
+          delete this.hosts[container.host_id].containers.removeItem(container.container_id);
+          this.allocatedContainers--;
+        }
+      } else {
+        log.debug("delete container " + containers.container_id + " from host " + containers.host_id);
+        delete this.hosts[containers.host_id].containers.removeItem(containers.container_id);
+        this.allocatedContainers--;
+      }
+      log.debug(this.hosts);
+    };
+
+    Pool.prototype.restore = function(containersIds, owner_id, session_id) {
+      return "NOT IMPLEMENTED YET";
+    };
+
+    Pool.prototype.deallocateByOwner = function(owner_id, action) {
+      return "NOT IMPLEMENTED YET";
+    };
+
+    Pool.prototype.deallocateBySession = function(session_id, action) {
+      return "NOT IMPLEMENTED YET";
+    };
+
+    Pool.prototype.hibernate = function(containerIds, storageURL) {
+      return "NOT IMPLEMENTED YET";
+    };
+
+    Pool.prototype.shutdown = function(containerIds) {
+      return "NOT IMPLEMENTED YET";
+    };
+
+    return Pool;
+
+  })();
+
+  module.exports = Pool;
+
+}).call(this);
