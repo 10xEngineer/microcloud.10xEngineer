@@ -25,7 +25,8 @@ To setup your environment
 
 - Run node.js REST server
     `cd microcloud.10xEngineer
-    node server.js`
+    npm install
+    node server/server.js`
 
 - From the command line test the server will instantiate a new vm on demand
     `curl -s localhost:8080/server/start/local`
