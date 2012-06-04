@@ -11,9 +11,9 @@ destination=$1
 if [ "$1" = "local" ]
 then
 	cd a_vagrant_machine
-	#TODO: how to get status from vagrant
-	#vagrant halt
-	#vagrant up
+
+  # simple hack to get vagrant status
+  vagrant status | grep default | awk '{print $2;}'
 elif [ "$1" = "ec2" ]
 then
 	cd scripts/
