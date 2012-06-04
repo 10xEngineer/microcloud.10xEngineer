@@ -1,6 +1,3 @@
-module.exports = ->
-
-server = require './server'
 commands = require './commands/commands'
 
 module.exports.registerRoutes = (server)->
