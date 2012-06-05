@@ -22,6 +22,8 @@ Dummy::ping
     -> {"service":"dummy","action":"ping","options":{"say":"Hi!"}}
     <- {"status":"ok","options":{"reply":"go tiger!"}}
 
+For Ruby client implementation see `test_command.rb`
+
 ## Service Providers
 
 All services are started using `service.rb` wrapper which providers shared logic. The providers are defined within `./providers/`.
