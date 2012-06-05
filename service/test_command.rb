@@ -15,6 +15,14 @@ request = {
   :options => {:say => "Hi!"}
 }
 
+#request = {
+#  :service => :vagrant,
+#  :action => :status,
+#  :options => {
+#    :env => "/Users/radim/Projects/10xeng/microcloud.10xEngineer/a_vagrant_machine"
+#  }
+#}
+
 message = Yajl::Encoder.encode(request)
 
 # local unix domain used for connection

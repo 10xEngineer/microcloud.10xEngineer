@@ -17,12 +17,17 @@ which will start single instance of broker and 2 instance of DemoService. You ca
 
 ## Sample messages
 
-Dummy::ping
+dummy::ping
 
     -> {"service":"dummy","action":"ping","options":{"say":"Hi!"}}
     <- {"status":"ok","options":{"reply":"go tiger!"}}
 
-For Ruby client implementation see `test_command.rb`
+vagrant::status
+
+    -> {"service":"vagrant","action":"status","options":{"env":"/path/to/vangrant/env"}}
+    <- {"status":"ok","options":{"state":"poweroff"}}
+
+For Ruby client implementation see `test_command.rb`. 
 
 ## Service Providers
 
