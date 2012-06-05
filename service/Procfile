@@ -1,3 +1,3 @@
 broker: bundle exec ./broker.rb
-demo_serv: bundle exec ./demo_service.rb
-vagrant_serv: bundle exec ./vagrant_service.rb
+dummy: bundle exec ./service.rb dummy
+vagrant: bundle exec ./service.rb vagrant
