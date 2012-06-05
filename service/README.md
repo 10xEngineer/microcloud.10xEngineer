@@ -13,7 +13,7 @@ Or you can specific services on command line (together with number of instances 
 
     bundle exec foreman start -c "broker=1, demo_service=2"
 
-which will start single instance of broker and 2 instance of DemoService.
+which will start single instance of broker and 2 instance of DemoService. You can also specify all options to `.foreman` file in current folder. For more information, please, consult [Foreman man page](http://ddollar.github.com/foreman/)
 
 ## Service Providers
 

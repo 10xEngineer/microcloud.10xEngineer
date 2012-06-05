@@ -5,6 +5,8 @@ $stdout.sync = true
 
 require 'ffi-rzmq'
 require 'yajl'
+require 'foreman/procfile'
+require 'utils/message'
 #require 'route'
 
 class Service
@@ -24,12 +26,21 @@ class Service
   end
 end
 
-service = Service.new(:vagrant, "ipc:///tmp/mc.test") do |request|
-  true if request[:resource] == "server"
+procfile_name = File.join(File.dirname(__FILE__), 'Procfile')
+
+unless File.exists?(procfile_name)
+  puts "Procfile does not exists. Please, use foreman to start broker and services"
+  exit
 end
 
-service.process({:resource => "server"})
+procfile = Foreman::Procfile.new(procfile_name)
 
+# get the list of services
+service_names = procfile.process_names
+# reserved names, rest are considered to be services
+service_names.delete("broker")
+
+# init 0mq
 context = ZMQ::Context.new
 frontend = context.socket(ZMQ::ROUTER)
 
@@ -38,45 +49,28 @@ frontend.bind "ipc:///tmp/mc.broker"
 poller = ZMQ::Poller.new
 poller.register(frontend, ZMQ::POLLIN)
 
-# service definition (refactored, but still hardcoded)
-services = {
-  :demo => {:addr => "ipc:///tmp/service.demo"},
-  :vagrant => {:addr => "ipc:///tmp/service.vagrant"}
-}
+# service endpoints
+services = {}
+service_names.each do |name|
+  service = {}
+  service[:addr] = "ipc:///tmp/service.#{name}"
 
-services.keys.each do |service_name|
-  service = context.socket(ZMQ::DEALER)
-  service.bind(services[service_name][:addr])
+  service_socket = context.socket(ZMQ::DEALER)
+  service_socket.bind(service[:addr])
+
+  service[:socket] = service_socket
 
   poller.register(service, ZMQ::POLLIN)
 
-  services[service_name][:socket] = service
+  services[name] = service
 end
 
-# list of service sockets
+
+# helper - list of service sockets
 sockets = services.values.collect { |service| service[:socket] }
 
-def read_message(socket)
-  zmq_format = [:address, nil, :message]
-
-  message = {}
-  position = 0
-  begin
-    socket.recv_string(raw_message = '')
-    message[zmq_format[position]] = raw_message unless zmq_format[position].nil?
-
-    position = position + 1
-  end while socket.more_parts?
-
-  message
-end
-
-# :to => socket, :what => message
-def send_message(socket, message)
-  socket.send_string message[:address], ZMQ::SNDMORE
-  socket.send_string '', ZMQ::SNDMORE
-  socket.send_string message[:message], 0
-end
+puts 'available sockets'
+puts sockets.inspect
 
 loop do
   poller.poll(:blocking)
@@ -87,7 +81,7 @@ loop do
 
       message = Yajl::Parser.parse(request[:message])
 
-      # TODO message routing
+      # TODO message routing/ how to find what services are running?
 
       # TODO validate service name
       service = services[message["context"].to_sym][:socket]
