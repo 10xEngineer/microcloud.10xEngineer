@@ -12,6 +12,17 @@ Just use Vagrant as you normally would:
     vagrant up
     vagrant ssh
 
+Vagrant image provisioning
+--------------------------
+
+Currently Vagrantfile is setup with `ubuntu11.10` box, which is available for download [HERE](#TODO).
+
+To build a new image use [VeeWee](https://github.com/jedi4ever/veewee)
+
+    be veewee vbox define ubuntu11.10 ubuntu-11.10-server-i386
+    be veewee vbox build ubuntu11.10
+    be veewee vbox validate ubuntu11.10
+    vagrant basebox export <VM_NAME>
 
 Production (EC2)
 ================
