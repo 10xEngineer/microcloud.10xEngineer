@@ -15,6 +15,13 @@ Or you can specific services on command line (together with number of instances 
 
 which will start single instance of broker and 2 instance of DemoService. You can also specify all options to `.foreman` file in current folder. For more information, please, consult [Foreman man page](http://ddollar.github.com/foreman/)
 
+## Sample messages
+
+Dummy::ping
+
+    -> {"service":"dummy","action":"ping","options":{"say":"Hi!"}}
+    <- {"status":"ok","options":{"reply":"go tiger!"}}
+
 ## Service Providers
 
 All services are started using `service.rb` wrapper which providers shared logic. The providers are defined within `./providers/`.
