@@ -8,23 +8,6 @@ require 'yajl'
 require 'foreman/procfile'
 require 'utils/message'
 
-class Service
-  attr_accessor :socket
-
-  def initialize(name, addr, &block)
-    @name = name
-    @addr = nil
-    @socket = nil
-    @block = block
-  end
-
-  def process(request)
-    res = @block.call(request)
-
-    puts "return code #{res}"
-  end
-end
-
 procfile_name = File.join(File.dirname(__FILE__), 'Procfile')
 
 unless File.exists?(procfile_name)
@@ -32,11 +15,10 @@ unless File.exists?(procfile_name)
   exit
 end
 
+# service discovery (re-using Procfile definition)
 procfile = Foreman::Procfile.new(procfile_name)
 
-# get the list of services
 service_names = procfile.process_names
-# reserved names, rest are considered to be services
 service_names.delete("broker")
 
 # init 0mq
@@ -48,7 +30,7 @@ frontend.bind "ipc:///tmp/mc.broker"
 poller = ZMQ::Poller.new
 poller.register(frontend, ZMQ::POLLIN)
 
-# service endpoints
+# prepare service endpoints
 services = {}
 service_names.each do |name|
   service = {}
