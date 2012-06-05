@@ -77,11 +77,14 @@ loop do
       message = Yajl::Parser.parse(request[:message])
 
       req_service = message["service"]
-      # FIXME validate req_service
 
-      service = services[req_service][:socket]
+      if services.include?(req_service)
+        service = services[req_service][:socket]
 
-      send_message(service, request)
+        send_message(service, request)
+      else
+        send_message(frontend, error_message(request, "Service not available (#{req_service})."))
+      end
     elsif sockets.include?(socket)
       # response from registered service
       response = read_message(socket)

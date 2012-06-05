@@ -27,7 +27,11 @@ class Provider
   end
 
   def fire(action, *params)
-    @actions[action].call(params)
+    if @actions.include?(action)
+      @actions[action].call(params)
+    else
+      response :fail, :reason => "Action not defined (#{action})"
+    end
   end
 
   def self.get(name)
