@@ -16,3 +16,6 @@ node_modules
 npm-debug.log
 
 .DS_Store
+
+a_vagrant_machine/.cookbooks_path.json
+a_vagrant_machine/.vagrant
