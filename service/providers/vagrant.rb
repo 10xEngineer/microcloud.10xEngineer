@@ -19,8 +19,12 @@ service_provider :vagrant do
 
   action :status do |request|
     puts request.inspect
-    env = Vagrant::Environment.new(:cwd => "/Users/radim/Projects/10xeng/microcloud.10xEngineer/a_vagrant_machine")
+    if request["options"].include?("env")
+      env = Vagrant::Environment.new(:cwd => request["options"]["env"])
 
-    response :ok, :state => env.vms[:default].state
+      response :ok, :state => env.vms[:default].state
+    else
+      response :fail, :reason => "Vagrant environment (env) not specified."
+    end
   end
 end

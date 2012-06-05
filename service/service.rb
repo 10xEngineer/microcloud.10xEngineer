@@ -35,6 +35,9 @@ loop do
 
   request = Yajl::Parser.parse(message)
 
+  # provide options if not available
+  request["options"] ||= {}
+
   action = request["action"]
   response = provider.fire(action, request)
 
