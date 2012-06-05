@@ -1,24 +1,31 @@
 service_provider :vagrant do
   require 'vagrant'
 
-  # TODO pass environment details
+  # TODO logic for options validation
+  # TODO better flow control (possibly exception based)
+  # TODO support for multi-VM setups
 
   action :start do |request|
-    env = Vagrant::Environment.new
+    if request["options"].include?("env")
+      env = Vagrant::Environment.new(:cwd => request["options"]["env"])
 
-    # FIXME implement vagrant logic
-
-    puts "vagrant::start"
+      env.vms[:default].start
+    else
+      response :fail, :reason => "Vagrant environment (env) not specified."
+    end
   end
 
   action :stop do |request|
-    # FIXME implement vagrant logic
+    if request["options"].include?("env")
+      env = Vagrant::Environment.new(:cwd => request["options"]["env"])
 
-    puts "vagrant::stop"
+      env.vms[:default].halt
+    else
+      response :fail, :reason => "Vagrant environment (env) not specified."
+    end
   end
 
   action :status do |request|
-    puts request.inspect
     if request["options"].include?("env")
       env = Vagrant::Environment.new(:cwd => request["options"]["env"])
 
