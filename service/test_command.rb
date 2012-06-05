@@ -10,7 +10,7 @@ socket = context.socket ZMQ::REQ
 
 
 request = {
-  :context => :server,
+  :context => :vagrant,
   :command => :create,
   :provider => :vagrant
 }

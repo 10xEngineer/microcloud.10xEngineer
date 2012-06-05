@@ -10,14 +10,28 @@ frontend = context.socket(ZMQ::ROUTER)
 
 frontend.bind "ipc:///tmp/mc.broker"
 
-# TODO hardcoded services
-demo_service = context.socket(ZMQ::DEALER)
-demo_service.bind "ipc:///tmp/service.demo"
-
 poller = ZMQ::Poller.new
 poller.register(frontend, ZMQ::POLLIN)
-poller.register(demo_service, ZMQ::POLLIN)
 
+# service definition (refactored, but still hardcoded)
+services = {
+  :demo => {:addr => "ipc:///tmp/service.demo"},
+  :vagrant => {:addr => "ipc:///tmp/service.vagrant"}
+}
+
+services.keys.each do |service_name|
+  service = context.socket(ZMQ::DEALER)
+  service.bind(services[service_name][:addr])
+
+  poller.register(service, ZMQ::POLLIN)
+
+  services[service_name][:socket] = service
+end
+
+# list of service sockets
+sockets = services.values.collect { |service| service[:socket] }
+
+# 0mq message protocol
 protocol = [:address, nil, :message]
 
 loop do
@@ -36,17 +50,16 @@ loop do
 
       message = Yajl::Parser.parse(request[:message])
 
-      puts message.inspect
+      # TODO validate service name
+      service = services[message["context"].to_sym][:socket]
 
-      # TODO continue
-      puts request.inspect
-
-      # TODO multiplex commands to individual workers
-      demo_service.send_string request[:address], ZMQ::SNDMORE
-      demo_service.send_string '', ZMQ::SNDMORE
-      demo_service.send_string request[:message], 0
-    end
-    if socket == demo_service
+      service.send_string request[:address], ZMQ::SNDMORE
+      service.send_string '', ZMQ::SNDMORE
+      service.send_string request[:message], 0
+    elsif sockets.include?(socket)
+      # response from registered service
+      
+      # FIXME refactor message handling code
       response = {}
       msg_pos = 0
 
@@ -57,12 +70,12 @@ loop do
         msg_pos = msg_pos + 1
       end while socket.more_parts?
 
-      puts '--> from service'
-      puts response[:message]
-
       frontend.send_string response[:address], ZMQ::SNDMORE
       frontend.send_string '', ZMQ::SNDMORE
       frontend.send_string response[:message], 0
+    else
+      # TODO proper logging
+      puts "Unrecognized service!"
     end
   end
 end
