@@ -1,9 +1,34 @@
 #!/usr/bin/env ruby
 
+$LOAD_PATH.unshift File.dirname(__FILE__)
 $stdout.sync = true
 
 require 'ffi-rzmq'
 require 'yajl'
+require 'route'
+
+class Service
+  attr_accessor :socket
+
+  def initialize(name, addr, &block)
+    @name = name
+    @addr = nil
+    @socket = nil
+    @block = block
+  end
+
+  def process(request)
+    res = @block.call(request)
+
+    puts "return code #{res}"
+  end
+end
+
+service = Service.new(:vagrant, "ipc:///tmp/mc.test") do |request|
+  true if request[:resource] == "server"
+end
+
+service.process({:resource => "server"})
 
 context = ZMQ::Context.new
 frontend = context.socket(ZMQ::ROUTER)
