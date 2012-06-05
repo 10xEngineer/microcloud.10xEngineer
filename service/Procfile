@@ -1,0 +1,2 @@
+broker: bundle exec ./broker.rb
+demo_service: bundle exec ./demo_service.rb
