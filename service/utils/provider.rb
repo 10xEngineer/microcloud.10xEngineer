@@ -11,7 +11,7 @@ class Provider
   end
 
   def action(name, &block)
-    @actions[name] = block
+    @actions[name.to_s] = block
   end
 
   def fire(action, *params)

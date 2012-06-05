@@ -6,17 +6,19 @@ require 'yajl'
 context = ZMQ::Context.new(1)
 socket = context.socket ZMQ::REQ
 
-#socket.setsockopt ZMQ::IDENTITY, "testclient"
-
-
 request = {
-  :context => :vagrant,
-  :command => :create,
-  :provider => :vagrant
+  :service => :dummy,
+  :action => :ping,
+  :options => {:say => "Hi!"}
 }
 
+message = Yajl::Encoder.encode(request)
+
 socket.connect "ipc:///tmp/mc.broker"
-socket.send_string Yajl::Encoder.encode(request)
+socket.send_string message
+
+puts "-> #{message}" 
+
 socket.recv_string(reply = '')
 
-puts "response = #{reply}"
+puts "<- #{reply}"

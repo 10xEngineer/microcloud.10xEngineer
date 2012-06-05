@@ -7,7 +7,6 @@ require 'ffi-rzmq'
 require 'yajl'
 require 'foreman/procfile'
 require 'utils/message'
-#require 'route'
 
 class Service
   attr_accessor :socket
@@ -60,35 +59,35 @@ service_names.each do |name|
 
   service[:socket] = service_socket
 
-  poller.register(service, ZMQ::POLLIN)
+  poller.register(service_socket, ZMQ::POLLIN)
 
   services[name] = service
 end
 
-
 # helper - list of service sockets
 sockets = services.values.collect { |service| service[:socket] }
-
-puts 'available sockets'
-puts sockets.inspect
 
 loop do
   poller.poll(:blocking)
   poller.readables.each do |socket|
+    puts "... in"
     if socket == frontend
       # frontend requests
       request = read_message(socket)
 
+      puts "---"
+
       message = Yajl::Parser.parse(request[:message])
 
-      # TODO message routing/ how to find what services are running?
+      req_service = message["service"]
+      # FIXME validate req_service
 
-      # TODO validate service name
-      service = services[message["context"].to_sym][:socket]
+      service = services[req_service][:socket]
 
       send_message(service, request)
     elsif sockets.include?(socket)
       # response from registered service
+      puts "--- response"
       
       response = read_message(socket)
       

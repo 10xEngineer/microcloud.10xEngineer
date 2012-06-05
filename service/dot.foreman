@@ -1,0 +1,1 @@
+concurrency: vagrant=1,broker=1

@@ -44,3 +44,9 @@ where
 * **action** to trigger
 * **options** to pass to the actions (parameters, environment setup, etc).
 
+## Known limitations
+
+* static service configuration, you can't add new service without broker restart
+* API is exposed to service details (service name)
+* no pool/activity monitoring
+* multiple endpoints (tcp/ipc) and configuration support

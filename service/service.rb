@@ -5,6 +5,7 @@ $stdout.sync = true
 
 require 'utils/provider'
 require 'ffi-rzmq'
+require 'yajl'
 
 if ARGV.length == 0
   puts "service name missing"
@@ -35,8 +36,8 @@ loop do
   request = Yajl::Parser.parse(message)
 
   action = request["action"]
-  res = provider.fire(action.to_sym, request)
+  res = provider.fire(action, request)
 
   # FIXME create valid response
-  socket.send_string "{\"status\": \"ok\"}"
+  socket.send_string "{\"status\": \"ok\"}", 0
 end
