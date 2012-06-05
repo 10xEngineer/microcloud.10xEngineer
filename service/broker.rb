@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 
+$stdout.sync = true
+
 require 'ffi-rzmq'
+require 'yajl'
 
 context = ZMQ::Context.new
 frontend = context.socket(ZMQ::ROUTER)
@@ -30,6 +33,10 @@ loop do
         request[protocol[msg_pos]] = raw_message unless protocol[msg_pos].nil?
         msg_pos = msg_pos + 1
       end while socket.more_parts?
+
+      message = Yajl::Parser.parse(request[:message])
+
+      puts message.inspect
 
       # TODO continue
       puts request.inspect

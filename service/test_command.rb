@@ -1,17 +1,22 @@
 #!/usr/bin/env ruby
 
 require 'ffi-rzmq'
+require 'yajl'
 
 context = ZMQ::Context.new(1)
 socket = context.socket ZMQ::REQ
 
 #socket.setsockopt ZMQ::IDENTITY, "testclient"
 
-# TODO #socket structure
+
+request = {
+  :context => :server,
+  :command => :create,
+  :provider => :vagrant
+}
 
 socket.connect "ipc:///tmp/mc.broker"
-#socket.bind "ipc:///tmp/service.demo"
-socket.send_string "test-message"
+socket.send_string Yajl::Encoder.encode(request)
 socket.recv_string(reply = '')
 
 puts "response = #{reply}"

@@ -1,4 +1,7 @@
 source 'http://rubygems.org'
 
 gem "ffi-rzmq"
+gem "yajl-ruby"
+
 gem "foreman"
+
