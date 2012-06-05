@@ -6,4 +6,5 @@ gem "yajl-ruby"
 gem "foreman"
 
 gem "vagrant"
+gem "fog"
 
