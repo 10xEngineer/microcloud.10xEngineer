@@ -63,9 +63,22 @@ where
 * **action** to trigger
 * **options** to pass to the actions (parameters, environment setup, etc).
 
+## Providers configuration
+
+**CONCEPT** Microcloud API should handle all provider information (passed via options) in a dedicated resource called 'providers'. This way we can define number of services/credentails/instance types which can be used based on a specific needs.
+
+Example:
+* **ec2-se-1a** - AWS account 1 / default region / ap-southeast-1 / service: ec2
+* **local** - Vagrant / location /tmp/somewhere / service: vagrant
+
+Provides information should replace existing `:destination`. 
+
+Detailed analysis needed.
+
 ## Known limitations
 
 * static service configuration, you can't add new service without broker restart
 * API is exposed to service details (service name)
 * no pool/activity monitoring
 * multiple endpoints (tcp/ipc) and configuration support
+* one hundred and one small improvements...
