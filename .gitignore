@@ -20,5 +20,6 @@ npm-debug.log
 a_vagrant_machine/.cookbooks_path.json
 a_vagrant_machine/.vagrant
 
+service/Procfile
 service/.bundle
 service/vendor/bundle
