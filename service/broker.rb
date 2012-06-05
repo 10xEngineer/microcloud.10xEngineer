@@ -46,11 +46,18 @@ def read_message(socket)
   message
 end
 
+# :to => socket, :what => message
+def send_message(socket, message)
+  socket.send_string message[:address], ZMQ::SNDMORE
+  socket.send_string '', ZMQ::SNDMORE
+  socket.send_string message[:message], 0
+end
 
 loop do
   poller.poll(:blocking)
   poller.readables.each do |socket|
     if socket == frontend
+      # frontend requests
       request = read_message(socket)
 
       message = Yajl::Parser.parse(request[:message])
@@ -58,17 +65,13 @@ loop do
       # TODO validate service name
       service = services[message["context"].to_sym][:socket]
 
-      service.send_string request[:address], ZMQ::SNDMORE
-      service.send_string '', ZMQ::SNDMORE
-      service.send_string request[:message], 0
+      send_message(service, request)
     elsif sockets.include?(socket)
       # response from registered service
       
       response = read_message(socket)
       
-      frontend.send_string response[:address], ZMQ::SNDMORE
-      frontend.send_string '', ZMQ::SNDMORE
-      frontend.send_string response[:message], 0
+      send_message(frontend, response)
     else
       # TODO proper logging
       puts "Unrecognized service!"
