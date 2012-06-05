@@ -5,7 +5,7 @@ $stdout.sync = true
 
 require 'ffi-rzmq'
 require 'yajl'
-require 'route'
+#require 'route'
 
 class Service
   attr_accessor :socket
@@ -86,6 +86,8 @@ loop do
       request = read_message(socket)
 
       message = Yajl::Parser.parse(request[:message])
+
+      # TODO message routing
 
       # TODO validate service name
       service = services[message["context"].to_sym][:socket]
