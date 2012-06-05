@@ -70,12 +70,9 @@ sockets = services.values.collect { |service| service[:socket] }
 loop do
   poller.poll(:blocking)
   poller.readables.each do |socket|
-    puts "... in"
     if socket == frontend
       # frontend requests
       request = read_message(socket)
-
-      puts "---"
 
       message = Yajl::Parser.parse(request[:message])
 
@@ -87,13 +84,11 @@ loop do
       send_message(service, request)
     elsif sockets.include?(socket)
       # response from registered service
-      puts "--- response"
-      
       response = read_message(socket)
       
       send_message(frontend, response)
     else
-      # TODO proper logging
+      # TODO logging (or service supervise to collect stdout/stderr)
       puts "Unrecognized service!"
     end
   end

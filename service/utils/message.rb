@@ -13,7 +13,6 @@ def read_message(socket)
   message
 end
 
-# :to => socket, :what => message
 def send_message(socket, message)
   socket.send_string message[:address], ZMQ::SNDMORE
   socket.send_string '', ZMQ::SNDMORE

@@ -36,8 +36,7 @@ loop do
   request = Yajl::Parser.parse(message)
 
   action = request["action"]
-  res = provider.fire(action, request)
+  response = provider.fire(action, request)
 
-  # FIXME create valid response
-  socket.send_string "{\"status\": \"ok\"}", 0
+  socket.send_string Yajl::Encoder.encode(response)
 end

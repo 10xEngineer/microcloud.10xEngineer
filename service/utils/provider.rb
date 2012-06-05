@@ -1,3 +1,5 @@
+require 'yajl'
+
 class Provider
   @@providers = {}
 
@@ -12,6 +14,16 @@ class Provider
 
   def action(name, &block)
     @actions[name.to_s] = block
+  end
+
+  def response(res = :ok, options = {})
+    res = {
+      :status => res
+    }
+
+    res[:options] = options unless options.empty?
+
+    res
   end
 
   def fire(action, *params)
