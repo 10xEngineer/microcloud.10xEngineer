@@ -3,14 +3,15 @@
 require 'ffi-rzmq'
 
 context = ZMQ::Context.new(1)
-req = context.socket ZMQ::REQ
+socket = context.socket ZMQ::REQ
 
-# TODO socket structure
-req.connect "ipc:///tmp/mc.broker"
+#socket.setsockopt ZMQ::IDENTITY, "testclient"
 
-req.send_string "test-message"
+# TODO #socket structure
 
-reply = ''
-req.recv_string reply
+socket.connect "ipc:///tmp/mc.broker"
+#socket.bind "ipc:///tmp/service.demo"
+socket.send_string "test-message"
+socket.recv_string(reply = '')
 
 puts "response = #{reply}"
