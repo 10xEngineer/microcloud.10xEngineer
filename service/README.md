@@ -27,6 +27,11 @@ vagrant::status
     -> {"service":"vagrant","action":"status","options":{"env":"/path/to/vangrant/env"}}
     <- {"status":"ok","options":{"state":"poweroff"}}
 
+ec2::start
+
+    -> {"service":"ec2","action":"start","options":{"secret_access_key":"...","access_key_id":"...","region":"us-east-1","ami":"ami-3202f25b","key":"ec2-keypair","type":"t1.micro"}}
+    <- {"status":"ok","options":{"id":"i-52ef272b"}}
+
 For Ruby client implementation see `test_command.rb`. 
 
 ## Service Providers
