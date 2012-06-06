@@ -1,4 +1,4 @@
 broker: bundle exec ./broker.rb
-dummy: bundle exec ./service.rb dummy
-vagrant: bundle exec ./service.rb vagrant
-ec2: bundle exec ./service.rb ec2
+dummy: bin/service.sh dummy
+vagrant: bin/service.sh vagrant
+ec2: bin/service.sh ec2
