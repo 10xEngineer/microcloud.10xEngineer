@@ -1,4 +1,4 @@
-action :create
+actions :create
 
 def initialize(*args)
   super
