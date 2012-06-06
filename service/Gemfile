@@ -8,3 +8,7 @@ gem "foreman"
 gem "vagrant"
 gem "fog"
 
+group :test do
+  gem "rspec"
+end
+

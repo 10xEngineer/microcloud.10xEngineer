@@ -3,6 +3,8 @@ require 'yajl'
 class Provider
   @@providers = {}
 
+  attr_accessor :name
+
   def initialize(name, &block)
     @name = name
     @actions = {}
