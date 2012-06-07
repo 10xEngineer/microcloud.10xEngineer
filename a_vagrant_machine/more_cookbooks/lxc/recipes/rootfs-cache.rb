@@ -27,6 +27,8 @@ end
 
 # TODO create deboostrap resource (with options to flush existing cache, etc.)
 node["lxc"]["templates"].each do |templ_name|
+  Chef::Log.info "template '#{templ_name}' in '#{rootfs_cache}'"
+
   template = node["lxc-template"][templ_name]
 
   # TODO refactor into helper method (default val, different separator)
@@ -57,23 +59,13 @@ node["lxc"]["templates"].each do |templ_name|
   end
 
   execute "debootstrap" do
-    # TODO hardcoded amd64 (arch not in ohai data?)
     command "debootstrap --verbose --components=#{_components} --arch=#{node["lxc"]["arch"]} --include=#{_packages} #{node["lxc"]["release"]} #{rootfs_cache}"
     action :nothing
 
     notifies :run, "script[finalize]", :immediately
   end
 
-  # TODO run apt-get update
-  #
-  # chmod +x "$1/partial-${arch}"/usr/sbin/policy-rc.d
-  #
-  # lxc-unshare -s MOUNT -- chroot "$1/partial-${arch}" apt-get dist-upgrade -y
-  #
-  # rm -f "$1/partial-${arch}"/usr/sbin/policy-rc.d
-  #
-  #
-
+  # FIXME getting notification each time
   directory rootfs_cache do
     owner "root"
     owner "root"

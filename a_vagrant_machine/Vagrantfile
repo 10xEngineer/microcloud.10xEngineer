@@ -15,6 +15,7 @@ Vagrant::Config.run do |config|
    chef.add_recipe 'lvm'
    chef.add_recipe 'lxc'
    chef.add_recipe 'lxc::rootfs-cache'
+   chef.add_recipe 'mc-node::default'
 
    chef.json.merge!({
                       :monit => {

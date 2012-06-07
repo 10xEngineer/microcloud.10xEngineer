@@ -5,14 +5,11 @@ admins = data_bag('admins')
 admins.each do |uid|
   u = data_bag_item('admins', uid)
 
-  Chef::Log.info u.inspect
-  Chef::Log.info u["groups"].inspect
-
-  home_dir = u[:home_dir] || "/home/#{u[:id]}"
+  home_dir = "/home/#{u["id"]}"
 
   user u["id"] do
     comment u["full_name"]
-    uid u["id"]
+    uid u["uid"]
     gid u["groups"].first
     home home_dir
     shell u["shell"]
@@ -36,7 +33,7 @@ admins.each do |uid|
     action :create
   end
 
-  template "/home/mchammer/.ssh" do
+  template "/home/mchammer/.ssh/authorized_keys" do
     owner u["id"]
     group u["groups"].first
     mode "0600"
