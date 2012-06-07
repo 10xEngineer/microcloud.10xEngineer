@@ -12,3 +12,4 @@ By default the box is using following settings
 * 512 MB RAM
 * 20 GB disk storage
 
+Alternative is to use `precise32.box` with no additional storage (vanilla Ubuntu 12.04 LTS)
