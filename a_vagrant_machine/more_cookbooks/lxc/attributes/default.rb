@@ -1,5 +1,6 @@
 default["lxc"]["location"] = "/var/lib/lxc"
 
+default["lxc"]["arch"] = "i386"
 default["lxc"]["cache"] = "/var/cache/lxc"
 default["lxc"]["release"] = node["lsb"]["codename"]
 default["lxc"]["templates"] = ["ubuntu"]

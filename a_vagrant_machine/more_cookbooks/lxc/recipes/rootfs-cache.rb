@@ -45,7 +45,7 @@ node["lxc"]["templates"].each do |templ_name|
 
   execute "debootstrap" do
     # TODO hardcoded amd64 (arch not in ohai data?)
-    command "debootstrap --verbose --components=#{_components} --arch=amd64 --include=#{_packages} #{node["lxc"]["release"]} #{rootfs_cache}"
+    command "debootstrap --verbose --components=#{_components} --arch=#{node["lxc"]["arch"]} --include=#{_packages} #{node["lxc"]["release"]} #{rootfs_cache}"
     action :nothing
   end
 
