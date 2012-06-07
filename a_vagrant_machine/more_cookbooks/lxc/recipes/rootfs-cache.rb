@@ -4,7 +4,7 @@
 # Maintain local rootfs cache
 
 release_dir = File.join(node["lxc"]["cache"], node["lxc"]["release"]) 
-rootfs_cache = File.join(release_dir, "rootfs-cache") 
+rootfs_cache = File.join(release_dir, "rootfs-#{node["lxc"]["arch"]}")
 
 package "debootstrap" do
   action :install
