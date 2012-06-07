@@ -1,9 +1,13 @@
 # Service Broker
 
-Before running service broekr, you need prepare service broker default configuration
+Before running service broker, you need prepare service broker default configuration
 
     cp Procfile.sample Procfile
     bundle
+
+Load the development private keys
+
+    ssh-add security/mchammer-dev
     
 To run the broker and services (defined within Procfile) use
 
