@@ -24,3 +24,5 @@ service/Procfile
 service/.bundle
 service/.foreman
 service/vendor/bundle
+
+a_vagrant_machine/data_bags/vms/*.json
