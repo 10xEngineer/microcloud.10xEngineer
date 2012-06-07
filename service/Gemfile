@@ -7,6 +7,7 @@ gem "foreman"
 
 gem "vagrant"
 gem "fog"
+gem "net-ssh"
 
 group :test do
   gem "rspec"

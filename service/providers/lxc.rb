@@ -1,6 +1,6 @@
 require 'utils/ssh'
 
-service_provider :lcx do
+service_provider :lxc do
 
   # container data
   # 
@@ -16,14 +16,31 @@ service_provider :lcx do
   # TODO SSH Key needs to be loaded to agent!
   # locate machine
 
-  action :prepare do
+  action :prepare do |request|
+    raise "No server specification provided." unless request["options"].include?("server")
 
-    # prepare a single container
-    # arguments: id, type (what boostrap template to use), server/pool reference (for maintenance purposes), initial descriptor
+    hostname = request["options"]["server"].strip
+    template = request["options"]["template"] || nil
+    port = 22
+    vgname = nil
 
+    # TODO better protection from hostname fixing
+    # TODO will hurt later (need better way how to read vagrant configuration)
+    if hostname == "vagrant.local" 
+      hostname = "localhost"
+      port = 2222
+      vgname = "precise32-mc"
+    end
 
-    # TODO get details from session
-    res = ssh_exec('mchammer','localhost', "hostname", {:port => 22})
+    command = ["/usr/bin/sudo", "/opt/ruby/bin/10xeng-vm", "-j", "prepare"]
+    command << "--template #{template}" if template
+    command << "--vgname #{vgname}" if vgname
+
+    res = ssh_exec('mchammer', hostname, command.join(' '), {:port => port})
+
+    options = Yajl::Parser.parse(res)
+
+    response :ok, options
   end
 
   action :allocate do

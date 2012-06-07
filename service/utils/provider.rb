@@ -33,6 +33,7 @@ class Provider
       begin
         @actions[action].call(*params)
       rescue Exception => e
+        # TODO better exception loggin
         response :fail, :reason => e.message
       end
     else

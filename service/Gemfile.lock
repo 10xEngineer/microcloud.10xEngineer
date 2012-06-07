@@ -61,6 +61,7 @@ DEPENDENCIES
   ffi-rzmq
   fog
   foreman
+  net-ssh
   rspec
   vagrant
   yajl-ruby
