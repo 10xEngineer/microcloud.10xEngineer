@@ -1,3 +1,5 @@
+require 'utils/ssh'
+
 service_provider :lcx do
 
   # container data
@@ -7,11 +9,21 @@ service_provider :lcx do
   # type
   # server/pool reference
   # descriptor (disk size, cgroups, firewall, etc). might come from course-lab-descriptor
+  
+
+  # ssh stub
+  # 
+  # TODO SSH Key needs to be loaded to agent!
+  # locate machine
 
   action :prepare do
+
     # prepare a single container
     # arguments: id, type (what boostrap template to use), server/pool reference (for maintenance purposes), initial descriptor
 
+
+    # TODO get details from session
+    res = ssh_exec('mchammer','localhost', "hostname", {:port => 22})
   end
 
   action :allocate do
