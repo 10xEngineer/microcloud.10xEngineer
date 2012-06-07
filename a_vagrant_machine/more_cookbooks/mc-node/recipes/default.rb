@@ -43,3 +43,13 @@ admins.each do |uid|
     action :create
   end
 end
+
+directory "/var/lib/10eng/" do
+  owner "mchammer"
+  group "users"
+
+  recursive true
+  mode "0775"
+
+  action :create
+end
