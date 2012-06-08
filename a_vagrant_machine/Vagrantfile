@@ -12,24 +12,11 @@ Vagrant::Config.run do |config|
   config.vm.provision :chef_solo do |chef|
     chef.cookbooks_path = ['cookbooks', 'more_cookbooks']
     chef.data_bags_path = 'data_bags'
-    chef.log_level = :debug
-    chef.add_recipe 'apt'
-    chef.add_recipe 'git'
-    chef.add_recipe 'monit'
-    chef.add_recipe 'node'
-    chef.add_recipe 'lvm'
-    chef.add_recipe 'lxc'
-    chef.add_recipe 'lxc::rootfs-cache'
-    chef.add_recipe 'mc-node::default'
+    chef.roles_path = 'roles'
 
-    chef.json.merge!({
-      :monit => {
-      :start_delay => 15,
-      :interval => 30,
-      :web => {
-      :enabled => true
-    }}
-    })
+    chef.log_level = :debug
+    chef.add_role 'base'
+    chef.add_role 'hostnode'
 
     #this prints out the vagrant config to a `dna.json` file that we
     #can upload to an EC2 instance and use with `chef-solo`.
