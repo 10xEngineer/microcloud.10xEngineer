@@ -53,3 +53,13 @@ directory "/var/lib/10eng/" do
 
   action :create
 end
+
+# TODO where to source gem from?
+cookbook_file "/tmp/10xengineer-node-#{node["10xeng"]["version"]}.gem" do
+  source "10xengineer-node-#{node["10xeng"]["version"]}.gem"
+  mode "0644"
+end
+
+gem_package "/tmp/10xengineer-node-#{node["10xeng"]["version"]}.gem" do
+  action :install
+end
