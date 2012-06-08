@@ -36,11 +36,17 @@ service_provider :lxc do
     command << "--template #{template}" if template
     command << "--vgname #{vgname}" if vgname
 
-    res = ssh_exec('mchammer', hostname, command.join(' '), {:port => port})
+    begin
+      res = ssh_exec('mchammer', hostname, command.join(' '), {:port => port})
 
-    options = Yajl::Parser.parse(res)
+      options = Yajl::Parser.parse(res)
 
-    response :ok, options
+      response :ok, options
+    rescue Net::SSH::AuthenticationFailed => e
+      response :fail, {:reason => "Hostnode authentication failed"}
+    rescue Exception => e
+      response :fail, Yajl::Parser.parse(e.message)
+    end
   end
 
   action :allocate do
