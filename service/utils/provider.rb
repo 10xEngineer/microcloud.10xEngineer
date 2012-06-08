@@ -33,7 +33,9 @@ class Provider
       begin
         @actions[action].call(*params)
       rescue Exception => e
-        # TODO better exception loggin
+        puts "provider=#{@name} error=#{e.message}"
+        puts e.backtrace
+
         response :fail, :reason => e.message
       end
     else
