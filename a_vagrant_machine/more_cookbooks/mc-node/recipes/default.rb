@@ -55,11 +55,11 @@ directory "/var/lib/10eng/" do
 end
 
 # TODO where to source gem from?
-cookbook_file "/tmp/10xengineer-node-#{node["10xeng"]["version"]}.gem" do
-  source "10xengineer-node-#{node["10xeng"]["version"]}.gem"
+cookbook_file "/tmp/10xengineer-node-#{node["10xeng"]["toolchain"]["version"]}.gem" do
+  source "10xengineer-node-#{node["10xeng"]["toolchain"]["version"]}.gem"
   mode "0644"
 end
 
-gem_package "/tmp/10xengineer-node-#{node["10xeng"]["version"]}.gem" do
+gem_package "/tmp/10xengineer-node-#{node["10xeng"]["toolchain"]["version"]}.gem" do
   action :install
 end
