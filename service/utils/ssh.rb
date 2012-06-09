@@ -41,3 +41,11 @@ def ssh_exec(user, hostname, command, options = {:port => 22})
 
   output
 end
+
+def json_message(message, name = :reason)
+  begin
+    return Yajl::Parser.parse(message)
+  rescue
+    return {name => message}
+  end
+end

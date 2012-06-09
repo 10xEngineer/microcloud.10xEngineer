@@ -45,7 +45,7 @@ service_provider :lxc do
     rescue Net::SSH::AuthenticationFailed => e
       response :fail, {:reason => "Hostnode authentication failed"}
     rescue Exception => e
-      response :fail, Yajl::Parser.parse(e.message)
+      response :fail, json_message(e.message)
     end
   end
 
