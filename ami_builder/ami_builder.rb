@@ -42,23 +42,49 @@ puts "Instance start request accepted - instance #{base.id}"
 print "Waiting for instance to become operational"
 
 base.wait_for do
+  sleep 5
   print '.'
-  ready? 
+
+  ready?
 end
 
 puts
-
 puts "Instance ready (#{base.dns_name})"
 
-sleep 15
+sleep 30
 
 # copy postinstall.sh to server
 Net::SCP.start(base.dns_name, 'ubuntu') do |scp|
   scp.upload! File.join(File.dirname(__FILE__), 'definition/postinstall.sh'), '/tmp/'
 end
 
+puts "****** post-install"
+
 # run postinstall
 ssh_exec('ubuntu', base.dns_name, "cd /tmp && chmod 0775 postinstall.sh && ./postinstall.sh", {}, true)
 
-# TODO continue - create AMI
-# TODO shutdown instance
+puts 
+puts "****** post-install finished"
+
+# create image
+puts "Initiating AMI"
+timestamp = Time.now.utc.strftime("%y%m%d")
+image_name = "10xeng-precise64-#{timestamp}"
+image_desc = "10xEngineer based AMI (Ubuntu 12.04 based)"
+
+ami = aws.create_image(base.identity, image_name, image_desc)
+image_id = ami.body['imageId']
+
+sleep 30
+
+print "Waiting for image #{image_id} to be created"
+while (aws.images.get(image_id).state != "available") do
+  sleep 5
+  print '.'
+end
+
+puts "EBS backed AMI #{image_id} available."
+puts 
+
+base.destroy
+puts "Instance terminated."
