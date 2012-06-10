@@ -36,5 +36,6 @@ PLATFORMS
 
 DEPENDENCIES
   fog
+  net-scp
   net-ssh
   rspec
