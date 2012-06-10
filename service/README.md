@@ -49,6 +49,15 @@ All services are started using `service.rb` wrapper which providers shared logic
 * ec2 - ec2 provisioner
 * lcx - linux container manager servicer
 
+## Instance provisioning
+
+All instances are managed by Chef. 
+
+* For Vagrant, Chef Solo is used as provisioner
+* For EC2 images, `dist/10xeng.sh` is passed as user data and executed on first boot. Script should download latest binary distribution, extract and run `bootstrap.sh`
+
+10xEngineer root is `/var/lib/10xeng` 
+
 ## Message format
 
 Request message format as recognized by broker. 

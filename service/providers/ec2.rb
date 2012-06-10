@@ -14,7 +14,8 @@ service_provider :ec2 do
     # TODO availability zone
     server = connection.servers.create(:key_name => request["options"]["key"],
                                           :image_id => request["options"]["ami"],
-                                          :flavor_id => request["options"]["type"])
+                                          :flavor_id => request["options"]["type"],
+                                          :user_data => File.read(File.join(File.dirname(__FILE__), "../dist/10xeng.sh")))
 
     # TODO use bootstrap instead (and run chef provisioning)
 
