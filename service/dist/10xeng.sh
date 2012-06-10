@@ -6,7 +6,7 @@ export TXENG_ROOT=/var/lib/10xeng
 export DEBIAN_FRONTEND=noninteractive
 
 # 10xeng root
-mkdir -p ${TENXENG_ROOT}
+mkdir -p ${TXENG_ROOT}
 
 touch /tmp/been_there
 
