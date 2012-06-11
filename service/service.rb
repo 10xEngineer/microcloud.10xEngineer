@@ -35,6 +35,8 @@ loop do
 
   request = Yajl::Parser.parse(message)
 
+  puts "service=#{request["service"]} action=#{request["action"]}"
+
   # provide options if not available
   request["options"] ||= {}
 
