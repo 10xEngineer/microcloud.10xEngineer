@@ -2,7 +2,18 @@ module.exports = ->
 
 log = require("log4js").getLogger()
 commands = require("./commands")
+mongoose = require("mongoose")
+Provider = mongoose.model('Provider')
+broker = require("../broker")
 
+module.exports.create = (req, res, next) ->
+  Provider.findOne {name: req.params.provider}, (err, doc) ->
+    # FIXME hardcoded provider
+    provider = 'vagrant'
+
+    broker.dispatch provider, 'start', {}, (message) ->
+      res.send message
+    
 # ==================================================================================================================================
 module.exports.start = (req, res, next) ->
 	log.info "starting a server on : " + req.params.destination

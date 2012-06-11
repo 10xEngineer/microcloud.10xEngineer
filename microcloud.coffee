@@ -27,7 +27,7 @@ server = restify.createServer(
 )
 
 # model
-Provider = require "./server/model/provider"
+require("./server/model/provider").register
 
 # routes
 routes = require("./server/routes")

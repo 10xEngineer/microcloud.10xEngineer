@@ -11,4 +11,4 @@ Provider = new mongoose.Schema(
   }
 )
 
-module.exports = mongoose.model 'Provider', Provider
+module.exports.register = mongoose.model 'Provider', Provider
