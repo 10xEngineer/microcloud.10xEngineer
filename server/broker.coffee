@@ -12,9 +12,9 @@ module.exports.service_client = ServiceClient
 module.exports.dispatch = (service, action, data = {}, cb) ->
   client = new ServiceClient
   request = {
-    service: service
-    action: action
-    data: data
+    "service": service
+    "action": action
+    "options": data
   }
 
   client.send request
