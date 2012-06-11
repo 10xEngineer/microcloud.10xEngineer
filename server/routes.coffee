@@ -4,6 +4,8 @@ module.exports.registerRoutes = (server)->
 	server.get '/ping', commands.get_ping
 	server.post '/ping', commands.post_ping
 
+	server.get '/broker/ping', commands.broker_ping
+
 	# nowjs notification (subscribe/unsubscribe)
 	server.post '/subscribe/:userid', commands.notifications.subscribe
 	server.post '/unsubscribe/:userid', commands.notifications.unsubscribe

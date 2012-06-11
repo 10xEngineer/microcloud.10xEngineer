@@ -1,6 +1,8 @@
 module.exports.command = ->
 
 log = require("log4js").getLogger()
+ServiceClient = require("../broker")
+
 cli = module.exports.cli = require("./cli-commands")
 pool = module.exports.pool = require("./pool-commands")
 server = module.exports.server = require("./server-commands")
@@ -21,6 +23,20 @@ module.exports.get_ping = (req, res, next) ->
 module.exports.post_ping = (req, res, next) ->
 	log.info "ping _post_ received"
 	res.send 200, {}, req.data
+
+module.exports.broker_ping = (req, res, next) ->
+  request = {
+    service: 'dummy',
+    action: 'ping'
+  }
+
+  client = new ServiceClient
+  client.send request
+
+  client.socket.on 'message', (message) ->
+    data = JSON.parse message
+
+    res.send data
 
 module.exports.test_cli_exec = (req, res, next) ->
 	log.info "running ls -l to test the cli command interface."
