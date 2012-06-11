@@ -3,6 +3,11 @@ log = require("log4js").getLogger()
 restify = require("restify")
 config = require("nconf")
 
+#
+# misc TODOs
+# TODO valid content types (accepts)
+# TODO providers - responses should be improved / standardized
+
 # initialize config
 config.argv.env
 config.file({file: "config/config.json"})

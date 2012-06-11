@@ -1,7 +1,7 @@
 mongoose = require 'mongoose'
 
 Provider = new mongoose.Schema(
-  name: String,
+  name: {type: String, unique: true},
   payload: String,
 
   # TODO make this re-usable

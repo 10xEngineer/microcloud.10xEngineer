@@ -17,8 +17,10 @@ module.exports.registerRoutes = (server)->
 	server.head '/command/:cmd/:args', commands.cli.call_cli
   
   # provider management
-  server.get '/providers', commands.providers.index
+	server.get '/providers', commands.providers.index
 	server.get '/providers/:provider', commands.providers.show
+	server.post '/providers', commands.providers.create
+	#server.remove '/providers/:provider', commands.providers.destroy
 
 	# virtual lab VM pool management
 	server.get '/pool/status', commands.pool.status
