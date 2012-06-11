@@ -3,7 +3,7 @@ mongoose = require 'mongoose'
 HostnodeSchema = new mongoose.Schema(
   hostname: {type: String, unique: true},
   provider: String,
-  template: String,
+  type: String,
   state: {type: String, default: 'new'}
 
   # TODO make this re-usable
