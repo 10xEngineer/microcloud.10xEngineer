@@ -9,8 +9,13 @@ service_provider :vagrant do
     raise "Vagrant environment (env) not specified" unless request["options"].include?("env")
 
     env = Vagrant::Environment.new(:cwd => request["options"]["env"])
+    vm = env.vms[:default]
 
-    env.vms[:default].start
+    unless env.vms[:default].created?
+      vm.up
+    else
+      vm.start
+    end
 
     response :ok
   end
