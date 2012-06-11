@@ -16,13 +16,14 @@ node_modules
 npm-debug.log
 
 .DS_Store
+.bundle
+**/vendor/bundle
 
 a_vagrant_machine/.cookbooks_path.json
 a_vagrant_machine/.vagrant
 
 service/Procfile
-service/.bundle
 service/.foreman
-service/vendor/bundle
 
+# VMs operational data
 a_vagrant_machine/data_bags/vms/*.json

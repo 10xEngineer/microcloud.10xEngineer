@@ -1,8 +1,22 @@
 restify = require("restify")
 log = require("log4js").getLogger()
 nowjs = require("now")
+nconf = require("nconf")
 
 routes = require("./routes")
+
+# configuration support
+nconf.env().argv()
+nconf.file({file: "server/config.json"})
+nconf.defaults({
+  'NODE_ENV': 'development'
+});
+
+nconf.set('database:host', '127.0.0.1');
+nconf.set('database:port', 5984);
+
+console.log "NODE_ENV: " + nconf.get("NODE_ENV")
+console.log "database:" + nconf.get("database")
 
 # Setup the REST API
 server = module.exports = restify.createServer(

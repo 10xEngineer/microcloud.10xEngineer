@@ -8,8 +8,6 @@ export DEBIAN_FRONTEND=noninteractive
 # 10xeng root
 mkdir -p ${TXENG_ROOT}
 
-touch /tmp/been_there
-
 # TODO implement rest as part of chef environment distribution
 exit
 
