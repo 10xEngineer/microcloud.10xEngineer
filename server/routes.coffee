@@ -20,7 +20,7 @@ module.exports.registerRoutes = (server)->
 	server.get '/providers', commands.providers.index
 	server.get '/providers/:provider', commands.providers.show
 	server.post '/providers', commands.providers.create
-	#server.remove '/providers/:provider', commands.providers.destroy
+	server.del '/providers/:provider', commands.providers.destroy
 
 	# virtual lab VM pool management
 	server.get '/pool/status', commands.pool.status

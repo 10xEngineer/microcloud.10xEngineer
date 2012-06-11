@@ -29,4 +29,6 @@ module.exports.show = (req, res, next) ->
       res.send 404, 'Provider not found'
 
 module.exports.destroy = (req, res, next) ->
-  req.send "NOT implemented destroy"
+  Provider.remove {name: req.params.provider}, ->
+      res.send 200
+      
