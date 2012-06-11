@@ -8,12 +8,26 @@ broker = require("../broker")
 
 module.exports.create = (req, res, next) ->
   Provider.findOne {name: req.params.provider}, (err, doc) ->
-    # FIXME hardcoded provider
+    # FIXME hardcoded provider and options
     provider = 'vagrant'
+    options = {
+      env: "/Users/radim/Projects/10xeng/microcloud.10xEngineer/a_vagrant_machine"
+    }
 
-    broker.dispatch provider, 'start', {}, (message) ->
+    broker.dispatch provider, 'start', options, (message) ->
       res.send message
     
+module.exports.show = (req, res, next) ->
+  Provider.findOne {name: req.params.provider}, (err, doc) ->
+    # FIXME hardcoded provider and options
+    provider = 'vagrant'
+    options = {
+      env: "/Users/radim/Projects/10xeng/microcloud.10xEngineer/a_vagrant_machine"
+    }
+
+    broker.dispatch provider, 'status', options, (message) ->
+      res.send message
+
 # ==================================================================================================================================
 module.exports.start = (req, res, next) ->
 	log.info "starting a server on : " + req.params.destination

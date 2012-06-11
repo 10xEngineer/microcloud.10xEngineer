@@ -40,6 +40,7 @@ module.exports.registerRoutes = (server)->
 	# TODO: Fix status calls for vagrant and ec2
 	# TODO: Fix feedback and termination to client for all calls
 	server.post '/servers/:provider', commands.server.create
+	server.get '/servers/:provider/:server', commands.server.show
 
 	server.get '/server/start/:destination', commands.server.start
 	server.get '/server/stop/:destination/:server', commands.server.stop
