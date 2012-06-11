@@ -19,7 +19,7 @@ config.defaults({
 })
 
 # TODO configure mongodb
-mongoose.connect('mongodb://localhost/microcloud_dev');
+mongoose.connect('mongodb://localhost/microcloud_dev')
 
 server = restify.createServer(
   name: "microcloud.10xengineer.me"
