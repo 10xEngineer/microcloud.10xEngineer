@@ -1,8 +1,12 @@
 mongoose = require 'mongoose'
 
-Provider = new mongoose.Schema(
+ProviderDataSchema = new mongoose.Schema({
+})
+
+ProviderSchema = new mongoose.Schema(
   name: {type: String, unique: true},
-  payload: String,
+  service: String,
+  data: [ProviderDataSchema],
 
   # TODO make this re-usable
   meta: {
@@ -11,4 +15,4 @@ Provider = new mongoose.Schema(
   }
 )
 
-module.exports.register = mongoose.model 'Provider', Provider
+module.exports.register = mongoose.model 'Provider', ProviderSchema

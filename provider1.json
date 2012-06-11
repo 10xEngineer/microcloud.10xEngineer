@@ -1,4 +1,4 @@
 {
   "name": "vagrant",
-  "payload": ""
+  "data": [{"env": "/Users/radim/Projects/10xeng/microcloud.10xEngineer/a_vagrant_machine/"}]
 }

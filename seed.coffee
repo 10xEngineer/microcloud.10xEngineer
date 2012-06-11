@@ -25,8 +25,9 @@ vagrant = (next) ->
   vagrant_root = path.join(path.dirname(__filename), "a_vagrant_machine/")
 
   vagrant_def = {
-    'name': 'vagrant',
-    'data': [{'env': vagrant_root}]
+    name: 'vagrant',
+    service: 'vagrant',
+    data: [{'env': vagrant_root}]
   }
 
   vagrant = new Provider(vagrant_def)
