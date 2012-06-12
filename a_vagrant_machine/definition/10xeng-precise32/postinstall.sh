@@ -6,7 +6,7 @@ date > /etc/vagrant_box_build_time
 # etc., and remove optional things to trim down the machine.
 apt-get -y update
 apt-get -y upgrade
-apt-get -y install ruby1.9.3 build-essential vim
+apt-get -y install ruby1.9.3 build-essential vim linux-headers-$(uname -r)
 apt-get clean
 
 # Installing the virtualbox guest additions
