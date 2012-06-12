@@ -1,5 +1,5 @@
 Vagrant::Config.run do |config|
-  config.vm.box = 'precise32'
+  config.vm.box = '10xeng-precise32'
   config.vm.customize do |vm|
     vm.memory_size = 768
   end
