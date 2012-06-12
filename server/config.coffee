@@ -2,7 +2,7 @@ config = require("nconf")
 
 # initialize config
 config.argv.env
-config.file({file: "./server/config.json"})
+config.file({file: "config/microcloud.json"})
 
 config.defaults(
 	'NODE_ENV': 'development',
