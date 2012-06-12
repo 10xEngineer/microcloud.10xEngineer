@@ -1,9 +1,8 @@
-service_provider :ec2 do
-  require 'fog'
+require 'fog'
 
-  # TODO shared logic (fog connection), rails filter style
+class Ec2Service < Provider
 
-  action :start do |request|
+  def start(request)
     connection = Fog::Compute.new({
       :provider => 'AWS',
       :aws_secret_access_key => request["options"]["secret_access_key"],
@@ -22,7 +21,7 @@ service_provider :ec2 do
     response :ok, :id => server.id
   end
   
-  action :stop do |request|
+  def stop(request)
     raise "No server id provided." unless request["options"].include?("id")
 
     connection = Fog::Compute.new({
@@ -39,7 +38,7 @@ service_provider :ec2 do
     response :ok
   end
 
-  action :status do |request|
+  def status(request)
     raise "No server id provided." unless request["options"].include?("id")
 
     connection = Fog::Compute.new({

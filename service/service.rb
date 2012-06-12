@@ -20,7 +20,7 @@ unless File.exists?(service_file)
   exit
 end
 
-provider = load_provider(service_name, service_file)
+service = Provider.load_service(service_name)
 
 # create 0mq socket
 context = ZMQ::Context.new
@@ -41,7 +41,7 @@ loop do
   request["options"] ||= {}
 
   action = request["action"]
-  response = provider.fire(action, request)
+  response = service.fire(action, request)
 
   socket.send_string Yajl::Encoder.encode(response)
 end

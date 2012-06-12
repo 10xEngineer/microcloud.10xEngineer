@@ -1,30 +1,59 @@
 require 'yajl'
-
-class ProviderTerminate < RuntimeError
-  def initialize(response)
-    @response
-  end
-end
+require 'facets'
 
 class Provider
-  @@providers = {}
-
   attr_accessor :name, :actions
 
-  def initialize(name, &block)
-    @name = name
+  def initialize
     @actions = {}
-
-    @@providers[name] = self
-
-    instance_eval &block
   end
 
-  def action(name, &block)
-    @actions[name.to_s] = block
+  def self.load_service(name)
+    service = "#{name}_service"
+    # TODO needed?
+    klass = service.camelcase(:upper)
+
+    service_file = File.join(File.dirname(__FILE__), "../providers/#{name}.rb")
+    raise "No service provider found: #{service_file}" unless File.exists?(service_file)
+
+    load service_file
+
+    Object.const_get(klass).new
   end
 
-  # TODO how to terminate execution of caller
+  def fire(_action, request)
+    action = _action.to_sym
+
+    # allow only methods defined by the service class
+    if self.class.instance_methods(false).include?(action.to_sym)
+      m = self.method(action)
+
+      begin
+        res = nil
+        if m.parameters.size == 1
+          res = self.send(action, request)
+        elsif m.parameters.size == 0
+          res = self.send(action)
+        else
+          raise "Invalid action '#{action}': expected 0 or 1 parameter!" 
+        end
+
+        if res.nil?
+          res = response :ok
+        end
+
+        res 
+      rescue Exception => e
+        puts "error=#{e.message}"
+        puts e.backtrace
+
+        response :fail, :reason => e.message
+      end
+    else
+      response :fail, :reason => "Action not defined (#{action})"
+    end
+  end
+
   def response(res = :ok, options = {})
     res = {
       :status => res
@@ -35,35 +64,17 @@ class Provider
     res
   end
 
-  def fire(action, *params)
-    if @actions.include?(action)
-      begin
-        @actions[action].call(*params)
-      rescue ProviderTerminate => e
-        
-      rescue Exception => e
-        puts "provider=#{@name} error=#{e.message}"
-        puts e.backtrace
-
-        response :fail, :reason => e.message
-      end
-    else
-      response :fail, :reason => "Action not defined (#{action})"
-    end
-  end
-
+  
   def self.get(name)
     @@providers[name]
   end
 
+  def self.service_name(klass)
+    reg = klass.match /(.*)Service$/
+    raise "Unknown service class: #{klass}" unless reg
+
+    reg[1]
+  end
+
 end
 
-def load_provider(name, file)
-  load file
-
-  Provider.get(name)
-end
-
-def service_provider(name, &block)
-  Provider.new(name.to_s, &block)
-end

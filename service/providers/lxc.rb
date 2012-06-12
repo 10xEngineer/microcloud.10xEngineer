@@ -1,7 +1,6 @@
 require 'utils/ssh'
 
-service_provider :lxc do
-
+class LxcService < Provider
   # container data
   # 
   # id (hash)
@@ -16,7 +15,7 @@ service_provider :lxc do
   # TODO SSH Key needs to be loaded to agent!
   # locate machine
 
-  action :prepare do |request|
+  def prepare(request)
     raise "No server specification provided." unless request["options"].include?("server")
 
     hostname = request["options"]["server"].strip
@@ -49,21 +48,18 @@ service_provider :lxc do
     end
   end
 
-  action :allocate do
+  def allocate(request)
     # allocate prepared container 
     # arguments: id, course_template (how to finish the provisioning)
   end
 
-  action :start do
+  def start(request)
   end
 
-  action :stop do
+  def stop(request)
   end
 
-  action :status do
-    # return run-time information about the container 
-    # to-be used as part of API info command
-    #
+  def status(request)
   end
 
   # TODO whole migration/persistence commands will follow
