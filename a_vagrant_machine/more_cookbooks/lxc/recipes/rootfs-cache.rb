@@ -69,7 +69,7 @@ node["lxc"]["templates"].each do |templ_name|
   directory rootfs_cache do
     owner "root"
     owner "root"
-    mode "0775"
+    mode "0755"
 
     notifies :run, "execute[debootstrap]", :immediately
   end

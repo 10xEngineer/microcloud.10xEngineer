@@ -7,7 +7,7 @@ Vagrant::Config.run do |config|
   # Microcloud root
   config.vm.share_folder "10xeng_root", "/var/lib/10xeng", "."
 
-  # temporary using for toolchain development
+  # use for toolchain development
   #config.vm.share_folder "cli", "/cli", "/Users/radim/Projects/10xeng/10xengineer-node"
 
   #
