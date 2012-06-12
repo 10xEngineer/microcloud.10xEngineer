@@ -1,5 +1,3 @@
-module.exports = ->
-
 log = require("log4js").getLogger()
 #server = require("../server")
 commands = require("../commands/commands")
@@ -77,7 +75,7 @@ class Pool
 				@hosts[host_id] = 
 					id: host_id
 					containers: new HashTable()
-				
+
 				#child = commands.cli.execute_command("localhost", "./scripts/startserver.sh", [ destination ], (output) ->
 				#	log.debug output
 				return @_allocate host_id , numContainers, owner_id, session_id
