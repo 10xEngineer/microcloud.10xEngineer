@@ -1,9 +1,10 @@
 mongoose = require("mongoose")
 log = require("log4js").getLogger()
 path = require("path")
+config = require("./server/config")
 
 # FIXME reuse config
-mongoose.connect('mongodb://localhost/microcloud_dev')
+mongoose.connect('mongodb://'+config.get('mongodb:host')+'/'+config.get('mongodb:dbName'))
 
 # register models
 Provider = require("./server/model/provider").register

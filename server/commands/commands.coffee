@@ -26,8 +26,8 @@ module.exports.post_ping = (req, res, next) ->
 	res.send 200, {}, req.data
 
 module.exports.broker_ping = (req, res, next) ->
-  broker.dispatch 'dummy','ping', {}, (message) ->
-    res.send message
+	broker.dispatch 'dummy','ping', {}, (message) ->
+		res.send message
 
 module.exports.test_cli_exec = (req, res, next) ->
 	log.info "running ls -l to test the cli command interface."
