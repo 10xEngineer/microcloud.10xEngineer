@@ -39,8 +39,10 @@ module.exports.registerRoutes = (server)->
 	# TODO: Allow specific instances, not just the last one started
 	# TODO: Fix status calls for vagrant and ec2
 	# TODO: Fix feedback and termination to client for all calls
+	# RDM - making it a bit more RESTful 
 	server.post '/servers/:provider', commands.server.create
 	server.get '/servers/:provider/:server', commands.server.show
+	server.del '/servers/:provider/:server', commands.server.destroy
 
 	server.get '/server/start/:destination', commands.server.start
 	server.get '/server/stop/:destination/:server', commands.server.stop

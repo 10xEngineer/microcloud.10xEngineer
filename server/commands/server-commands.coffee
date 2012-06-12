@@ -22,12 +22,27 @@ module.exports.show = (req, res, next) ->
     # FIXME hardcoded provider and options
     provider = 'vagrant'
     options = {
+      id: req.params.server
       env: "/Users/radim/Projects/10xeng/microcloud.10xEngineer/a_vagrant_machine"
     }
 
     broker.dispatch provider, 'status', options, (message) ->
       res.send message
 
+module.exports.destroy = (req, res, next) ->
+  Provider.findOne {name: req.params.provider}, (err, doc) ->
+    # FIXME hardcoded provider and options
+
+    provider = 'vagrant'
+    options = {
+      id: req.params.server
+      env: "/Users/radim/Projects/10xeng/microcloud.10xEngineer/a_vagrant_machine"
+    }
+
+    broker.dispatch provider, 'stop', options, (message) ->
+      res.send message
+
+    
 # ==================================================================================================================================
 module.exports.start = (req, res, next) ->
 	log.info "starting a server on : " + req.params.destination
