@@ -10,7 +10,8 @@
         "mongodb" : {
             "host" : "127.0.0.1",
             "dbName" : "microcloud_dev"
-        }
+        },
+        "broker": "ipc:///tmp/mc.broker"
     },
     "production": {
     }
