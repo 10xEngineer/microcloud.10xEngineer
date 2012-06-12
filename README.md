@@ -15,21 +15,44 @@ It consists of:
 
 To setup your environment
 =========================
-- Download the git repo: 
-    `git clone git@github.com:velniukas/microcloud.10xEngineer.git`
 
-- Install node.js & npm 
+Microcloud and all related services should be run from virtual machine. To setup the environment
 
-- Install vagrant http://vagrantup.com and VirtualBox 
+Get the microcloud repo:
+
+    git clone git@github.com:velniukas/microcloud.10xEngineer.git
+
+Install vagrant http://vagrantup.com and VirtualBox 
+    
     http://vagrantup.com/v1/docs/getting-started/index.html
 
-- Run node.js REST server
-    `cd microcloud.10xEngineer
-    npm install
-    node server/server.js`
+Add 10xEngineer.me default Vagrant box
 
-- From the command line test the server will instantiate a new vm on demand
-    `curl -s localhost:8080/server/start/local`
+    vagrant box add 10xeng-precise32 http://ops-images.s3.amazonaws.com/10xeng-precise32.box
+
+Run the environment and ssh in
+
+    vagrant up
+    vagrant ssh
+
+Microcloud API
+==============
+
+Is available within vagrant 
+
+    vagrant ssh
+    cd /vagrant
+    npm install
+    coffee microcloud.coffee
+
+It depends on a service broker w/associated services. In other terminal do 
+
+    vagrant ssh
+    cd /vagrant/server
+    bundle install
+    bundle exec foreman start
+
+After initial setup you can skip the `npm install`/`bundle install` part (unless you need to update packages).
 
 (c) 2012 All works in this repository are the sole ownership and use jointly by 10xEngineer.me, Messina Ltd and Steve Messina.
 And may not be reproduced, reused, stolen for commercial or non-commercial means without explicit written permission from Steve Messina.

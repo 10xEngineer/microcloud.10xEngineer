@@ -1,33 +1,33 @@
 Vagrant::Config.run do |config|
+  # default Vagrant box - 10xeng-precise32
   config.vm.box = '10xeng-precise32'
-  config.vm.customize do |vm|
-    vm.memory_size = 768
-  end
 
-  # Microcloud root
+  # define ports to forward to host
+  config.vm.forward_port 8080, 8080
+  
+  # additional shared folders
+  # microcloud root for hostnode
   config.vm.share_folder "10xeng_root", "/var/lib/10xeng", "."
-
-  # use for toolchain development
+  # use for hostnode CLI tool development
   #config.vm.share_folder "cli", "/cli", "/Users/radim/Projects/10xeng/10xengineer-node"
 
-  #
-  # Chef provisioner configuration
+  # 
+  # chef-solo provisioner
   #
   config.vm.provision :chef_solo do |chef|
-    # shared part
+    # shared components
     chef.cookbooks_path = ['chef_repo/cookbooks']
     chef.roles_path = 'chef_repo/roles'
 
-    # per project
+    # per project components
     chef.data_bags_path = 'data_bags'
     chef.log_level = :debug
 
-
-    # TODO switch to a one role
+    # guest configuration
     chef.add_role 'base'
     chef.add_role 'hostnode'
 
-    # local configuration
+    # override configuration
     chef.json = {
       :microcloud => {
         :endpoint => "http://localhost:8080/"
