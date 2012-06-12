@@ -10,9 +10,9 @@ socket = context.socket ZMQ::REQ
 
 # sample message
 request = {
-  :service => :dummy,
-  :action => :ping,
-  :options => {:say => "Hi!"}
+  :service => :vagrant,
+  :action => :status,
+  :options => {:env => "/Users/radim/Projects/10xeng/microcloud.10xEngineer"}
 }
 
 #request = {

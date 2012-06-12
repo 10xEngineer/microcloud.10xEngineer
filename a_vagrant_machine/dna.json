@@ -1,1 +1,1 @@
-{"monit":{"start_delay":15,"interval":30,"web":{"enabled":true}},"run_list":["recipe[apt]","recipe[git]","recipe[monit]"]}
+{"run_list":["role[base]","role[hostnode]"]}

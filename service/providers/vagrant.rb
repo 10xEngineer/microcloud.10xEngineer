@@ -1,10 +1,13 @@
+require 'utils/virtualbox'
+
 service_provider :vagrant do
   require 'vagrant'
 
   # TODO logic for options validation
-  # TODO better flow control (possibly exception based)
   # TODO support for multi-VM setups
 
+  # TODO it should already be running in vagrant!!
+  # TODO add multi-vm support
   action :start do |request|
     raise "Vagrant environment (env) not specified" unless request["options"].include?("env")
 
@@ -30,7 +33,12 @@ service_provider :vagrant do
 
   action :status do |request|
     raise "Vagrant environment (env) not specified" unless request["options"].include?("env")
+
+    return :ok
+
     env = Vagrant::Environment.new(:cwd => request["options"]["env"])
+
+    puts "--> #{TenxEngineer::VirtualBox.detect?}"
 
     response :ok, :state => env.vms[:default].state
   end

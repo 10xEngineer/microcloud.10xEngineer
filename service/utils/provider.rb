@@ -1,5 +1,11 @@
 require 'yajl'
 
+class ProviderTerminate < RuntimeError
+  def initialize(response)
+    @response
+  end
+end
+
 class Provider
   @@providers = {}
 
@@ -18,6 +24,7 @@ class Provider
     @actions[name.to_s] = block
   end
 
+  # TODO how to terminate execution of caller
   def response(res = :ok, options = {})
     res = {
       :status => res
@@ -32,6 +39,8 @@ class Provider
     if @actions.include?(action)
       begin
         @actions[action].call(*params)
+      rescue ProviderTerminate => e
+        
       rescue Exception => e
         puts "provider=#{@name} error=#{e.message}"
         puts e.backtrace

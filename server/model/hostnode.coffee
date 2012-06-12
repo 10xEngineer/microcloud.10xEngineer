@@ -1,5 +1,8 @@
 mongoose = require 'mongoose'
 
+#
+#
+
 HostnodeSchema = new mongoose.Schema(
   hostname: {type: String, unique: true},
   provider: String,
