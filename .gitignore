@@ -26,4 +26,4 @@ service/Procfile
 service/.foreman
 
 # VMs operational data
-a_vagrant_machine/data_bags/vms/*.json
+data_bags/vms/*.json

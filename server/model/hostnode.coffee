@@ -5,6 +5,7 @@ HostnodeSchema = new mongoose.Schema(
   provider: String,
   type: String,
   state: {type: String, default: 'new'}
+  token: String,
 
   # TODO make this re-usable
   meta: {

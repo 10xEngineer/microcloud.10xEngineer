@@ -63,3 +63,10 @@ end
 gem_package "/tmp/10xengineer-node-#{node["10xeng"]["toolchain"]["version"]}.gem" do
   action :install
 end
+
+# FIXME cover notification as part of tests (important)
+ruby_block "notify mc" do
+  block do
+    Chef::Log.info "Microcloud endpoint #{node['microcloud']['endpoint']}"
+  end
+end
