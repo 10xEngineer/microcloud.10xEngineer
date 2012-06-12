@@ -32,6 +32,7 @@ Veewee::Session.declare({
   :ssh_guest_port => "22",
   :sudo_cmd => "echo '%p'|sudo -S sh '%f'",
   :shutdown_cmd => "shutdown -P now",
+  # TODO merge with ami_builder postinstall.sh to reduce duplication
   :postinstall_files => [ "postinstall.sh"],
   :postinstall_timeout => "10000"
 })
