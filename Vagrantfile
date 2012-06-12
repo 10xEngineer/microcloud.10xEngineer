@@ -4,6 +4,7 @@ Vagrant::Config.run do |config|
     vm.memory_size = 768
   end
 
+  # Microcloud root
   config.vm.share_folder "10xeng_root", "/var/lib/10xeng", "."
 
   # temporary using for toolchain development
@@ -21,8 +22,16 @@ Vagrant::Config.run do |config|
     chef.data_bags_path = 'data_bags'
     chef.log_level = :debug
 
+
     # TODO switch to a one role
     chef.add_role 'base'
     chef.add_role 'hostnode'
+
+    # local configuration
+    chef.json = {
+      :microcloud => {
+        :endpoint => "http://localhost:8080/"
+      }
+    }
   end
 end
