@@ -29,8 +29,14 @@ Vagrant::Config.run do |config|
 
     # override configuration
     chef.json = {
+      # location of Microcloud endpoint
       :microcloud => {
-        :endpoint => "http://localhost:8080/"
+        :endpoint => "http://localhost:8080/",
+      },
+      # hostnode configuration
+      "10xeng-node" => {
+        :token => "no token",
+        :id => "default"
       }
     }
   end
