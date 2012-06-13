@@ -19,6 +19,8 @@ npm-debug.log
 .bundle
 **/vendor/bundle
 
+server/db/*
+
 a_vagrant_machine/.cookbooks_path.json
 a_vagrant_machine/.vagrant
 

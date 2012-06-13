@@ -17,26 +17,11 @@ next_action = (actions) ->
 
   action(actions)
 
-# 
-# seed functions
-#
+# load all seed files
+require("fs").readdirSync("./server/db").forEach (file) -> 
+  if path.extname(file) == ".coffee"
+    basename = path.basename(file, ".coffee")
 
-vagrant = (next) ->
-  # vagrant provider
-  vagrant_root = path.dirname(__filename)
-
-  vagrant_def = {
-    name: 'vagrant',
-    service: 'vagrant',
-    data: [{'env': vagrant_root}]
-  }
-
-  vagrant = new Provider(vagrant_def)
-  vagrant.save (err) ->
-    if err
-      console.log "Unable to create vagrant provider: #{err.message}"
-
-    next_action(next)
-
-actions = [vagrant]
-next_action(actions)
+    log.info "seed_file=#{basename}"
+    seed_module = require "./server/db/#{basename}"
+    seed_module.seed()
