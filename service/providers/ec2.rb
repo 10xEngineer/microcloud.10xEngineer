@@ -16,9 +16,8 @@ class Ec2Service < Provider
                                           :flavor_id => request["options"]["type"],
                                           :user_data => File.read(File.join(File.dirname(__FILE__), "../dist/10xeng.sh")))
 
-    # TODO use bootstrap instead (and run chef provisioning)
-
-    response :ok, :id => server.id
+    # TODO hostname is nil (might be good idea to create own hostname/DNS provisioning)
+    response :ok, :id => server.id, :hostname => server.dns_name
   end
   
   def stop(request)
