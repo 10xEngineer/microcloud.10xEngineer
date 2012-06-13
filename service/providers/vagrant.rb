@@ -1,4 +1,5 @@
 require 'utils/virtualbox'
+require 'utils/token'
 require 'vagrant'
 
 class VagrantService < Provider
@@ -8,8 +9,9 @@ class VagrantService < Provider
   # TODO support for multi-VM setups
 
   def start(request)
+    token = TenxEngineer.server_token('default')
     if  TenxEngineer::VirtualBox.detect?
-      return response :ok, :id => :default, :hostname => "localhost"
+      return response :ok, :id => :default, :hostname => "localhost", :token => token
     end
 
     #raise "Vagrant environment (env) not specified" unless request["options"].include?("env")
@@ -23,7 +25,7 @@ class VagrantService < Provider
     #  vm.start
     #end
 
-    response :ok, :id => :default, :hostname => "localhost"
+    response :ok, :id => :default, :hostname => "localhost", :token => token
   end
 
   def stop(request)

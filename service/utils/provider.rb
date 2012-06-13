@@ -1,6 +1,8 @@
 require 'yajl'
 require 'facets'
 
+# TODO before filter support (for shared logic)
+
 class Provider
   attr_accessor :name, :actions
 
