@@ -32,4 +32,4 @@ module.exports.destroy = (req, res, next) ->
   long.warn "action=destroy provider='#{req.params.provider}"
   Provider.remove {name: req.params.provider}, ->
       res.send 200
-      
+
