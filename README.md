@@ -20,7 +20,7 @@ Microcloud and all related services should be run from virtual machine. To setup
 
 Get the microcloud repo:
 
-    git clone git@github.com:velniukas/microcloud.10xEngineer.git
+    git clone --recursive git@github.com:velniukas/microcloud.10xEngineer.git
 
 Install vagrant http://vagrantup.com and VirtualBox 
     
