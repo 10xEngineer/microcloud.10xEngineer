@@ -4,7 +4,8 @@ mongoose = require 'mongoose'
 #
 
 HostnodeSchema = new mongoose.Schema(
-  hostname: {type: String, unique: true},
+  server_id : {type: String, unique: true}
+  hostname: String,
   provider: String,
   type: String,
   state: {type: String, default: 'new'}
@@ -12,8 +13,8 @@ HostnodeSchema = new mongoose.Schema(
 
   # TODO make this re-usable
   meta: {
-    created_at: Date
-    updated_at: Date
+    created_at: {type: Date, default: Date.now}
+    updated_at: {type: Date, default: Date.now}
   }
 )
 
