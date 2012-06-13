@@ -1,3 +1,3 @@
 [submodule "chef_repo"]
 	path = chef_repo
-	url = git@github.com:velniukas/chef_repo.git
+  url = git@github.com:10xEngineer/chef_repo.git
