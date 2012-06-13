@@ -9,7 +9,7 @@ class VagrantService < Provider
 
   def start(request)
     if  TenxEngineer::VirtualBox.detect?
-      return response :ok, :id => :default
+      return response :ok, :id => :default, :hostname => "localhost"
     end
 
     #raise "Vagrant environment (env) not specified" unless request["options"].include?("env")
@@ -23,10 +23,15 @@ class VagrantService < Provider
     #  vm.start
     #end
 
-    response :ok, :id => :default
+    response :ok, :id => :default, :hostname => "localhost"
   end
 
   def stop(request)
+    server_id = request["options"]["id"] || "no.server.specified"
+
+    # single VM support for now
+    raise "Invalid server (#{require["options"]["id"]})" if server != "default"
+
     if  TenxEngineer::VirtualBox.detect?
       return response :ok, :long_story => "Microcloud seems to be running in VirtualBox. Not really going to shoot myself in the foot"
     end
