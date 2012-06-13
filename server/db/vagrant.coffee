@@ -9,7 +9,7 @@ vagrant = ->
   vagrant_def = {
     name: 'vagrant',
     service: 'vagrant',
-    data: [{'env': vagrant_root}]
+    data: {'env': vagrant_root}
   }
 
   vagrant = new Provider(vagrant_def)

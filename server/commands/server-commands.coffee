@@ -31,7 +31,7 @@ module.exports.create = (req, res, next) ->
               hostnode = new Hostnode(
                 server_id : message.options.id
                 hostname : message.options.hostname
-                provider : provider
+                provider : provider.name
                 token : message.options.token
                 state : 'new'
               )

@@ -6,7 +6,7 @@ ProviderDataSchema = new mongoose.Schema({
 ProviderSchema = new mongoose.Schema(
   name: {type: String, unique: true},
   service: String,
-  data: [ProviderDataSchema],
+  data: {env: String},
 
   # TODO make this re-usable
   meta: {
