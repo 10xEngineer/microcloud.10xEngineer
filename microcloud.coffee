@@ -13,6 +13,7 @@ server = restify.createServer(
 
 # model
 require("./server/model/provider").register
+require("./server/model/hostnode").register
 
 # routes
 routes = require("./server/routes")
