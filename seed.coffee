@@ -23,7 +23,7 @@ next_action = (actions) ->
 
 vagrant = (next) ->
   # vagrant provider
-  vagrant_root = path.join(path.dirname(__filename), "a_vagrant_machine/")
+  vagrant_root = path.dirname(__filename)
 
   vagrant_def = {
     name: 'vagrant',
