@@ -7,6 +7,6 @@ module TenxEngineer
     hash = Digest::SHA2.new
     hash.update(source)
 
-    hash.hexdigest!
+    hash.hexdigest![0..32]
   end
 end
