@@ -9,10 +9,17 @@ context = ZMQ::Context.new(1)
 socket = context.socket ZMQ::REQ
 
 # sample message
+#request = {
+#  :service => :dummy,
+#  :action => :ping
+#}
 request = {
-  :service => :vagrant,
-  :action => :status,
-  :options => {:env => "/Users/radim/Projects/10xeng/microcloud.10xEngineer"}
+  :service => :lxc,
+  :action => :stop,
+  :options => {
+    :server => "vagrant.local",
+    :id => "052681f0-9831-012f-7f05-0800272cf3a1"
+  }
 }
 
 #request = {

@@ -10,6 +10,7 @@ class LxcService < Provider
   # descriptor (disk size, cgroups, firewall, etc). might come from course-lab-descriptor
   
   before_filter :validate_hostname
+  before_filter :validate_vm, :only => [:allocate, :start, :stop, :status]
 
   # ssh stub
   # 
@@ -37,16 +38,12 @@ class LxcService < Provider
     begin
       res = ssh_exec('mchammer', @hostname, command.join(' '), {:port => port})
 
-      puts '---'
-      puts res
-
       options = Yajl::Parser.parse(res)
 
       response :ok, options
     rescue Net::SSH::AuthenticationFailed => e
       response :fail, {:reason => "Hostnode authentication failed"}
     rescue Exception => e
-      puts e.backtrace.join("\n")
       response :fail, json_message(e.message)
     end
   end
@@ -62,8 +59,20 @@ class LxcService < Provider
   end
 
   def start(request)
+    command = ["/usr/bin/sudo", "/usr/local/bin/10xeng-vm", "-j", "start"]
+    command << "--id #{@id}}"
 
+    begin
+      res = ssh_exec('mchammer', @hostname, command.join(' '), {:port => port})
 
+      options = Yajl::Parser.parse(res)
+
+      response :ok, options
+    rescue Net::SSH::AuthenticationFailed => e
+      response :fail, {:reason => "Hostnode authentication failed"}
+    rescue Exception => e
+      response :fail, json_message(e.message)
+    end
   end
 
   def stop(request)
@@ -74,6 +83,12 @@ class LxcService < Provider
   end
 
 private
+
+  def validate_vm(request)
+    raise "No VM ID provided." unless request["options"].include?("id")
+
+    @id = request["options"]["id"].strip
+  end
 
   def validate_hostname(request)
     raise "No server specification provided." unless request["options"].include?("server")
