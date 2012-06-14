@@ -25,13 +25,14 @@ class LxcService < Provider
 
     # TODO better protection from hostname fixing
     # TODO will hurt later (need better way how to read vagrant configuration)
+    # TODO where to get vgname from?
     if hostname == "vagrant.local" 
       hostname = "localhost"
       port = 2222
-      vgname = "precise32-mc"
+      vgname = "tenxeng-precise32"
     end
 
-    command = ["/usr/bin/sudo", "/opt/ruby/bin/10xeng-vm", "-j", "prepare"]
+    command = ["/usr/bin/sudo", "/usr/local/bin/10xeng-vm", "-j", "prepare"]
     command << "--template #{template}" if template
     command << "--vgname #{vgname}" if vgname
 
@@ -51,6 +52,10 @@ class LxcService < Provider
   def allocate(request)
     # allocate prepared container 
     # arguments: id, course_template (how to finish the provisioning)
+
+    # TODO allocate vs start
+    # TODO unable to run lxc-execute to finish provisioning
+    # TODO lxc-start 
   end
 
   def start(request)
