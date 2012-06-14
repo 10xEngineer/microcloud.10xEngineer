@@ -6,6 +6,8 @@ require 'facets'
 class Provider
   attr_accessor :name, :actions
 
+  @@filters = {}
+
   def initialize
     @actions = {}
   end
@@ -32,6 +34,12 @@ class Provider
 
       begin
         res = nil
+        
+        filters = evaluate_filters(action)
+        filters.each do |f|
+          self.send(f, request)
+        end
+
         if m.parameters.size == 1
           res = self.send(action, request)
         elsif m.parameters.size == 0
@@ -76,6 +84,28 @@ class Provider
     raise "Unknown service class: #{klass}" unless reg
 
     reg[1]
+  end
+
+  def evaluate_filters(action)
+    res = []
+
+    @@filters.keys.each do |f|
+      unless @@filters[f].include?(:only)
+        res << f
+      else
+        res << f if @@filters[f][:only].include?(action)
+      end
+    end
+
+    res
+  end
+
+  def self.before_filter(method_name, options = {})
+    @@filters[method_name] = options
+  end
+
+  def Provider::filters
+    @@filters
   end
 
 end

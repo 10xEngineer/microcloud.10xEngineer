@@ -9,6 +9,7 @@ class LxcService < Provider
   # server/pool reference
   # descriptor (disk size, cgroups, firewall, etc). might come from course-lab-descriptor
   
+  before_filter :validate_hostname
 
   # ssh stub
   # 
@@ -16,9 +17,6 @@ class LxcService < Provider
   # locate machine
 
   def prepare(request)
-    raise "No server specification provided." unless request["options"].include?("server")
-
-    hostname = request["options"]["server"].strip
     template = request["options"]["template"] || nil
     port = 22
     vgname = nil
@@ -26,8 +24,8 @@ class LxcService < Provider
     # TODO better protection from hostname fixing
     # TODO will hurt later (need better way how to read vagrant configuration)
     # TODO where to get vgname from?
-    if hostname == "vagrant.local" 
-      hostname = "localhost"
+    if @hostname == "vagrant.local" 
+      @hostname = "localhost"
       port = 2222
       vgname = "tenxeng-precise32"
     end
@@ -37,7 +35,10 @@ class LxcService < Provider
     command << "--vgname #{vgname}" if vgname
 
     begin
-      res = ssh_exec('mchammer', hostname, command.join(' '), {:port => port})
+      res = ssh_exec('mchammer', @hostname, command.join(' '), {:port => port})
+
+      puts '---'
+      puts res
 
       options = Yajl::Parser.parse(res)
 
@@ -45,11 +46,13 @@ class LxcService < Provider
     rescue Net::SSH::AuthenticationFailed => e
       response :fail, {:reason => "Hostnode authentication failed"}
     rescue Exception => e
+      puts e.backtrace.join("\n")
       response :fail, json_message(e.message)
     end
   end
 
   def allocate(request)
+
     # allocate prepared container 
     # arguments: id, course_template (how to finish the provisioning)
 
@@ -59,12 +62,23 @@ class LxcService < Provider
   end
 
   def start(request)
+
+
   end
 
   def stop(request)
-  end
+      end
 
   def status(request)
+    raise "No server specification provided." unless request["options"].include?("server")
+  end
+
+private
+
+  def validate_hostname(request)
+    raise "No server specification provided." unless request["options"].include?("server")
+
+    @hostname = request["options"]["server"].strip
   end
 
   # TODO whole migration/persistence commands will follow
