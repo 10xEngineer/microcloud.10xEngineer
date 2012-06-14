@@ -8,7 +8,7 @@ class LxcService < Provider
   # type
   # server/pool reference
   # descriptor (disk size, cgroups, firewall, etc). might come from course-lab-descriptor
-  
+
   before_filter :validate_hostname
   before_filter :validate_vm, :only => [:allocate, :start, :stop, :status]
 
@@ -19,24 +19,16 @@ class LxcService < Provider
 
   def prepare(request)
     template = request["options"]["template"] || nil
-    port = 22
-    vgname = nil
 
     # TODO better protection from hostname fixing
-    # TODO will hurt later (need better way how to read vagrant configuration)
     # TODO where to get vgname from?
-    if @hostname == "vagrant.local" 
-      @hostname = "localhost"
-      port = 2222
-      vgname = "tenxeng-precise32"
-    end
 
     command = ["/usr/bin/sudo", "/usr/local/bin/10xeng-vm", "-j", "prepare"]
     command << "--template #{template}" if template
-    command << "--vgname #{vgname}" if vgname
+    command << "--vgname #{vgname}" if @vgname
 
     begin
-      res = ssh_exec('mchammer', @hostname, command.join(' '), {:port => port})
+      res = ssh_exec('mchammer', @hostname, command.join(' '), {:port => @port})
 
       options = Yajl::Parser.parse(res)
 
@@ -60,10 +52,10 @@ class LxcService < Provider
 
   def start(request)
     command = ["/usr/bin/sudo", "/usr/local/bin/10xeng-vm", "-j", "start"]
-    command << "--id #{@id}}"
+    command << "--id #{@id}"
 
     begin
-      res = ssh_exec('mchammer', @hostname, command.join(' '), {:port => port})
+      res = ssh_exec('mchammer', @hostname, command.join(' '), {:port => @port})
 
       options = Yajl::Parser.parse(res)
 
@@ -76,13 +68,40 @@ class LxcService < Provider
   end
 
   def stop(request)
-      end
+    command = ["/usr/bin/sudo", "/usr/local/bin/10xeng-vm", "-j", "stop"]
+    command << "--id #{@id}"
 
-  def status(request)
-    raise "No server specification provided." unless request["options"].include?("server")
+    begin
+      res = ssh_exec('mchammer', @hostname, command.join(' '), {:port => @port})
+
+      options = Yajl::Parser.parse(res)
+
+      response :ok, options
+    rescue Net::SSH::AuthenticationFailed => e
+      response :fail, {:reason => "Hostnode authentication failed"}
+    rescue Exception => e
+      response :fail, json_message(e.message)
+    end
   end
 
-private
+  def status(request)
+    command = ["/usr/bin/sudo", "/usr/local/bin/10xeng-vm", "-j", "info"]
+    command << "--id #{@id}"
+
+    begin
+      res = ssh_exec('mchammer', @hostname, command.join(' '), {:port => @port})
+
+      options = Yajl::Parser.parse(res)
+
+      response :ok, options
+    rescue Net::SSH::AuthenticationFailed => e
+      response :fail, {:reason => "Hostnode authentication failed"}
+    rescue Exception => e
+      response :fail, json_message(e.message)
+    end
+  end
+
+  private
 
   def validate_vm(request)
     raise "No VM ID provided." unless request["options"].include?("id")
@@ -94,6 +113,15 @@ private
     raise "No server specification provided." unless request["options"].include?("server")
 
     @hostname = request["options"]["server"].strip
+    @port = 22
+    @vgname = nil
+
+    if @hostname == "vagrant.local" 
+      @hostname = "localhost"
+      @port = 2222
+      @vgname = "tenxeng-precise32"
+    end
+
   end
 
   # TODO whole migration/persistence commands will follow
