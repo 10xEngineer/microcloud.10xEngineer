@@ -1,8 +1,11 @@
 {
-  "run_list": ["recipe[hostnode::ec2]", "role[hostnode]"],
+  "run_list": ["recipe[10xeng-node::ec2]", "role[hostnode]"],
   "override_attributes": {
     "microcloud": {
       "endpoint": null
+    },
+    "lxc": {
+      "arch": "amd64"
     }
   }
 }
