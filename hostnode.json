@@ -1,5 +1,5 @@
 {
-  "run_list": ["role[hostnode]"],
+  "run_list": ["recipe[hostnode::ec2]", "role[hostnode]"],
   "override_attributes": {
     "microcloud": {
       "endpoint": null
