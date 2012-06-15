@@ -1,5 +1,6 @@
 #/bin/sh
 
+set -x -e
 # basic dependencies
 sudo dpkg --configure -a
 sudo apt-get -f install
