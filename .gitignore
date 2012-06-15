@@ -17,6 +17,8 @@ npm-debug.log
 
 .DS_Store
 .bundle
+.vagrant
+.cookbooks_path.json
 **/vendor/bundle
 
 server/db/*
