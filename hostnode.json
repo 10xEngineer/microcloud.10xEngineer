@@ -1,0 +1,8 @@
+{
+  "run_list": ["role[hostnode]"],
+  "override_attributes": {
+    "microcloud": {
+      "endpoint": null
+    }
+  }
+}
