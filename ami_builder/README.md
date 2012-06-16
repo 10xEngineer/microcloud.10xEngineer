@@ -1,6 +1,14 @@
 # 10xEngineer AMI Builder
 
-Prepares base 10xEngineer AMI.
+Prepares base 10xEngineer AMI. Currently images are
+
+* 64bit 
+* EBS based
+* Using official Ubuntu 12.04 LTS images
+
+As part of production setup we should extend support and create instance-store images.
+
+## Instructions
 
 To run it make sure key pair for selected region is available in SSH agent using
 
