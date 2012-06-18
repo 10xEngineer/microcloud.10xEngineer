@@ -25,7 +25,7 @@ class LxcService < Provider
 
     command = ["/usr/bin/sudo", "/usr/local/bin/10xeng-vm", "-j", "prepare"]
     command << "--template #{template}" if template
-    command << "--vgname #{vgname}" if @vgname
+    command << "--vgname #{@vgname}" if @vgname
 
     begin
       res = ssh_exec('mchammer', @hostname, command.join(' '), {:port => @port})
