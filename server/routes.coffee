@@ -1,6 +1,7 @@
 commands = require './commands/commands'
 
 # FIXME all resources should be re-use same logic + have callback to modify behaviour
+#       something like resources in rails
 # FIXME unify responses / response codes
 
 module.exports.registerRoutes = (server)->
@@ -37,6 +38,8 @@ module.exports.registerRoutes = (server)->
 	# lab provisioning
 	server.post '/labs/:lab_definition_id', commands.labs.allocate
 
+	# notification support
+
 	# virtual lab VM pool management
 	server.get '/pool/status', commands.pool.status
 	server.get '/pool/startup', commands.pool.startup
@@ -72,6 +75,10 @@ module.exports.registerRoutes = (server)->
 	# POST /vms/:server - prepare VM
 	# GET /vms/:server - list VMs per particular server
 	# 
+	
+	server.get '/vms/:server_id', commands.vms.index
+	server.post '/vms/:server_id', commands.vms.create
+
 	#
 	# lxc container verbs
 	server.get '/containers/create', commands.container.create

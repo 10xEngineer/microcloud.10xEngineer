@@ -34,8 +34,7 @@ Vagrant::Config.run do |config|
     chef.json = {
       # location of Microcloud endpoint
       :microcloud => {
-        :endpoint => nil,
-        #:endpoint => "http://localhost:8080/",
+        #:endpoint => "http://10.0.1.3:8080",
       },
       # hostnode configuration
       "10xeng-node" => {

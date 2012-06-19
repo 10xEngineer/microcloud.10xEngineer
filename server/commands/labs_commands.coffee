@@ -45,7 +45,9 @@ module.exports.destroy = (req, res, next) ->
 
 module.exports.allocate = (req, res, next) ->
   # TODO lab is created for (course, user); need to validate existing
-  # TODO find available VMs
+  # TODO 
+  #      find available VMs (from available servers - better pools)
+  #      (for starter - just pick first two available VMs)
   #      need to have pool of VMs
   #      allocate them (on same server)
   res.send "Not implemented"

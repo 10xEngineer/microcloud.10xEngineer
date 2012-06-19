@@ -116,8 +116,7 @@ class LxcService < Provider
     @port = 22
     @vgname = nil
 
-    if @hostname == "vagrant.local" 
-      @hostname = "localhost"
+    if @hostname == "localhost" 
       @port = 2222
       @vgname = "tenxeng-precise32"
     end

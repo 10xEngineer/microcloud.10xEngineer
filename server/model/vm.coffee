@@ -1,16 +1,12 @@
 mongoose = require "mongoose"
 
-VmDescriptorSchema = new mongoose.Schema({
-  # TODO define common 
-})
-
 VmSchema = new mongoose.Schema(
   uuid: {type: String, unique: true},
   state: {type: String, default: 'prepared'},
-  template: String,
+  vm_type: String,
   server: String,
   pool: String,
-  descriptor: [VmDescriptionSchema],
+  descriptor: {env: String},
 
   # TODO make this re-usable
   meta: {

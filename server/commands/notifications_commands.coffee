@@ -11,4 +11,4 @@ module.exports.unsubscribe = (userid) ->
 		subscriptions.pop userid
 
 module.exports.dummy = (req, res, next) ->
-  res.send 404, {}
+  res.send 404, JSON.parse(req.body)
