@@ -60,6 +60,7 @@ module.exports.registerRoutes = (server)->
 	server.get '/servers/:provider/:server', commands.server.show
 	server.del '/servers/:provider/:server', commands.server.destroy
 	# TODO refactor together with other notifications
+	# TODO refactor route
 	server.post '/server/:server/notify', commands.notifications.dummy
 
 	server.get '/server/start/:destination', commands.server.start
