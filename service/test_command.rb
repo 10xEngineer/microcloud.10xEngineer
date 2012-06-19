@@ -13,24 +13,25 @@ socket = context.socket ZMQ::REQ
 #  :service => :dummy,
 #  :action => :ping
 #}
+#
 request = {
   :service => :lxc,
-  :action => :stop,
+  :action => :start,
   :options => {
     :server => "vagrant.local",
-    :id => "052681f0-9831-012f-7f05-0800272cf3a1"
+    :id => "8b946490-9bfc-012f-c15c-0800272cf3a1",
   }
 }
 
 #request = {
 #  :service => :ec2,
-#  :action => :stop,
+#  :action => :start,
 #  :options => {
-#    #"secret_access_key" => "A5WK+zZbX/UMWTJ61XOVos/OFuYngEyaakQn8s7g",
-#    #"access_key_id" => "AKIAI3OXTTB6BTF4EPCQ",
-#    "region" => "us-east-1",
-#    #"ami" => "ami-3202f25b",
-#    #"key" => "ec2-keypair",
+#    "secret_access_key" => "nBVSF7hBS7uutlbO4ZT77mHKGTJKbg5+ANjNZzWz",
+#    "access_key_id" => "AKIAJIPBWGE6PG5C2VGA",
+#    "region" => "eu-west-1",
+#    "ami" => "ami-77f0f503",
+#    "key" => "europe-default",
 #    #"type" => "t1.micro"
 #    #"id" => "i-0a11c573"
 #  }

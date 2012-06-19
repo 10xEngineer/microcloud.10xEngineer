@@ -3,11 +3,15 @@ Provider = mongoose.model('Provider')
 
 ec2 = ->
   config = {
-    access_key_id: "xxxxx",
-    secret_access_key: "xxxxxxxxx",
-    region: "us-east-1",
-    key: "ec2-keypair",
-    ami: "ami-3202f25b"
+    name: 'ec2',
+    service: 'ec2',
+    data: {
+      access_key_id: "AKIAJIPBWGE6PG5C2VGA",
+      secret_access_key: "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",
+      region: "eu-west-1",
+      key: "europe-default",
+      ami: "ami-55393c21"
+    }
   }
 
   ec2_provider = new Provider(config)

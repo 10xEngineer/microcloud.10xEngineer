@@ -16,6 +16,7 @@
         , "now": "*"
         , "nconf": "*"
         , "mongoose": "*"
+        , "zmq": "*"
     }
   , "devDependencies": {
     "mocha": "1.0.x"

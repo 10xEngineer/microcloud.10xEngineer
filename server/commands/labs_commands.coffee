@@ -4,6 +4,11 @@ mongoose = require("mongoose")
 log = require("log4js").getLogger()
 LabDefinition = mongoose.model("LabDefinition")
 
+
+#
+# Lab definition
+#
+
 module.exports.index = (req, res, next) ->
   LabDefinition.find {}, {_id: 0, "meta": 0}, (err, doc) ->
     res.send doc
@@ -30,5 +35,18 @@ module.exports.create = (req, res, next) ->
 
 module.exports.destroy = (req, res, next) ->
   log.warn "action=destroy lab_definition='#{req.params.lab_definition_id}"
+  # TODO soft delete only
   LabDefinition.remove {name: req.params.lab_definition_id}, ->
       res.send 200
+
+#
+# Lab provisioning
+#
+
+module.exports.allocate = (req, res, next) ->
+  # TODO lab is created for (course, user); need to validate existing
+  # TODO find available VMs
+  #      need to have pool of VMs
+  #      allocate them (on same server)
+  res.send "Not implemented"
+

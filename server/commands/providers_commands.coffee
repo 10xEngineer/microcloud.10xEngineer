@@ -30,6 +30,8 @@ module.exports.show = (req, res, next) ->
 
 module.exports.destroy = (req, res, next) ->
   long.warn "action=destroy provider='#{req.params.provider}"
+  # TODO soft delete only (need to consider security implications)
+  # might be better to log events appropriately 
   Provider.remove {name: req.params.provider}, ->
       res.send 200
 

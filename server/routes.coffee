@@ -28,10 +28,14 @@ module.exports.registerRoutes = (server)->
 	server.del '/providers/:provider', commands.providers.destroy
 
 	# lab definition
+	# TODO visible on course token based authorization
 	server.get '/labs', commands.labs.index
 	server.get '/labs/:lab_definition_id', commands.labs.show
 	server.post '/labs', commands.labs.create
 	server.del '/labs/:lab_definition_id', commands.labs.destroy
+
+	# lab provisioning
+	server.post '/labs/:lab_definition_id', commands.labs.allocate
 
 	# virtual lab VM pool management
 	server.get '/pool/status', commands.pool.status
@@ -61,6 +65,12 @@ module.exports.registerRoutes = (server)->
 	server.get '/server/restart/:destination/:server', commands.server.restart
 	server.get '/server/restart/:destination', commands.server.restart
 
+	# TODO re-design VM support (that's how containers are called in 10xEngineer terminology)
+	#
+	# POST /vms/:server - prepare VM
+	# GET /vms/:server - list VMs per particular server
+	# 
+	#
 	# lxc container verbs
 	server.get '/containers/create', commands.container.create
 	server.get '/containers/:container/delete', commands.container.delete
