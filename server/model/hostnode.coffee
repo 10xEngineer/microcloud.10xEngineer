@@ -1,9 +1,6 @@
 mongoose = require 'mongoose'
 
-#
-#
-
-HostnodeSchema = new mongoose.Schema(
+Hostnode = new mongoose.Schema(
   server_id : {type: String, unique: true}
   hostname: String,
   provider: String,
@@ -18,4 +15,20 @@ HostnodeSchema = new mongoose.Schema(
   }
 )
 
-module.exports.register = mongoose.model 'Hostnode', HostnodeSchema
+Hostnode.statics.find_by_server_id = (id, callback) ->
+  this.findOne {server_id: id}, callback
+
+Hostnode.method 'confirm', ->
+  console.log this
+  this.state = 'running'
+
+  hostnode = this
+  this.save (err) ->
+    if err
+      console.log "Unable to update #{hostnode.server_id}"
+    else
+      console.log "Hostnode #{hostnode.server_id} confirmed"
+
+module.exports.register = mongoose.model 'Hostnode', Hostnode
+
+

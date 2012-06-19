@@ -15,7 +15,8 @@ module.exports.create = (req, res, next) ->
     if provider
       broker.dispatch provider.name , 'start', provider.data, (message) ->
         if message.status == 'ok'
-          Hostnode.findOne {server_id: message.options.id}, (err,hostnode) ->
+          # FIXME wtf? 
+          Hostnode.find_by_server_id message.options.id, (err, hostnode) ->
             if hostnode
               hostnode.token = message.options.token
               hostnode.meta.updated_at = Date.now()
