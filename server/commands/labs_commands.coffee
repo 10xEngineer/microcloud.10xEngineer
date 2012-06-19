@@ -3,7 +3,8 @@ module.exports = ->
 mongoose = require("mongoose")
 log = require("log4js").getLogger()
 LabDefinition = mongoose.model("LabDefinition")
-
+Vm = mongoose.model("Vm")
+Lab = mongoose.model("Lab")
 
 #
 # Lab definition
@@ -46,9 +47,27 @@ module.exports.destroy = (req, res, next) ->
 module.exports.allocate = (req, res, next) ->
   # TODO lab is created for (course, user); need to validate existing
   # TODO 
-  #      find available VMs (from available servers - better pools)
   #      (for starter - just pick first two available VMs)
   #      need to have pool of VMs
   #      allocate them (on same server)
-  res.send "Not implemented"
+  LabDefinition.findOne {name: req.params.lab_definition_id}, (err, lab_def) ->
+    if lab_def
+      # TODO create lab (if it doesn't exists)
+      lab = new Lab
+      lab.save (err) ->
+        console.log err
+        console.log "Lab #{lab.token}"
+        Vm.where('state', 'prepared').limit(2).exec (err, vms) ->
+          if lab_def.vms.length == vms.length
+            #Vm.reserve vm for vm in vms
+            # VMs are available
+            # TODO allocate both VMs
+            console.log vms
+          else
+            # FIXME dynamic allocation
+            res.send 500, "On-demand VM allocation not available (yet)."
+    else
+      res.send 404, 'Lab definition not found'
 
+
+  
