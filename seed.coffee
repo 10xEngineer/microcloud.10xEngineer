@@ -27,3 +27,8 @@ require("fs").readdirSync("./server/db").forEach (file) ->
     log.info "seed_file=#{basename}"
     seed_module = require "./server/db/#{basename}"
     seed_module.seed()
+
+
+log.info "done."
+
+process.exit()
