@@ -1,5 +1,8 @@
 commands = require './commands/commands'
 
+# FIXME all resources should be re-use same logic + have callback to modify behaviour
+# FIXME unify responses / response codes
+
 module.exports.registerRoutes = (server)->
 	server.get '/ping', commands.get_ping
 	server.post '/ping', commands.post_ping
@@ -18,7 +21,7 @@ module.exports.registerRoutes = (server)->
 	server.get '/command/:cmd/:args', commands.cli.call_cli
 	server.head '/command/:cmd/:args', commands.cli.call_cli
 
-        # provider management
+	# provider management
 	server.get '/providers', commands.providers.index
 	server.get '/providers/:provider', commands.providers.show
 	server.post '/providers', commands.providers.create
@@ -27,6 +30,8 @@ module.exports.registerRoutes = (server)->
 	# lab definition
 	server.get '/labs', commands.labs.index
 	server.get '/labs/:lab_definition_id', commands.labs.show
+	server.post '/labs', commands.labs.create
+	server.del '/labs/:lab_definition_id', commands.labs.destroy
 
 	# virtual lab VM pool management
 	server.get '/pool/status', commands.pool.status
