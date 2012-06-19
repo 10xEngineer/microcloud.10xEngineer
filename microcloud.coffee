@@ -14,6 +14,7 @@ server = restify.createServer(
 # model
 require("./server/model/provider").register
 require("./server/model/hostnode").register
+require("./server/model/lab_definition").register
 
 # routes
 routes = require("./server/routes")
