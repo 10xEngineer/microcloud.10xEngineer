@@ -17,12 +17,16 @@ module.exports.registerRoutes = (server)->
 	# run a shell command
 	server.get '/command/:cmd/:args', commands.cli.call_cli
 	server.head '/command/:cmd/:args', commands.cli.call_cli
-  
-  # provider management
+
+        # provider management
 	server.get '/providers', commands.providers.index
 	server.get '/providers/:provider', commands.providers.show
 	server.post '/providers', commands.providers.create
 	server.del '/providers/:provider', commands.providers.destroy
+
+	# lab definition
+	server.get '/labs', commands.labs.index
+	server.get '/labs/:lab_definition_id', commands.labs.show
 
 	# virtual lab VM pool management
 	server.get '/pool/status', commands.pool.status
