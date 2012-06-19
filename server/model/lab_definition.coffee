@@ -8,7 +8,7 @@ VMDefinition = new mongoose.Schema({
   vm_attrs: {env: String},
 })
 
-
+# TODO soft deletes and versioning
 LabDefinitionSchema = new mongoose.Schema(
   name: {type: String, unique: true},
   course: String,

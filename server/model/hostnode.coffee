@@ -18,21 +18,22 @@ Hostnode.statics.find_by_server_id = (id, callback) ->
 
 Hostnode.statics.paths = ->
   "new":
-    confirm: ->
+    confirm: (data) ->
       console.log("confirmed xxx!")
+      console.log data
 
       return "running"
 
-    something: ->
+    something: (data) ->
       console.log("didn't start xxx")
       
       return "failed"
 
   "running":
-    confirm: ->
+    confirm: (data) ->
       console.log("confirmed; yet again")
 
-    fail: ->
+    fail: (data) ->
       console.log("failed!")
       
       return "failed"

@@ -20,7 +20,7 @@ module.exports.dummy = (req, res, next) ->
   Hostnode.find_by_server_id req.params.server, (err, hostnode) ->
     if hostnode
       # FIXME process body to find action
-      hostnode.fire data["action"], (err) -> 
+      hostnode.fire data["action"], {}, (err) -> 
         if err
           console.log(err)
 

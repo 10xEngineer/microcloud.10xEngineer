@@ -10,7 +10,7 @@ module.exports = exports = stateMachinePlugin = (schema, init_with) ->
     state: {type: String, default: 'new'}
   })
 
-  schema.methods.fire = (event, err_callback) ->
+  schema.methods.fire = (event, data = {}, err_callback) ->
     # TODO around transition wrapper
     if typeof schema.statics["paths"] != 'function'
       return err_call(err_callback, new Error("Not a valid state machine object!"))
@@ -26,7 +26,7 @@ module.exports = exports = stateMachinePlugin = (schema, init_with) ->
       return err_call(err_callback, new Error("Event not found '#{event}'"))
 
     action = current[event]
-    new_state = action()
+    new_state = action(data)
 
     if new_state
       if !paths.hasOwnProperty(new_state)
