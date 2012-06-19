@@ -31,4 +31,4 @@ require("fs").readdirSync("./server/db").forEach (file) ->
 
 log.info "done."
 
-process.exit()
+#process.exit()

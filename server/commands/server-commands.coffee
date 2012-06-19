@@ -12,6 +12,7 @@ module.exports.create = (req, res, next) ->
     if err
       log.error "Unable to get provider"
       res.send 409, err.message
+
     if provider
       broker.dispatch provider.name , 'start', provider.data, (message) ->
         if message.status == 'ok'
@@ -19,7 +20,6 @@ module.exports.create = (req, res, next) ->
           Hostnode.find_by_server_id message.options.id, (err, hostnode) ->
             if hostnode
               hostnode.token = message.options.token
-              hostnode.meta.updated_at = Date.now()
               hostnode.save (err) ->
                 if err
                   log.error "Unable to save hostnode: #{err.message}"
@@ -47,6 +47,8 @@ module.exports.create = (req, res, next) ->
                   res.send hostnode
         else
           res.send message
+    else
+      res.send 404, "No provider found."
 
 module.exports.show = (req, res, next) ->
   Provider.findOne {name: req.params.provider}, (err, provider) ->

@@ -1,4 +1,5 @@
 mongoose = require 'mongoose'
+timestamps = require "../utility/timestamp_plugin"
 
 Hostnode = new mongoose.Schema(
   server_id : {type: String, unique: true}
@@ -6,13 +7,7 @@ Hostnode = new mongoose.Schema(
   provider: String,
   type: String,
   state: {type: String, default: 'new'}
-  token: String,
-
-  # TODO make this re-usable
-  meta: {
-    created_at: {type: Date, default: Date.now}
-    updated_at: {type: Date, default: Date.now}
-  }
+  token: String
 )
 
 Hostnode.statics.find_by_server_id = (id, callback) ->
@@ -28,6 +23,8 @@ Hostnode.method 'confirm', ->
       console.log "Unable to update #{hostnode.server_id}"
     else
       console.log "Hostnode #{hostnode.server_id} confirmed"
+
+#Hostnode.plugin(timestamps)
 
 module.exports.register = mongoose.model 'Hostnode', Hostnode
 
