@@ -1,4 +1,4 @@
-module.exports = exports = timestampPlugin = (schema, options) ->
+module.exports = exports = timestampPlugin = (schema) ->
   schema.add({
     meta: {
       created_at: {type: Date, default: Date.now}

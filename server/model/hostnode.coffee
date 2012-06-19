@@ -1,30 +1,41 @@
 mongoose = require 'mongoose'
 timestamps = require "../utility/timestamp_plugin"
+state_machine = require "../utility/state_plugin"
 
 Hostnode = new mongoose.Schema(
   server_id : {type: String, unique: true}
   hostname: String,
   provider: String,
   type: String,
-  state: {type: String, default: 'new'}
   token: String
 )
+
+Hostnode.plugin(timestamps)
+Hostnode.plugin(state_machine, 'new')
 
 Hostnode.statics.find_by_server_id = (id, callback) ->
   this.findOne {server_id: id}, callback
 
-Hostnode.method 'confirm', ->
-  console.log this
-  this.state = 'running'
+Hostnode.statics.paths = ->
+  "new":
+    confirm: ->
+      console.log("confirmed xxx!")
 
-  hostnode = this
-  this.save (err) ->
-    if err
-      console.log "Unable to update #{hostnode.server_id}"
-    else
-      console.log "Hostnode #{hostnode.server_id} confirmed"
+      return "running"
 
-#Hostnode.plugin(timestamps)
+    something: ->
+      console.log("didn't start xxx")
+      
+      return "failed"
+
+  "running":
+    confirm: ->
+      console.log("confirmed; yet again")
+
+    fail: ->
+      console.log("failed!")
+      
+      return "failed"
 
 module.exports.register = mongoose.model 'Hostnode', Hostnode
 
