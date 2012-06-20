@@ -41,13 +41,16 @@ class LxcService < Provider
   end
 
   def allocate(request)
-
     # allocate prepared container 
     # arguments: id, course_template (how to finish the provisioning)
 
     # TODO allocate vs start
     # TODO unable to run lxc-execute to finish provisioning
     # TODO lxc-start 
+    #
+    # TODO allocate should really be async (fire notification when available)
+
+    response :ok
   end
 
   def start(request)

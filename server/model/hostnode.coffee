@@ -1,3 +1,4 @@
+log = require("log4js").getLogger()
 mongoose = require 'mongoose'
 timestamps = require "../utility/timestamp_plugin"
 state_machine = require "../utility/state_plugin"
@@ -18,22 +19,26 @@ Hostnode.statics.find_by_server_id = (id, callback) ->
 
 Hostnode.statics.paths = ->
   "new":
-    confirm: (data) ->
-      console.log("confirmed xxx!")
-      console.log data
+    confirm: (node, data) ->
+      node.hostname = data.hostname
 
+      if !node.hostname
+        log.error("Unable to confirm hostnode=#{node.server_id} reason='Hostname not provided'")
+        return "failed"
+    
+      log.info("confirmed hostnode=#{node.server_id} hostname=#{node.hostname}") 
       return "running"
 
-    something: (data) ->
+    something: (node, data) ->
       console.log("didn't start xxx")
       
       return "failed"
 
   "running":
-    confirm: (data) ->
+    confirm: (node, data) ->
       console.log("confirmed; yet again")
 
-    fail: (data) ->
+    fail: (node, data) ->
       console.log("failed!")
       
       return "failed"

@@ -1,3 +1,5 @@
+# TODO log transitions
+
 err_call = (callback, err) ->
   if callback
     return callback(err)
