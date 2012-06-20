@@ -1,5 +1,5 @@
 {
-  "run_list": ["role[hostnode]", "recipe[10xeng-node::ec2]"],
+  "run_list": ["role[hostnode]", "recipe[10xeng-node::ec2]", "recipe[gateone::server]"],
   "microcloud": {
     "endpoint": null
   },

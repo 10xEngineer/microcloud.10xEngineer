@@ -30,7 +30,11 @@ class Ec2Service < Provider
     })
 
     # TODO re-use signed URLs (general quite slow)
-    bucket = s3.directories.get(BINARY_DIST[:bucket])
+    # TODO bucket needs to be in same region (otherwise 301)
+    #      might be easier to get single CF URL
+    bucket_name = "tenxops-#{request["options"]["region"]}"
+
+    bucket = s3.directories.get(bucket_name)
     target_file = bucket.files.get(BINARY_DIST[:file])
 
     expiration = Time.now.utc + 60*15
