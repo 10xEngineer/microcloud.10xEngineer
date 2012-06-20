@@ -11,7 +11,7 @@ class VagrantService < Provider
   def start(request)
     token = TenxEngineer.server_token('default')
     if  TenxEngineer::VirtualBox.detect?
-      return response :ok, :id => :default, :hostname => "localhost", :token => token
+      return response :ok, :id => :default, :hostname => nil, :token => token
     end
 
     #raise "Vagrant environment (env) not specified" unless request["options"].include?("env")
@@ -25,7 +25,7 @@ class VagrantService < Provider
     #  vm.start
     #end
 
-    response :ok, :id => :default, :hostname => "localhost", :token => token
+    response :ok, :id => :default, :hostname => nil, :token => token
   end
 
   def stop(request)
