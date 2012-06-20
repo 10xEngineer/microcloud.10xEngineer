@@ -23,17 +23,17 @@ Vm.plugin(state_machine, 'prepared')
 #
 Vm.statics.paths = ->
   "prepared":
-    # reserve VM for given lab
+    # TODO reserve VM for given lab
+    # not really in use right now (TODO)
     book: (vm, lab) ->
       console.log("vm=#{vm.uuid} reserved for lab=#{lab.token}")
       vm.lab = lab
 
       return "reserved"
 
-    # move under reserved state
+    # TODO move under 'reserver' state later
     start: (vm, vm_data) ->
-      vm.descriptor.ip_addr = vm_data.ip_addr
-      vm.markModified('descriptor')
+      vm.start(vm_data)
 
       return "running"
 
@@ -47,12 +47,18 @@ Vm.statics.paths = ->
   "reserved": {}
 
   "allocated":
-    something: (vm, lab) ->
-      console.log("ping/pong")
+    start: (vm, vm_data) ->
+      vm.start(vm_data)
+
+      return "running"
 
 Vm.statics.reserve = (vm, lab) ->
   vm.fire 'book', lab, (err) ->
     if err
       console.log "Unable to reserve vm=#{vm.uuid} (#{err})"
+
+Vm.methods.start = (data) ->
+  this.descriptor.ip_addr = data.ip_addr
+  this.markModified('descriptor')
 
 module.exports.register = mongoose.model 'Vm', Vm
