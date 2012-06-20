@@ -26,7 +26,6 @@ Hostnode.statics.paths = ->
         log.error("Unable to confirm hostnode=#{node.server_id} reason='Hostname not provided'")
         return "failed"
     
-      log.info("confirmed hostnode=#{node.server_id} hostname=#{node.hostname}") 
       return "running"
 
     something: (node, data) ->
@@ -43,11 +42,9 @@ Hostnode.statics.paths = ->
       
       return "failed"
 
-Hostnode.addListener 'beforeTransition', (node, event) ->
-  console.log node
-  console.log "Taking transition for #{node.server_id}"
+Hostnode.addListener 'afterTransition', (node, prev_state) ->
+  log.info "hostnode=#{node.server_id} changed state from=#{prev_state} to=#{node.state}"
 
 
 module.exports.register = mongoose.model 'Hostnode', Hostnode
-
 
