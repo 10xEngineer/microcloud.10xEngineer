@@ -26,7 +26,7 @@ module.exports = exports = stateMachinePlugin = (schema, init_with) ->
       return err_call(err_callback, new Error("Event not found '#{event}'"))
 
     action = current[event]
-    new_state = action(data)
+    new_state = action(this, data)
 
     if new_state
       if !paths.hasOwnProperty(new_state)
