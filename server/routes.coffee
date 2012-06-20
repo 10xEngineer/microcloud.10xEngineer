@@ -56,9 +56,11 @@ module.exports.registerRoutes = (server)->
 	# TODO: Fix status calls for vagrant and ec2
 	# TODO: Fix feedback and termination to client for all calls
 	# RDM - making it a bit more RESTful 
+	server.get '/servers/:provider', commands.server.index
 	server.post '/servers/:provider', commands.server.create
 	server.get '/servers/:provider/:server', commands.server.show
 	server.del '/servers/:provider/:server', commands.server.destroy
+
 	# TODO refactor together with other notifications
 	# TODO refactor route
 	server.post '/server/:server/notify', commands.notifications.dummy

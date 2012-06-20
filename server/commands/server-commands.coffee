@@ -7,6 +7,14 @@ Provider = mongoose.model('Provider')
 Hostnode = mongoose.model('Hostnode')
 broker = require("../broker")
 
+module.exports.index = (req, res, next) ->
+  Provider.findOne {name: req.params.provider}, (err, provider) ->
+    if err
+      res.send 404, "Provider does not exist"
+    if provider
+      Hostnode.find {"provider": provider.name}, {_id:0}, (err, hostnodes) ->
+        res.send hostnodes
+
 module.exports.create = (req, res, next) ->
   Provider.findOne {name: req.params.provider}, (err, provider) ->
     if err
@@ -14,7 +22,7 @@ module.exports.create = (req, res, next) ->
       res.send 409, err.message
 
     if provider
-      broker.dispatch provider.name , 'start', provider.data, (message) ->
+      broker.dispatch provider.service , 'start', provider.data, (message) ->
         if message.status == 'ok'
           # FIXME wtf? 
           Hostnode.find_by_server_id message.options.id, (err, hostnode) ->
