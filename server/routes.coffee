@@ -4,17 +4,40 @@ commands = require './commands/commands'
 #       something like resources in rails
 # FIXME unify responses / response codes
 
-module.exports.registerRoutes = (server)->
+module.exports.registerRoutes = (server)->	
+	#
+	# internal/diagnostic commands
+	#
 	server.get '/ping', commands.get_ping
 	server.post '/ping', commands.post_ping
-
 	server.get '/broker/ping', commands.broker_ping
 
-	# nowjs notification (subscribe/unsubscribe)
+	# 
+	# provider management
+	#
+	server.get '/providers', commands.providers.index
+	server.get '/providers/:provider', commands.providers.show
+	server.post '/providers', commands.providers.create
+	server.del '/providers/:provider', commands.providers.destroy
+	server.get '/providers/:provider/servers', commands.server.index
+
+	#
+	# server/hostnode management
+	#
+	# TODO server.get '/servers', ...
+	server.post '/servers/:provider', commands.server.create
+	server.get '/servers/:server', commands.server.show
+	server.del '/servers/:server', commands.server.destroy
+	server.post '/servers/:server/notify', commands.server.notify
+
+
+	# ----------- to be refactored/implemented
+
+	# nowjs notification (subscribe/unsubscribe) - TODO review
 	server.post '/subscribe/:userid', commands.notifications.subscribe
 	server.post '/unsubscribe/:userid', commands.notifications.unsubscribe
 
-	# clie command
+	# clie command (TODO review)
 	server.get '/command/exectest', commands.test_cli_exec 
 	#TODO: spawn  for tail ... etc streaming still doesn't work)
 	#server.get '/command/spawntest', commands.test_cli_spawn
@@ -22,11 +45,7 @@ module.exports.registerRoutes = (server)->
 	server.get '/command/:cmd/:args', commands.cli.call_cli
 	server.head '/command/:cmd/:args', commands.cli.call_cli
 
-	# provider management
-	server.get '/providers', commands.providers.index
-	server.get '/providers/:provider', commands.providers.show
-	server.post '/providers', commands.providers.create
-	server.del '/providers/:provider', commands.providers.destroy
+
 
 	# lab definition
 	# TODO visible on course token based authorization
@@ -50,20 +69,6 @@ module.exports.registerRoutes = (server)->
 	# add/remove an LXC instance to the ec2 server in the pool
 	server.get '/pool/:server/allocate', commands.pool.allocate
 	server.get '/pool/:server/:container/deallocate', commands.pool.deallocate
-
-	#  vagrant|ec2) server instance verbs
-	# TODO: Allow specific instances, not just the last one started
-	# TODO: Fix status calls for vagrant and ec2
-	# TODO: Fix feedback and termination to client for all calls
-	# RDM - making it a bit more RESTful 
-	server.get '/servers/:provider', commands.server.index
-	server.post '/servers/:provider', commands.server.create
-	server.get '/servers/:provider/:server', commands.server.show
-	server.del '/servers/:provider/:server', commands.server.destroy
-
-	# TODO refactor together with other notifications
-	# TODO refactor route
-	server.post '/server/:server/notify', commands.notifications.dummy
 
 	server.get '/server/start/:destination', commands.server.start
 	server.get '/server/stop/:destination/:server', commands.server.stop

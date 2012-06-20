@@ -58,23 +58,49 @@ module.exports.create = (req, res, next) ->
     else
       res.send 404, "No provider found."
 
+#
+# TODO how to periodically get server status
 module.exports.show = (req, res, next) ->
-  Provider.findOne {name: req.params.provider}, (err, provider) ->
+  Hostnode.findOne {server_id: req.params.server}, (err, server) ->
+    console.log server
     if err
-      log.error "Unable to get provider"
-      res.send 409, err.message
-    if provider
-      broker.dispatch provider.name , 'status', provider.data, (message) ->
-        res.send message
+      res.send 500, err
 
+    if server
+      res.send server
+    else
+      res.send 404, 'Server not found.'
+  
 module.exports.destroy = (req, res, next) ->
-  Provider.findOne {name: req.params.provider}, (err, provider) ->
+  Provider.for_server req.params.server, (err, provider) ->
     if err
-      log.error "Unable to get provider"
-      res.send 409, err.message
+      res.send 500, err
+
     if provider
-      broker.dispatch provider.name , 'stop', provider.data, (message) ->
+      data = {
+        id: req.params.server
+      }
+      broker.dispatch provider.name , 'stop', data, (message) ->
         res.send message
+    else
+      # TODO trigger housekeeping
+      res.send 500, "No provider for server '#{req.params.server}'"
+
+# TODO move to appropriate module (servers)
+module.exports.notify = (req, res, next) ->
+  data = JSON.parse(req.body)
+  # FIXME verify data/action
+  Hostnode.find_by_server_id req.params.server, (err, hostnode) ->
+    if hostnode
+      # FIXME process body to find action
+      hostnode.fire data["action"], data.hostnode , (err) -> 
+        if err
+          console.log(err)
+
+      res.send 200
+    else
+      log.error("Notification for invalid hostnode=#{req.params.server}")
+      res.send 404, {}
 
 # ==================================================================================================================================
 module.exports.start = (req, res, next) ->

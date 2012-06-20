@@ -32,7 +32,7 @@ class VagrantService < Provider
     server_id = request["options"]["id"] || "no.server.specified"
 
     # single VM support for now
-    raise "Invalid server (#{require["options"]["id"]})" if server != "default"
+    raise "Invalid server (#{request["options"]["id"]})" if server_id != "default"
 
     if  TenxEngineer::VirtualBox.detect?
       return response :ok, :long_story => "Microcloud seems to be running in VirtualBox. Not really going to shoot myself in the foot"
