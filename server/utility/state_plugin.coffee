@@ -1,4 +1,4 @@
-# TODO log transitions
+emitter = require('events').EventEmitter
 
 err_call = (callback, err) ->
   if callback
@@ -28,7 +28,11 @@ module.exports = exports = stateMachinePlugin = (schema, init_with) ->
       return err_call(callback, new Error("Event not found '#{event}'"))
 
     action = current[event]
+    prev_state = this.state
+
+    schema.emit('beforeTransition', this, event)
     new_state = action(this, data)
+    schema.emit('afterTransition', this, prev_state)
 
     if new_state
       if !paths.hasOwnProperty(new_state)

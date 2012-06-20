@@ -43,6 +43,11 @@ Hostnode.statics.paths = ->
       
       return "failed"
 
+Hostnode.addListener 'beforeTransition', (node, event) ->
+  console.log node
+  console.log "Taking transition for #{node.server_id}"
+
+
 module.exports.register = mongoose.model 'Hostnode', Hostnode
 
 
