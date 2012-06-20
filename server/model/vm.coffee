@@ -10,7 +10,9 @@ Vm = new mongoose.Schema(
   vm_type: String,
   server: String,
   pool: String,
-  descriptor: {env: String}
+  # Mixed - dont' forget vm.markModified('descriptor')
+  # http://mongoosejs.com/docs/schematypes.html#mixed
+  descriptor: {}
 )
 
 Vm.plugin(timestamps)
@@ -30,18 +32,23 @@ Vm.statics.paths = ->
 
     # move under reserved state
     start: (vm, vm_data) ->
-      vm.state = 'running'
       vm.descriptor.ip_addr = vm_data.ip_addr
+      vm.markModified('descriptor')
 
       return "running"
+
+  "running":
+    stop: (vm, vm_data) ->
+      vm.descriptor.ip_addr = null
+      vm.markModified('descriptor')
+      
+      return "allocated"
 
   "reserved": {}
 
   "allocated":
     something: (vm, lab) ->
       console.log("ping/pong")
-
-  "running": {}
 
 Vm.statics.reserve = (vm, lab) ->
   vm.fire 'book', lab, (err) ->
