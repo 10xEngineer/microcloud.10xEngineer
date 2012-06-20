@@ -81,6 +81,7 @@ module.exports.registerRoutes = (server)->
 	
 	server.get '/vms/:server_id', commands.vms.index
 	server.post '/vms/:server_id', commands.vms.create
+	server.post '/updates/vms/:vm', commands.vms.updates
 
 	#
 	# lxc container verbs

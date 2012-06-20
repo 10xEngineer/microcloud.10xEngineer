@@ -24,21 +24,28 @@ Vm.statics.paths = ->
     # reserve VM for given lab
     book: (vm, lab) ->
       console.log("vm=#{vm.uuid} reserved for lab=#{lab.token}")
-      
       vm.lab = lab
 
       return "reserved"
 
-  "reserved":
-    confirm: (vm, lab) ->
-      console.log("confirmed??")
-      return "allocated"
+    # move under reserved state
+    start: (vm, vm_data) ->
+      vm.state = 'running'
+      vm.descriptor.ip_addr = vm_data.ip_addr
+
+      return "running"
+
+  "reserved": {}
 
   "allocated":
     something: (vm, lab) ->
       console.log("ping/pong")
 
+  "running": {}
+
 Vm.statics.reserve = (vm, lab) ->
-  vm.fire('book', lab)
+  vm.fire 'book', lab, (err) ->
+    if err
+      console.log "Unable to reserve vm=#{vm.uuid} (#{err})"
 
 module.exports.register = mongoose.model 'Vm', Vm

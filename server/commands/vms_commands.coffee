@@ -14,6 +14,20 @@ Hostnode = mongoose.model('Hostnode')
 module.exports.index = (req, res, next) ->
   res.send {}
 
+module.exports.updates = (req, res, next) ->
+  data = JSON.parse req.body
+
+  Vm.findOne {uuid: data.vm.id}, (err, vm) ->
+    if vm
+      vm.fire data.action, data.vm, (err) ->
+        if err
+          console.log err
+
+      res.send 200
+    else
+      log.error("Notification for invalid vm=#{data.vm.id}")
+      res.send 404, {}
+
 module.exports.create = (req, res, next) ->
   # TODO support for multiple VM provisioning (?count=N)
   Hostnode.findOne {server_id: req.params.server_id}, (err,hostnode) ->
