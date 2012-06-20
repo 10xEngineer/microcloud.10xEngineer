@@ -55,14 +55,16 @@ module.exports.allocate = (req, res, next) ->
       # TODO create lab (if it doesn't exists)
       lab = new Lab
       lab.save (err) ->
-        console.log err
-        console.log "Lab #{lab.token}"
+        # TODO err handling
         Vm.where('state', 'prepared').limit(2).exec (err, vms) ->
           if lab_def.vms.length == vms.length
-            #Vm.reserve vm for vm in vms
+            Vm.reserve vm,lab for vm in vms
+            
+            
             # VMs are available
             # TODO allocate both VMs
-            console.log vms
+
+            res.send 200, "test"
           else
             # FIXME dynamic allocation
             res.send 500, "On-demand VM allocation not available (yet)."

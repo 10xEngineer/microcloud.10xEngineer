@@ -44,5 +44,5 @@ module.exports.create = (req, res, next) ->
 
             res.send vm
       else
-        console.log "Unable to prepare VM: #{message.options.reason}"
+        console.log "#{hostnode.hostname}: Unable to prepare VM(#{message.options.reason})"
         res.send 500, "failed: #{message.options.reason}"

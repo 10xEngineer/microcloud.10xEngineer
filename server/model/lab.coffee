@@ -19,9 +19,7 @@ Lab.pre 'save', (next) ->
   lab = this
   if !this.token
     require("crypto").randomBytes 4, (ex,buf) ->
-      token = buf.toString('hex')
-
-      lab.token = token
+      lab.token = buf.toString('hex')
       next()
   else
     next()

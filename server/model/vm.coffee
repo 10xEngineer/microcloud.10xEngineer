@@ -1,10 +1,12 @@
 mongoose = require "mongoose"
 timestamps = require "../utility/timestamp_plugin"
 state_machine = require "../utility/state_plugin"
+ObjectId = mongoose.Schema.ObjectId;
 
 Vm = new mongoose.Schema(
   uuid: {type: String, unique: true},
   state: {type: String, default: 'prepared'},
+  lab: {type:ObjectId, default: null},
   vm_type: String,
   server: String,
   pool: String,
@@ -14,23 +16,29 @@ Vm = new mongoose.Schema(
 Vm.plugin(timestamps)
 Vm.plugin(state_machine, 'prepared')
 
+#
+# state machine
+#
 Vm.statics.paths = ->
   "prepared":
-    book: ->
-      console.log("confirmed xxx!")
+    # reserve VM for given lab
+    book: (vm, lab) ->
+      console.log("vm=#{vm.uuid} reserved for lab=#{lab.token}")
+      
+      vm.lab = lab
 
       return "reserved"
+
   "reserved":
-    confirm: ->
+    confirm: (vm, lab) ->
       console.log("confirmed??")
       return "allocated"
 
   "allocated":
-    something: ->
+    something: (vm, lab) ->
       console.log("ping/pong")
 
 Vm.statics.reserve = (vm, lab) ->
-  console.log "About to reserver"
-  console.log vm
+  vm.fire('book', lab)
 
 module.exports.register = mongoose.model 'Vm', Vm
