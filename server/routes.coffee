@@ -30,6 +30,13 @@ module.exports.registerRoutes = (server)->
 	server.del '/servers/:server', commands.server.destroy
 	server.post '/servers/:server/notify', commands.server.notify
 
+	#
+	# VMs
+	#
+	# TODO ambiguous definition server_id vs vm_id
+	server.get '/vms/:server_id', commands.vms.index
+	server.post '/vms/:server_id', commands.vms.create
+	server.post '/vms/:vm/notify', commands.vms.updates
 
 	# ----------- to be refactored/implemented
 
@@ -67,16 +74,6 @@ module.exports.registerRoutes = (server)->
 	server.get '/server/status/:destination', commands.server.status
 	server.get '/server/restart/:destination/:server', commands.server.restart
 	server.get '/server/restart/:destination', commands.server.restart
-
-	# TODO re-design VM support (that's how containers are called in 10xEngineer terminology)
-	#
-	# POST /vms/:server - prepare VM
-	# GET /vms/:server - list VMs per particular server
-	# 
-	
-	server.get '/vms/:server_id', commands.vms.index
-	server.post '/vms/:server_id', commands.vms.create
-	server.post '/updates/vms/:vm', commands.vms.updates
 
 	#
 	# lxc container verbs

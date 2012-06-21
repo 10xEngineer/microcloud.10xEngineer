@@ -12,6 +12,7 @@ Hostnode = mongoose.model('Hostnode')
 #
 
 module.exports.index = (req, res, next) ->
+  # TODO implement
   res.send {}
 
 module.exports.updates = (req, res, next) ->
