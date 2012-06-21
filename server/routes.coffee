@@ -37,16 +37,6 @@ module.exports.registerRoutes = (server)->
 	server.post '/subscribe/:userid', commands.notifications.subscribe
 	server.post '/unsubscribe/:userid', commands.notifications.unsubscribe
 
-	# clie command (TODO review)
-	server.get '/command/exectest', commands.test_cli_exec 
-	#TODO: spawn  for tail ... etc streaming still doesn't work)
-	#server.get '/command/spawntest', commands.test_cli_spawn
-	# run a shell command
-	server.get '/command/:cmd/:args', commands.cli.call_cli
-	server.head '/command/:cmd/:args', commands.cli.call_cli
-
-
-
 	# lab definition
 	# TODO visible on course token based authorization
 	server.get '/labs', commands.labs.index
