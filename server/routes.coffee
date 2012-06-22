@@ -56,7 +56,28 @@ module.exports.registerRoutes = (server)->
 
 	# notification support
 
+	#
 	# virtual lab VM pool management
+	#
+	# Pool represents a 'availability zone' for VM provisioning. Its characteristics
+	# include attributes like:
+	# * name (id)
+	# * environment (custom - generally dev/test/staging, or team level)
+	# * location (???)
+	# * vm_type (ubuntu, windows, os/390_hercules, etc.); the underlying technology
+	# * 
+	#
+	# Hostnodes (and providers) are assigned to provide/manage VMs for particular pool.
+	#
+	# Pools should have strict ALCs and auditing (together with other objects)
+	# https://trello.com/card/microcloud-org-security/4fc57db3060a0e9f4339d07d/29
+	# 
+	# Examples:
+	#
+	# acme-dev-ubuntu-apac-1 (company, ubuntu_1204_1 template, dev environment, comms room 1)
+	# acme-dev-ubuntu-ec2-apac-1 (...) and so on
+	# 
+	#
 	server.get '/pool/status', commands.pool.status
 	server.get '/pool/startup', commands.pool.startup
 	server.get '/pool/shutdown', commands.pool.shutdown
