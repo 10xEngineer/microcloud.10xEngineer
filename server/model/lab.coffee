@@ -1,5 +1,6 @@
 mongoose = require 'mongoose'
 timestamps = require "../utility/timestamp_plugin"
+ObjectId = mongoose.Schema.ObjectId
 
 Lab = new mongoose.Schema({
   token: String,
