@@ -9,6 +9,7 @@ Vm = new mongoose.Schema(
   state: {type: String, default: 'prepared'},
   lab: {type:ObjectId, default: null},
   vm_type: String,
+  vm_name: String,
   server: String,
   pool: String,
   # Mixed - dont' forget vm.markModified('descriptor')
@@ -20,7 +21,18 @@ Vm.plugin(timestamps)
 Vm.plugin(state_machine, 'prepared')
 
 Vm.statics.findAndModify = (query, sort, doc, options, callback) ->
-  return this.collection.findAndModify(query, sort, doc, options, callback);
+  this.collection.findAndModify query, sort, doc, options, (err, raw_vm) ->
+    if err
+      return callback(err,raw_vm)
+
+    if raw_vm 
+      mongoose.model("Vm").findOne {uuid: raw_vm.uuid}, (err, vm) ->
+        if err
+          return callback(err,vm)
+        else
+          return callback(null,vm)
+    else
+      return callback(null, null)
 
 #
 # state machine
@@ -40,6 +52,10 @@ Vm.statics.paths = ->
       vm.start(vm_data)
 
       return "running"
+
+  "locked":
+    allocate: (vm) ->
+      return "allocated"
 
   "running":
     stop: (vm, vm_data) ->
