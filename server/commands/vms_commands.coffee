@@ -61,3 +61,8 @@ module.exports.create = (req, res, next) ->
       else
         console.log "#{hostnode.hostname}: Unable to prepare VM(#{message.options.reason})"
         res.send 500, "failed: #{message.options.reason}"
+
+# TODO start
+# TODO stop
+
+# TODO extended functionality (VM migration/hibernation/etc)

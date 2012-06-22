@@ -59,6 +59,8 @@ module.exports.registerRoutes = (server)->
 	#
 	# virtual lab VM pool management
 	#
+	# TODO define a model
+	#
 	# Pool represents a 'availability zone' for VM provisioning. Its characteristics
 	# include attributes like:
 	# * name (id)
@@ -78,6 +80,10 @@ module.exports.registerRoutes = (server)->
 	# acme-dev-ubuntu-ec2-apac-1 (...) and so on
 	# 
 	#
+	# Requirements
+	# 1. create/show/destroy pool
+	# 2. add/remove server to pool /pool/:pool/servers REST resource
+	# 
 	server.get '/pool/status', commands.pool.status
 	server.get '/pool/startup', commands.pool.startup
 	server.get '/pool/shutdown', commands.pool.shutdown
@@ -98,18 +104,18 @@ module.exports.registerRoutes = (server)->
 
 	#
 	# lxc container verbs
-	server.get '/containers/create', commands.container.create
-	server.get '/containers/:container/delete', commands.container.delete
-	server.get '/containers/:container/clone', commands.container.clone
-	server.get '/containers/:container/start', commands.container.start
-	server.get '/containers/:container/stop', commands.container.stop
-	server.get '/containers/:container/info', commands.container.info
-	server.get '/containers/:container/save', commands.container.save
-	server.get '/containers/:container/restore', commands.container.restore
+	#server.get '/containers/create', commands.container.create
+	#server.get '/containers/:container/delete', commands.container.delete
+	#server.get '/containers/:container/clone', commands.container.clone
+	#server.get '/containers/:container/start', commands.container.start
+	#server.get '/containers/:container/stop', commands.container.stop
+	#server.get '/containers/:container/info', commands.container.info
+	#server.get '/containers/:container/save', commands.container.save
+	#server.get '/containers/:container/restore', commands.container.restore
 	# build the chef server default config using chef
-	server.get '/containers/:container/init', commands.container.init
+	#server.get '/containers/:container/init', commands.container.init
 	# optional?) expose a service in a container through the firewall
-	server.get '/containers/:container/expose-service', commands.container.exposeservice
+	#server.get '/containers/:container/expose-service', commands.container.exposeservice
 
 	# set resource limits
 	server.get '/containers/:container/set-cpu-limit', commands.container.setcpulimit

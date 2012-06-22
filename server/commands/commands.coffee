@@ -6,7 +6,6 @@ broker = require("../broker")
 
 pool = module.exports.pool = require("./pool-commands")
 server = module.exports.server = require("./server-commands")
-container = module.exports.container = require("./container-commands")
 notification = module.exports.notifications = require("./notifications_commands")
 providers = module.exports.providers = require("./providers_commands")
 labs = module.exports.labs = require("./labs_commands")
