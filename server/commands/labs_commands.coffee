@@ -6,6 +6,9 @@ LabDefinition = mongoose.model("LabDefinition")
 Vm = mongoose.model("Vm")
 Lab = mongoose.model("Lab")
 broker = require("../broker")
+_         = require 'underscore'
+async     = require 'async'
+
 
 #
 # Lab definition
@@ -51,31 +54,51 @@ module.exports.allocate = (req, res, next) ->
   #      (for starter - just pick first two available VMs)
   #      need to have pool of VMs
   #      allocate them (on same server)
-  LabDefinition.findOne {name: req.params.lab_definition_id}, (err, lab_def) ->
-    if lab_def
-      # TODO create lab (if it doesn't exists)
+  # TODO hardcoded username - need to build proper authentication
+  user = "anonymous-123"
+
+  async.waterfall [
+    # find lab definition
+    (next) ->
+      LabDefinition.findOne {name: req.params.lab_definition_id}, (err, lab_def) ->
+        if err
+          next
+            msg: "Can't load lab definition (#{err.message})"
+            code: 409
+        else next null, lab_def
+    # create lab instance
+    (lab_def, next) ->
       lab = new Lab
+      lab.definition = lab_def
       lab.save (err) ->
-        # TODO err handling
-        # TODO geo allocation (even for testing we will have VMs in EU, ASIA and possibly local)
-        Vm.where('state', 'prepared').limit(2).exec (err, vms) ->
-          if lab_def.vms.length == vms.length
-            # reserve VMs first
-            # TODO rdm - deserve should use callback (but not sure how to use callback withing for syntax)
-            Vm.reserve vm,lab for vm in vms
-
-            # load VM template (allocate)
-            broker.dispatch 'lxc', 'allocate', {id: vm.uuid}, (message) ->
-              if message.status == 'ok'
-              else
-              end
-
-            res.send 200, "test"
-          else
-            # FIXME dynamic allocation
-            res.send 500, "On-demand VM allocation not available (yet)."
+        if err
+          next
+            msg: "Unable to save lab instance (#{err.message})"
+            code: 409
+        else next null, lab_def, lab
+    # allocate required VM from pool
+    # TODO pools are not implemented (yet), will pick any prepared VMs at the momoment
+    (lab_def, lab, next) ->
+      async.forEach lab_def.vms, (vm_def, cb) ->
+        Vm.allocate(lab, vm_def, cb)
+      , (err) ->
+        if err
+          # TODO notify something to cleanup VMs (or something should just pick them up)
+          next
+            msg: "Unable to allocate VM (#{err.message})"
+            code: 409
+        else
+          next null, lab_def, lab
+    # temporary - last function for debugging purposes
+    (lab_def, lab, next) ->
+      console.log '--- last step'
+      next null, lab
+  ], (err, lab) ->
+    if err
+      log.error "Lab allocation failed: #{err:message}"
+      res.send err.code, err.msg
     else
-      res.send 404, 'Lab definition not found'
-
+      log.info "Lab '#{lab.token}' created"
+      res.send lab
 
   

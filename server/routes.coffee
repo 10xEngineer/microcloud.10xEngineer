@@ -38,12 +38,11 @@ module.exports.registerRoutes = (server)->
 	server.post '/vms/:server_id', commands.vms.create
 	server.post '/vms/:vm/notify', commands.vms.updates
 
-	# ----------- to be refactored/implemented
+  #
+  # Lab management
+  #
 
-	# nowjs notification (subscribe/unsubscribe) - TODO review
-	server.post '/subscribe/:userid', commands.notifications.subscribe
-	server.post '/unsubscribe/:userid', commands.notifications.unsubscribe
-
+  # -- original
 	# lab definition
 	# TODO visible on course token based authorization
 	server.get '/labs', commands.labs.index
@@ -53,6 +52,12 @@ module.exports.registerRoutes = (server)->
 
 	# lab provisioning
 	server.post '/labs/:lab_definition_id', commands.labs.allocate
+
+	# ----------- to be refactored/implemented
+
+	# nowjs notification (subscribe/unsubscribe) - TODO review
+	server.post '/subscribe/:userid', commands.notifications.subscribe
+	server.post '/unsubscribe/:userid', commands.notifications.unsubscribe
 
 	# notification support
 

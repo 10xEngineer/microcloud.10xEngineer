@@ -18,6 +18,11 @@ Vm = new mongoose.Schema(
 Vm.plugin(timestamps)
 Vm.plugin(state_machine, 'prepared')
 
+Vm.statics.allocate = (lab, vm_def, callback) ->
+  # TODO implement
+  callback()
+
+
 #
 # state machine
 #
