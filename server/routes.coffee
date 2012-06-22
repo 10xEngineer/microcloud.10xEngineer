@@ -118,9 +118,9 @@ module.exports.registerRoutes = (server)->
 	#server.get '/containers/:container/expose-service', commands.container.exposeservice
 
 	# set resource limits
-	server.get '/containers/:container/set-cpu-limit', commands.container.setcpulimit
-	server.get '/containers/:container/set-cpu-affinity', commands.container.setcpuaffinity
-	server.get '/containers/:container/set-ram-limit', commands.container.setramlimit
-	server.get '/containers/:container/set-swap-limit', commands.container.setswaplimit
-	server.get '/containers/:container/set-file-limit', commands.container.setfilelimit
-	server.get '/containers/:container/set-network-limit', commands.container.setnetworklimit
+	#server.get '/containers/:container/set-cpu-limit', commands.container.setcpulimit
+	#server.get '/containers/:container/set-cpu-affinity', commands.container.setcpuaffinity
+	#server.get '/containers/:container/set-ram-limit', commands.container.setramlimit
+	#server.get '/containers/:container/set-swap-limit', commands.container.setswaplimit
+	#server.get '/containers/:container/set-file-limit', commands.container.setfilelimit
+	#server.get '/containers/:container/set-network-limit', commands.container.setnetworklimit
