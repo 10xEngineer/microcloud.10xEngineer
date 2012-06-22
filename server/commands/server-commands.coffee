@@ -90,6 +90,8 @@ module.exports.destroy = (req, res, next) ->
 module.exports.notify = (req, res, next) ->
   data = JSON.parse(req.body)
   # FIXME verify data/action
+  console.log data
+  console.log req.params
   Hostnode.find_by_server_id req.params.server, (err, hostnode) ->
     if hostnode
       # FIXME process body to find action

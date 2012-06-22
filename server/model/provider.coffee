@@ -1,38 +1,31 @@
-mongoose = require 'mongoose'
+mongoose    = require 'mongoose'
 # TODO needs to be loaded after Provider
-Hostnode = mongoose.model('Hostnode')
+Hostnode    = mongoose.model('Hostnode')
+timestamps  = require "../utility/timestamp_plugin"
 
-ProviderDataSchema = new mongoose.Schema({
-})
+ProviderDataSchema = new mongoose.Schema {}
 
-Provider = new mongoose.Schema(
-  name: {type: String, unique: true},
-  service: String,
-  data: {env: String},
+Provider = new mongoose.Schema
+  name    : String
+  service : String
+  data    : {env: String}
+  deleted_at: Date
 
-  # TODO make this re-usable
-  meta: {
-    created_at: {type: Date, default: Date.now}
-    updated_at: {type: Date, default: Date.now}
-  }
-)
+Provider.plugin(timestamps)
 
 Provider.statics.for_server = (server, callback) ->
   Hostnode.findOne {server_id: server}, (err, node) ->
-    if err
-      return callback(err)
-
+    return callback(err) if err
+    
     if node
       mongoose.model("Provider").findOne {name: node.provider}, (err, provider) ->
-        if err
-          return callback(err)
+        return callback(err) if err
       
-        if provider
-          return callback(null, provider)
-        else
-          return callback(new Error("Invalid provider for server '#{server}"))
+        if provider then callback null, provider
+        else 
+          callback new Error "Invalid provider for server '#{server}"
     else
-      return callback(new Error("Server not found"))
+      return callback new Error "Server not found"
 
 module.exports.register = mongoose.model 'Provider', Provider
 

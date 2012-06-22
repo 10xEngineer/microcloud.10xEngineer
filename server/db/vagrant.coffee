@@ -6,11 +6,10 @@ vagrant = ->
   # vagrant provider
   vagrant_root = path.dirname(__filename)
 
-  vagrant_def = {
+  vagrant_def = 
     name: 'vagrant',
     service: 'vagrant',
     data: {'env': vagrant_root}
-  }
 
   vagrant = new Provider(vagrant_def)
   vagrant.save (err) ->
