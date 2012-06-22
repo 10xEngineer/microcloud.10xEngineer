@@ -2,6 +2,7 @@ mongoose = require "mongoose"
 timestamps = require "../utility/timestamp_plugin"
 state_machine = require "../utility/state_plugin"
 ObjectId = mongoose.Schema.ObjectId;
+async     = require 'async'
 
 Vm = new mongoose.Schema(
   uuid: {type: String, unique: true},
@@ -18,10 +19,8 @@ Vm = new mongoose.Schema(
 Vm.plugin(timestamps)
 Vm.plugin(state_machine, 'prepared')
 
-Vm.statics.allocate = (lab, vm_def, callback) ->
-  # TODO implement
-  callback()
-
+Vm.statics.findAndModify = (query, sort, doc, options, callback) ->
+  return this.collection.findAndModify(query, sort, doc, options, callback);
 
 #
 # state machine

@@ -63,7 +63,7 @@ module.exports.allocate = (req, res, next) ->
       LabDefinition.findOne {name: req.params.lab_definition_id}, (err, lab_def) ->
         if err
           next
-            msg: "Can't load lab definition (#{err.message})"
+            message: "Can't load lab definition (#{err.message})"
             code: 409
         else next null, lab_def
     # create lab instance
@@ -73,19 +73,24 @@ module.exports.allocate = (req, res, next) ->
       lab.save (err) ->
         if err
           next
-            msg: "Unable to save lab instance (#{err.message})"
+            message: "Unable to save lab instance (#{err.message})"
             code: 409
         else next null, lab_def, lab
     # allocate required VM from pool
-    # TODO pools are not implemented (yet), will pick any prepared VMs at the momoment
+    # TODO pools are not implemented (yet), will pick any prepared VMs at the moment
     (lab_def, lab, next) ->
       async.forEach lab_def.vms, (vm_def, cb) ->
-        Vm.allocate(lab, vm_def, cb)
+        Vm.findAndModify {'state': 'prepared'}, [], {$set: {state: 'locked'}}, {}, (err, vm) ->
+          if !vm
+            return cb(new Error("No suitable VM available"))
+
+          cb()
       , (err) ->
         if err
+          log.error "VM allocation failed for lab '#{lab.token}': #{err.message}"
           # TODO notify something to cleanup VMs (or something should just pick them up)
           next
-            msg: "Unable to allocate VM (#{err.message})"
+            message: "Unable to allocate VM (#{err.message})"
             code: 409
         else
           next null, lab_def, lab
@@ -95,8 +100,8 @@ module.exports.allocate = (req, res, next) ->
       next null, lab
   ], (err, lab) ->
     if err
-      log.error "Lab allocation failed: #{err:message}"
-      res.send err.code, err.msg
+      log.error "Lab allocation failed: #{err.message}"
+      res.send err.code, err.message
     else
       log.info "Lab '#{lab.token}' created"
       res.send lab
