@@ -5,6 +5,7 @@ log = require("log4js").getLogger()
 LabDefinition = mongoose.model("LabDefinition")
 Vm = mongoose.model("Vm")
 Lab = mongoose.model("Lab")
+broker = require("../broker")
 
 #
 # Lab definition
@@ -56,13 +57,18 @@ module.exports.allocate = (req, res, next) ->
       lab = new Lab
       lab.save (err) ->
         # TODO err handling
+        # TODO geo allocation (even for testing we will have VMs in EU, ASIA and possibly local)
         Vm.where('state', 'prepared').limit(2).exec (err, vms) ->
           if lab_def.vms.length == vms.length
+            # reserve VMs first
+            # TODO rdm - deserve should use callback (but not sure how to use callback withing for syntax)
             Vm.reserve vm,lab for vm in vms
-            
-            
-            # VMs are available
-            # TODO allocate both VMs
+
+            # load VM template (allocate)
+            broker.dispatch 'lxc', 'allocate', {id: vm.uuid}, (message) ->
+              if message.status == 'ok'
+              else
+              end
 
             res.send 200, "test"
           else

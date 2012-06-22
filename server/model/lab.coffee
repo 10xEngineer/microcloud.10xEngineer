@@ -3,8 +3,11 @@ timestamps = require "../utility/timestamp_plugin"
 
 Lab = new mongoose.Schema({
   token: String,
-  #definition: ObjectId,
-  terminal_server: String
+  definition: ObjectId,
+  # TODO to be defined later
+  user: String,
+  terminal_server: String,
+  lab_attrs: {}
 })
 
 Lab.plugin(timestamps)
