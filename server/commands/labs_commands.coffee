@@ -110,6 +110,9 @@ module.exports.allocate = (req, res, next) ->
             code: 409
         else
           next null, lab
+
+    # TODO starts instances by default, just for demo purposes
+    #      wait for instances to become operational
   ], (err, lab) ->
     if err
       log.error "Lab allocation failed: #{err.message}"

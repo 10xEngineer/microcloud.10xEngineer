@@ -51,7 +51,10 @@ module.exports.registerRoutes = (server)->
 	server.del '/labs/:lab_definition_id', commands.labs.destroy
 
 	# lab provisioning
-	server.post '/labs/:lab_definition_id', commands.labs.allocate
+  # TODO client should be able to pass additional data for allocate (attributes
+  #      passed via UI, or config, to customize instances)
+  #
+	server.post '/labs/:lab_definition_id/instances', commands.labs.allocate
 
 	# ----------- to be refactored/implemented
 
