@@ -1,12 +1,16 @@
 config = require("nconf")
+path = require 'path'
+
+configPath = path.resolve __dirname, "../config/microcloud.json"
 
 # initialize config
-config.argv.env
-config.file({file: "config/microcloud.json"})
+config
+  .argv()
+  .env()
+  .file file: configPath
 
-config.defaults(
-	'NODE_ENV': 'development',
-)
+config.defaults 
+	NODE_ENV: 'development'
 
 get = (key,callback)->
 	config.get(config.get('NODE_ENV')+':'+key)
