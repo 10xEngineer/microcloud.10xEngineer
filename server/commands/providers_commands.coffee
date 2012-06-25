@@ -26,7 +26,7 @@ module.exports.create = (req, res, next) ->
   , (next) ->
       Provider.find {name: data.name}, (err, docs) ->
         for doc in docs
-          unless doc.deleted_at 
+          unless doc.meta.deleted_at 
             return next 
               msg : "There is active provider with the same name '#{doc.name}'"
               code: 400
@@ -61,6 +61,12 @@ module.exports.destroy = (req, res, next) ->
   # might be better to log events appropriately
   # @params
   #   filter, newly set values, options, callback
-  Provider.update {name: req.params.provider}, {deleted_at: Date.now()}, {}, ->
+  Provider.find {name: req.params.provider}, (err, docs) ->
+    if err 
+      log.error "Unable to find the destructing provider: #{err.msg}"
+      return res.send err.code, err.msg
+    for doc in docs 
+      doc.meta.deleted_at = Date.now()
+      doc.save()
     res.send 200
 

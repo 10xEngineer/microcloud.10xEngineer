@@ -1,4 +1,5 @@
 emitter = require('events').EventEmitter
+_       = require 'underscore'
 
 err_call = (callback, err) ->
   if callback
@@ -33,6 +34,7 @@ module.exports = exports = stateMachinePlugin = (schema, init_with) ->
     schema.emit('beforeTransition', this, event)
     new_state = action(this, data)
     schema.emit('afterTransition', this, prev_state)
+    schema.emit('onEntry', this) if new_state is "running"
 
     if new_state
       if !paths.hasOwnProperty(new_state)

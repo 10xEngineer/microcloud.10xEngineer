@@ -9,7 +9,6 @@ Provider = new mongoose.Schema
   name    : String
   service : String
   data    : {env: String}
-  deleted_at: Date
 
 Provider.plugin(timestamps)
 
