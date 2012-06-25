@@ -6,10 +6,9 @@ config = require("./server/config")
 # TODO configure mongodb
 mongoose.connect('mongodb://'+config.get('mongodb:host')+'/'+config.get('mongodb:dbName'))
 
-server = restify.createServer(
+server = restify.createServer
 	name: "microcloud.10xengineer.me"
 	version: "0.1.0"
-)
 
 # model
 require("./server/model/hostnode").register

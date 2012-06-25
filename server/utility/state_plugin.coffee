@@ -23,16 +23,17 @@ module.exports = exports = stateMachinePlugin = (schema, init_with) ->
     prev_state  = this.state
 
     schema.emit 'beforeTransition', this, event
-
+    
     if new_state = action this, data
       unless paths.hasOwnProperty new_state
         return callback new Error "Unable to change state; '#{this.state}' -> '#{new_state}' not valid transition"
 
       this.state = new_state
       this.save (err) ->
-        if err then callback err
-        else 
+        callback err
+        unless err
           schema.emit 'afterTransition', this, prev_state
-          if new_state is "running" and new_state isnt prev_state
-            schema.emit 'onEntry', this 
+          if new_state isnt prev_state
+            schema.emit "onEntry:#{new_state}", this 
+            schema.emit "onEntry", this 
         
