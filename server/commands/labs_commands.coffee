@@ -111,8 +111,7 @@ module.exports.allocate = (req, res, next) ->
         else
           next null, lab
 
-    # TODO starts instances by default, just for demo purposes
-    #      wait for instances to become operational
+    # TODO starts instances by default (lxc::start)
   ], (err, lab) ->
     if err
       log.error "Lab allocation failed: #{err.message}"

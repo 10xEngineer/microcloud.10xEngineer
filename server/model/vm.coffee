@@ -81,4 +81,12 @@ Vm.methods.start = (data) ->
   this.descriptor.ip_addr = data.ip_addr
   this.markModified('descriptor')
 
+Vm.addListener 'afterTransition', (vm, prev_state) ->
+  # notify associated lab
+  if vm.lab
+    vm.lab.emit('vmStateChange', prev_state, vm.state)
+
+  log.info "vm=#{vm.uuid} changed state from=#{prev_state} to=#{vm.state}"
+
+
 module.exports.register = mongoose.model 'Vm', Vm
