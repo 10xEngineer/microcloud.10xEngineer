@@ -92,6 +92,21 @@ module.exports.registerRoutes = (server)->
 	# 1. create/show/destroy pool
 	# 2. add/remove server to pool /pool/:pool/servers REST resource
 	# 
+  # Use cases
+  # 1. Create Pool (specify name, default vm_type, environment)
+  # 2. Get Pool
+  # 3. Destroy Pool
+  # 4. Assign server/hostnode to the pool (node can be used for provisioning of the 
+  #    VMs required by pool). 
+  #    # TODO server can be within 1..N pools (different vm_types, hypervisor?)
+  #    # TODO automatically try to assign VMs to a pools server belongs?
+  # 5. Remove server/hostnode from the pool
+  # 6. Created N prepared VMs within the pool (find servers and round-robin way allocate
+  #    necessary VMs)
+  # 7. Allocate VM (allocate single VM for Lab instance)
+  #    Will notify specified lab once the allocation finished/failed.
+  #    If not enough VMs is available it might try prepare new ones (TODO later).
+  # 8. Deallocate VMs (mark VMs as used, will be removed as part of housekeeping)
 	server.get '/pool/status', commands.pool.status
 	server.get '/pool/startup', commands.pool.startup
 	server.get '/pool/shutdown', commands.pool.shutdown
