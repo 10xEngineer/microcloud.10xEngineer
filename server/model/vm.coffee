@@ -1,3 +1,4 @@
+log = require("log4js").getLogger()
 mongoose = require "mongoose"
 timestamps = require "../utility/timestamp_plugin"
 state_machine = require "../utility/state_plugin"
@@ -83,10 +84,9 @@ Vm.methods.start = (data) ->
 
 Vm.addListener 'afterTransition', (vm, prev_state) ->
   # notify associated lab
-  if vm.lab
-    vm.lab.emit('vmStateChange', prev_state, vm.state)
+  if vm.lab && mongoose.model("Lab")
+    mongoose.model("Lab").schema.emit('vmStateChange', vm.lab, vm, prev_state)
 
   log.info "vm=#{vm.uuid} changed state from=#{prev_state} to=#{vm.state}"
-
 
 module.exports.register = mongoose.model 'Vm', Vm

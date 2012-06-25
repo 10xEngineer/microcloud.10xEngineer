@@ -1,3 +1,4 @@
+log = require("log4js").getLogger()
 mongoose = require 'mongoose'
 timestamps = require "../utility/timestamp_plugin"
 state_machine = require "../utility/state_plugin"
@@ -52,8 +53,8 @@ Lab.statics.paths = ->
 #
 # VM integration
 #
-Lab.addListener 'vmStateChange', (vm, prev_state, state) ->
-  log.info "lab notified about vm=#{vm.uuid} change (#{prev_state} -> #{state})"
+Lab.addListener 'vmStateChange', (lab, vm, prev_state) ->
+  log.info "lab notified about vm=#{vm.uuid} change (#{prev_state} -> #{vm.state})"
 
 # 
 # lab token generator
