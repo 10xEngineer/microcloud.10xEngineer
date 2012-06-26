@@ -55,8 +55,7 @@ module.exports.registerRoutes = (server)->
   #      passed via UI, or config, to customize instances)
   #
 	server.post '/defs/:lab_definition_id/labs', commands.definitions.allocate
-  # TODO change URL
-  #server.get '/labs/:lab_id', commands.la
+	server.get '/labs/:lab_id', commands.labs.show
 
 	# ----------- to be refactored/implemented
 
