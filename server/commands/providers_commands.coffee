@@ -2,35 +2,27 @@ module.exports = ->
 
 mongoose  = require 'mongoose'
 log       = require('log4js').getLogger()
+log.setLevel 'WARN' if process.env.NODE_ENV is 'test'
 Provider  = mongoose.model('Provider')
 _         = require 'underscore'
 async     = require 'async'
+
+
+helper   = require './helper'
 
 module.exports.index = (req, res, next) ->
   Provider.find {}, {_id: 0, "meta": 0}, (err, doc) ->
     res.send doc
 
 module.exports.create = (req, res, next) ->
-  data      = JSON.parse req.body
+  data = JSON.parse req.body
+  helper.load data
   async.waterfall [
     # Firstly check if required attributes are filled
-    (next) ->
-      required  = ["name", "service"] 
-      for attr in required
-        if _.isUndefined(data[attr]) or data[attr] is ""
-          next 
-            msg : "Missing request attribute '#{attr}'"
-            code: 400
-      next()
+    (next) -> helper.checkPresenceOf ["name", "service"], next
     # Check if there isn't already active Provider with the same name
-  , (next) ->
-      Provider.find {name: data.name}, (err, docs) ->
-        for doc in docs
-          unless doc.meta.deleted_at 
-            return next 
-              msg : "There is active provider with the same name '#{doc.name}'"
-              code: 400
-        next()
+  , (next) -> 
+    Provider.checkUniquenessOf [{name: data.name}], next
     # Now try to save
   , (next) ->
       provider = new Provider data

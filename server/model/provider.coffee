@@ -2,6 +2,7 @@ mongoose    = require 'mongoose'
 # TODO needs to be loaded after Provider
 Hostnode    = mongoose.model('Hostnode')
 timestamps  = require "../utility/timestamp_plugin"
+uniqueness  = require "../utility/uniquenessPlugin"
 
 ProviderDataSchema = new mongoose.Schema {}
 
@@ -10,12 +11,12 @@ Provider = new mongoose.Schema
   service : String
   data    : {env: String}
 
-Provider.plugin(timestamps)
+Provider.plugin timestamps
+Provider.plugin uniqueness
 
 Provider.statics.for_server = (server, callback) ->
   Hostnode.findOne {server_id: server}, (err, node) ->
-    return callback(err) if err
-    
+    return callback(err) if err  
     if node
       mongoose.model("Provider").findOne {name: node.provider}, (err, provider) ->
         return callback(err) if err
