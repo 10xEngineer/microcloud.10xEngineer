@@ -8,7 +8,7 @@ async     = require 'async'
 Vm = new mongoose.Schema(
   uuid: {type: String, unique: true},
   state: {type: String, default: 'prepared'},
-  lab: {type:ObjectId, default: null},
+  lab: {type:ObjectId, default: null, ref: 'Lab'},
   vm_type: String,
   vm_name: String,
   server: String,
@@ -27,11 +27,14 @@ Vm.statics.findAndModify = (query, sort, doc, options, callback) ->
       return callback(err,raw_vm)
 
     if raw_vm 
-      mongoose.model("Vm").findOne {uuid: raw_vm.uuid}, (err, vm) ->
-        if err
-          return callback(err,vm)
-        else
-          return callback(null,vm)
+      mongoose.model("Vm")
+        .findOne({uuid: raw_vm.uuid})
+        .populate("lab")
+        .exec (err, vm) ->
+          if err
+            return callback(err,vm)
+          else
+            return callback(null,vm)
     else
       return callback(null, null)
 
@@ -90,8 +93,13 @@ Vm.methods.start = (data) ->
 Vm.addListener 'afterTransition', (vm, prev_state) ->
   # notify associated lab
   if vm.lab && mongoose.model("Lab")
-    mongoose.model("Lab").schema.emit('vmStateChange', vm.lab, vm, prev_state)
-
+    # TODO reload lab as the original object doesn't have vm.lab.definition populated
+    lab = mongoose.model("Lab")
+            .findOne({token: vm.lab.token})
+            .populate('definition')
+            .exec (err, lab) =>
+               mongoose.model("Lab").schema.emit('vmStateChange', lab, vm, prev_state)
+   
   log.info "vm=#{vm.uuid} changed state from=#{prev_state} to=#{vm.state}"
 
 module.exports.register = mongoose.model 'Vm', Vm

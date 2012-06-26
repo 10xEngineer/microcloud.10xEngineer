@@ -8,7 +8,7 @@ ObjectId = mongoose.Schema.ObjectId
 
 Lab = new mongoose.Schema({
   token: String,
-  definition: ObjectId,
+  definition: {type: ObjectId, ref: 'LabDefinition'}
   # TODO to be defined later
   user: String,
   terminal_server: String,
@@ -17,23 +17,25 @@ Lab = new mongoose.Schema({
 })
 
 Lab.plugin(timestamps)
-Lab.plugin(state_machine, 'new')
+Lab.plugin(state_machine, 'pending')
 
 #
 # State machine
 #
 Lab.statics.paths = ->
-  "new":
-    allocate: (lab, lab_def) ->
-      console.log "---- lab allocate"
-
-      return "pending"
-
   "pending":
-    make_available: (lab) ->
-      console.log "--- lab allocation finished"
+    vm_allocated: (lab, vms) =>
+      vm_count = lab.definition.vms.length
 
-      return "available"
+      if vm_count == vms.length
+        return "running"
+      else
+        return "pending"
+
+    # TODO vm_running should really go under 'available', but right now allocation is synchronous, 
+    #      rather than notification based.
+    vm_running: () ->
+      console.log '--- in vm_running'
 
   "available":
     start: (lab) ->
@@ -55,6 +57,15 @@ Lab.statics.paths = ->
 # VM integration
 #
 Lab.addListener 'vmStateChange', (lab, vm, prev_state) ->
+  action = "vm_#{vm.state}"
+
+  Vm
+    .find({lab: lab._id})
+    .where('state').equals(vm.state)
+    .exec (err, vms) ->
+      console.log action
+      lab.fire(action, vms)
+
   log.info "lab notified about vm=#{vm.uuid} change (#{prev_state} -> #{vm.state})"
 
 # 

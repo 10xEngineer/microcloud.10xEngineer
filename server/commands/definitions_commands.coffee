@@ -76,7 +76,17 @@ module.exports.allocate = (req, res, next) ->
             message: "Unable to save lab instance (#{err.message})"
             code: 409
         else next null, lab_def, lab
-
+    # TODO temporary load new lab
+    (lab_def, lab, next) ->
+      Lab
+        .findOne({'token': lab.token})
+        .populate('definition')
+        .exec (err, _lab) ->
+          if err
+            next
+              message: "Unable to retrieve lab: #{err.message}"
+              code: 500
+          else next null, lab_def, lab
     # allocate required VM from pool
     # TODO pools are not implemented (yet), will pick any prepared VMs at the moment
     (lab_def, lab, next) ->
@@ -94,6 +104,7 @@ module.exports.allocate = (req, res, next) ->
 
           broker.dispatch 'lxc', 'allocate', data, (message) ->
             if message.status == 'ok'
+              # FIXME lab status will change when all VMs trigger vm_allocated 
               vm.fire 'allocate', lab, (err) ->
                 if err
                   return cb(new Error("Unable to confirm VM allocation (#{err.message})"))
@@ -110,8 +121,7 @@ module.exports.allocate = (req, res, next) ->
             code: 409
         else
           next null, lab
-
-    # TODO starts instances by default (lxc::start)
+    # TODO rest of the processing is event based (allocation will be too)
   ], (err, lab) ->
     if err
       log.error "Lab allocation failed: #{err.message}"
