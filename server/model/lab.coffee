@@ -13,6 +13,7 @@ Lab = new mongoose.Schema({
   user: String,
   terminal_server: String,
   lab_attrs: {}
+  vms: [{type: ObjectId, ref: 'Vm'}]
 })
 
 Lab.plugin(timestamps)

@@ -94,7 +94,7 @@ module.exports.allocate = (req, res, next) ->
 
           broker.dispatch 'lxc', 'allocate', data, (message) ->
             if message.status == 'ok'
-              vm.fire 'allocate', {}, (err) ->
+              vm.fire 'allocate', lab, (err) ->
                 if err
                   return cb(new Error("Unable to confirm VM allocation (#{err.message})"))
 

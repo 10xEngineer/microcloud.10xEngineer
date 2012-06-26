@@ -13,6 +13,9 @@ async     = require 'async'
 # Lab management
 #
 module.exports.show = (req, res, next) ->
-  Lab.findOne {token: req.params.lab_id}, (err, lab) ->
-    res.send lab
+  Lab
+    .findOne({token: req.params.lab_id})
+    .populate("vms", ["uuid", "vm_name", "vm_type", "descriptor"]) 
+    .exec (err, lab) ->
+      res.send lab
 

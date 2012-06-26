@@ -55,7 +55,12 @@ Vm.statics.paths = ->
       return "running"
 
   "locked":
-    allocate: (vm) ->
+    allocate: (vm, lab) ->
+      lab.vms.push(vm.id);
+      lab.save (err) ->
+        if err
+          log.error("Unable to add vm to lab=#{lab.token}")
+
       return "allocated"
 
   "running":
