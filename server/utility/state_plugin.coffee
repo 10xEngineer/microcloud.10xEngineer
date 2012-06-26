@@ -1,11 +1,16 @@
 emitter = require('events').EventEmitter
 _       = require 'underscore'
+log     = require('log4js').getLogger()
 
 module.exports = exports = stateMachinePlugin = (schema, init_with) ->
   schema.add
     state: {type: String, default: init_with}
 
-  schema.methods.fire = (event, data = {}, callback = ->) ->
+  schema.methods.fire = (event, data = {}, _callback = ->) ->
+    callback = (err) ->
+      log.warn err if err
+      _callback err
+      
     unless _.isFunction schema.statics["paths"]
       return callback new Error "Not a valid state machine object!"
 
