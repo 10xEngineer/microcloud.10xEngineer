@@ -58,13 +58,13 @@ After initial setup you can skip the `npm install`/`bundle install` part (unless
 
 You will need to install **mocha** and **should** globally 
 
-		npm install mocha -g
-		npm install should -g
+	npm install mocha -g
+	npm install should -g
 		
 then navigate to `server/` and run tests
 
-		cd server/
-		mocha
+	cd server/
+	mocha
 		
 (Tests are located in folder `server/test/`)
 
