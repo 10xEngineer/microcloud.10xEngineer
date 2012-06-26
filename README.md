@@ -54,5 +54,19 @@ It depends on a service broker w/associated services. In other terminal do
 
 After initial setup you can skip the `npm install`/`bundle install` part (unless you need to update packages).
 
+## Run tests
+
+You will need to install **mocha** and **should** globally 
+
+		npm install mocha -g
+		npm install should -g
+		
+then navigate to `server/` and run tests
+
+		cd server/
+		mocha
+		
+(Tests are located in folder `server/test/`)
+
 (c) 2012 All works in this repository are the sole ownership and use jointly by 10xEngineer.me, Messina Ltd and Steve Messina.
 And may not be reproduced, reused, stolen for commercial or non-commercial means without explicit written permission from Steve Messina.
