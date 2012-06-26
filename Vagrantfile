@@ -1,3 +1,15 @@
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__))
+
+begin
+  require 'config/vagrant'
+
+  $microcloud_endpoint = TenxEngineer::MICROCLOUD_ENDPOINT
+rescue LoadError
+  puts
+  puts "Unable to load per-user Vagrant configuration file (config/vagrant)!"
+  puts
+end
+
 Vagrant::Config.run do |config|
   # default Vagrant box - 10xeng-precise32
   config.vm.box = '10xeng-precise32'
@@ -34,7 +46,7 @@ Vagrant::Config.run do |config|
     chef.json = {
       # location of Microcloud endpoint
       :microcloud => {
-        :endpoint => "http://10.0.1.3:8080",
+        :endpoint => $microcloud_endpoint,
       },
       # hostnode configuration
       "10xeng-node" => {

@@ -1,0 +1,5 @@
+module TenxEngineer
+  # uncomment to point vagrant to running instance of microcloud
+  # for development purposes it's http://YOUR_IP:8080/
+  # MICROCLOUD_ENDPOINT = "http://YOUR_IP:8080"
+end
