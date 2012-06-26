@@ -15,6 +15,7 @@ require("./server/model/hostnode").register
 require("./server/model/provider").register
 require("./server/model/lab_definition").register
 require("./server/model/vm").register
+require("./server/model/pool").register
 require("./server/model/lab").register
 
 # routes

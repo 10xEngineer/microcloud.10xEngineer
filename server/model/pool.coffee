@@ -1,17 +1,31 @@
 log = require("log4js").getLogger()
-mongoose = require 'mongoose'
-timestamps = require "../utility/timestamp_plugin"
-state_machine = require "../utility/state_plugin"
 
-Pool = new mongoose.Schema(
-  name: String,
+mongoose  = require 'mongoose'
+Schema    = mongoose.Schema
 
-  environment: String,
-  vm_type: String,
-  
+timestamps    = require "../utility/timestamp_plugin"
+uniqueness    = require "../utility/uniquenessPlugin"
+stateMachine  = require "../utility/state_plugin"
+
+Pool = new Schema
+  name: String
+  environment: String
+  vm_type: String
+  hostnodes: [{ type: Schema.ObjectId, ref: 'Hostnode' }]
   # TODO owner
-)
 
-Lab.plugin(timestamps)
+Pool.plugin timestamps
+Pool.plugin uniqueness
+Pool.plugin stateMachine, 'new'
+
+Pool.statics.paths = ->
+  "new":
+    confirm: (node, data) -> "running"
+
+  "running":
+    confirm: (node, data) ->
+      console.log("confirmed; yet again")
+
+    fail: (node, data) -> "failed"
 
 module.exports.register = mongoose.model 'Pool', Pool

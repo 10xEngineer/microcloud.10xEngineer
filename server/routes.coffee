@@ -108,6 +108,8 @@ module.exports.registerRoutes = (server)->
   #    Will notify specified lab once the allocation finished/failed.
   #    If not enough VMs is available it might try prepare new ones (TODO later).
   # 8. Deallocate VMs (mark VMs as used, will be removed as part of housekeeping)
+	server.post '/pools', commands.pool.create
+	server.del '/pools/:pool', commands.pool.destroy
 	server.get '/pool/status', commands.pool.status
 	server.get '/pool/startup', commands.pool.startup
 	server.get '/pool/shutdown', commands.pool.shutdown
