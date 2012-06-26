@@ -45,16 +45,18 @@ module.exports.registerRoutes = (server)->
   # -- original
 	# lab definition
 	# TODO visible on course token based authorization
-	server.get '/labs', commands.labs.index
-	server.get '/labs/:lab_definition_id', commands.labs.show
-	server.post '/labs', commands.labs.create
-	server.del '/labs/:lab_definition_id', commands.labs.destroy
+	server.get '/defs/', commands.definitions.index
+	server.get '/defs/:lab_definition_id', commands.definitions.show
+	server.post '/defs', commands.definitions.create
+	server.del '/defs/:lab_definition_id', commands.definitions.destroy
 
 	# lab provisioning
   # TODO client should be able to pass additional data for allocate (attributes
   #      passed via UI, or config, to customize instances)
   #
-	server.post '/labs/:lab_definition_id/instances', commands.labs.allocate
+	server.post '/defs/:lab_definition_id/labs', commands.definitions.allocate
+  # TODO change URL
+  #server.get '/labs/:lab_id', commands.la
 
 	# ----------- to be refactored/implemented
 
