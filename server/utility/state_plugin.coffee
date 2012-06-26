@@ -3,7 +3,7 @@ _       = require 'underscore'
 
 module.exports = exports = stateMachinePlugin = (schema, init_with) ->
   schema.add
-    state: {type: String, default: 'new'}
+    state: {type: String, default: init_with}
 
   schema.methods.fire = (event, data = {}, callback = ->) ->
     unless _.isFunction schema.statics["paths"]
@@ -29,7 +29,7 @@ module.exports = exports = stateMachinePlugin = (schema, init_with) ->
         return callback new Error "Unable to change state; '#{this.state}' -> '#{new_state}' not valid transition"
 
       this.state = new_state
-      this.save (err) ->
+      this.save (err) =>
         callback err
         unless err
           schema.emit 'afterTransition', this, prev_state
