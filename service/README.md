@@ -5,10 +5,6 @@ Before running service broker, you need prepare service broker default configura
     cp Procfile.sample Procfile
     bundle
 
-Load the development private keys
-
-    ssh-add security/mchammer-dev
-    
 To run the broker and services (defined within Procfile) use
 
     bundle exec foreman start
@@ -76,6 +72,10 @@ where
 * **action** to trigger
 * **options** to pass to the actions (parameters, environment setup, etc).
 
+## Generic configuration
+
+For development/testing environment `../config/10xeng.yaml` is used.
+
 ## Providers configuration
 
 **CONCEPT** Microcloud API should handle all provider information (passed via options) in a dedicated resource called 'providers'. This way we can define number of services/credentails/instance types which can be used based on a specific needs.
@@ -95,3 +95,4 @@ Detailed analysis needed.
 * no pool/activity monitoring
 * multiple endpoints (tcp/ipc) and configuration support
 * one hundred and one small improvements...
+* ssh connection are using private keys directly (based on config/10xeng.yaml), should switch to ssh agent later

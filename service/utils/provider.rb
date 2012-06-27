@@ -8,11 +8,12 @@ class Provider
 
   @@filters = {}
 
-  def initialize
+  def initialize(config)
     @actions = {}
+    @config = config
   end
 
-  def self.load_service(name)
+  def self.load_service(name, config)
     service = "#{name}_service"
     # TODO needed?
     klass = service.camelcase(:upper)
@@ -22,7 +23,7 @@ class Provider
 
     load service_file
 
-    Object.const_get(klass).new
+    Object.const_get(klass).new(config)
   end
 
   def fire(_action, request)

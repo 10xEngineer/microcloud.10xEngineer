@@ -4,8 +4,15 @@ $LOAD_PATH.unshift File.dirname(__FILE__)
 $stdout.sync = true
 
 require 'utils/provider'
+require "utils/config"
 require 'ffi-rzmq'
+require 'net/ssh'
+require 'logger'
+require 'yaml'
 require 'yajl'
+
+log = Logger.new(STDOUT)
+log.level = Logger::WARN
 
 if ARGV.length == 0
   puts "service name missing"
@@ -14,13 +21,23 @@ end
 
 service_name = ARGV.shift
 
+# load config
+if ENV['MICROCLOUD_ENV'] == 'production'
+  config_file = '/etc/10xeng.yaml'
+else
+  config_file = File.join(File.dirname(__FILE__), "../config/10xeng.yaml")
+end
+
+config = TenxEngineer.config(config_file)
+
+# load service
 service_file = File.join(File.dirname(__FILE__), "providers/#{service_name}.rb")
 unless File.exists?(service_file)
   puts "invalid service name '#{service_name}'"
   exit
 end
 
-service = Provider.load_service(service_name)
+service = Provider.load_service(service_name, config)
 
 # create 0mq socket
 context = ZMQ::Context.new

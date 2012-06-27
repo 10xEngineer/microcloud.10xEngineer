@@ -1,0 +1,3 @@
+hostnode:
+  ssh_key: security/mchammer-dev
+  

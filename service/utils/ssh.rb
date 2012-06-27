@@ -5,7 +5,13 @@ require 'net/ssh'
 def ssh_exec(user, hostname, command, options = {:port => 22}) 
   output = ''
 
-  Net::SSH.start(hostname, user, :port => options[:port] || 22) do |ssh|
+  options[:port] = 22 unless options[:port]
+
+  unless options[:keys]
+    puts "WARNING: no ssh-key provided"
+  end
+
+  Net::SSH.start(hostname, user, options) do |ssh|
     stdout_data = ""
     stderr_data = ""
     exit_code = nil

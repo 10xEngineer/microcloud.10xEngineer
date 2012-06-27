@@ -28,7 +28,14 @@ class LxcService < Provider
     command << "--vgname #{@vgname}" if @vgname
 
     begin
-      res = ssh_exec('mchammer', @hostname, command.join(' '), {:port => @port})
+      ssh_options = {
+        :port => @port
+      }
+
+      # TODO using key file directly, switch to ssh-agent later
+      ssh_options[:keys] = [@config["hostnode"]["ssh_key"]] if @config["hostnode"] && @config["hostnode"]["ssh_key"]
+
+      res = ssh_exec('mchammer', @hostname, command.join(' '), ssh_options)
 
       options = Yajl::Parser.parse(res)
 
