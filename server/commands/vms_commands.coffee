@@ -23,7 +23,7 @@ module.exports.updates = (req, res, next) ->
     .populate("lab")
     .exec (err, vm) ->
       if vm
-        vm.fire data.action, {}, (err) ->
+        vm.fire data.action, data.vm, (err) ->
           if err
             console.log err
 

@@ -72,13 +72,6 @@ Vm.statics.paths = ->
 
       return "allocated"
 
-  "running":
-    stop: (vm, vm_data) ->
-      vm.descriptor.ip_addr = null
-      vm.markModified('descriptor')
-      
-      return "allocated"
-
   "reserved": {}
 
   "allocated":
@@ -86,6 +79,14 @@ Vm.statics.paths = ->
       vm.start(vm_data)
 
       return "running"
+
+  "running":
+    stop: (vm, vm_data) ->
+      vm.descriptor.ip_addr = null
+      vm.markModified('descriptor')
+      
+      return "allocated"
+
 
 Vm.statics.reserve = (vm, lab) ->
   vm.fire 'book', lab, (err) ->
