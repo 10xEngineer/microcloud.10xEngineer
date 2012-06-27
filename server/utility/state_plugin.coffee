@@ -9,8 +9,8 @@ module.exports = exports = stateMachinePlugin = (schema, init_with) ->
   schema.methods.fire = (event, data = {}, _callback = ->) ->
     callback = (err) ->
       log.warn err if err
-      _callback err
-      
+      _callback.apply null, arguments
+    
     unless _.isFunction schema.statics["paths"]
       return callback new Error "Not a valid state machine object!"
 
@@ -36,7 +36,7 @@ module.exports = exports = stateMachinePlugin = (schema, init_with) ->
 
       this.state = new_state
       this.save (err) =>
-        callback err
+        callback err, this
         unless err
           schema.emit 'afterTransition', this, prev_state
           if new_state isnt prev_state
