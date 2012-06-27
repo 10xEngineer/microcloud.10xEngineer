@@ -1,5 +1,6 @@
 require 'yajl'
 require 'facets'
+require 'utils/microcloud'
 
 # TODO before filter support (for shared logic)
 
@@ -12,6 +13,8 @@ class Provider
     @actions = {}
     @config = config
     @socket = nil
+
+    @microcloud = nil
   end
 
   def self.load_service(name, config)
@@ -45,7 +48,7 @@ class Provider
 
         res = send_ext(action, request)
 
-        if res.nil?
+        if res.nil? && @socket
           res = response :ok
         end
 
@@ -87,6 +90,12 @@ class Provider
     end
   end
 
+  def notify(resource, resource_id, hash)
+    body = Yajl::Encoder.encode(hash)
+
+    # TODO handle endpoint errors
+    microcloud.notify(resource.to_s, resource_id, hash)
+  end
   
   def self.get(name)
     @@providers[name]
@@ -122,6 +131,10 @@ class Provider
   end
 
 private
+
+  def microcloud
+    @microcloud ? @microcloud : Microcloud.new(@config["hostnode"]["endpoint"])
+  end
 
   def send_ext(action, request, type = :action)
     method = self.method(action)

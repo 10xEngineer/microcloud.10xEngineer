@@ -54,12 +54,19 @@ class LxcService < Provider
     # TODO allocate vs start
     # TODO unable to run lxc-execute to finish provisioning
     # TODO lxc-start 
+    #
+    endpoint = @config["hostnode"]["endpoint"]
 
     # confirm processing
     response :ok
 
-    # FIXME remove - simulating long running (5 seconds not long) operation
-    sleep 5
+    # FIXME remove - simulating long running operation
+    sleep 3 + (rand 10)
+
+    # TODO build body with basic attributes (id used from resource_id)
+    notify :vms, request["options"]["id"], {
+        :action => :allocate
+      }
   end
 
   def start(request)
