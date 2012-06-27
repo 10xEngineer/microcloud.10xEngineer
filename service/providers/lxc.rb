@@ -54,10 +54,12 @@ class LxcService < Provider
     # TODO allocate vs start
     # TODO unable to run lxc-execute to finish provisioning
     # TODO lxc-start 
-    #
-    # TODO allocate should really be async (fire notification when available)
 
+    # confirm processing
     response :ok
+
+    # FIXME remove - simulating long running (5 seconds not long) operation
+    sleep 5
   end
 
   def start(request)

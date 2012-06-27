@@ -11,6 +11,7 @@ class Provider
   def initialize(config)
     @actions = {}
     @config = config
+    @socket = nil
   end
 
   def self.load_service(name, config)
@@ -26,7 +27,7 @@ class Provider
     Object.const_get(klass).new(config)
   end
 
-  def fire(_action, request)
+  def fire(_action, request, socket)
     action = _action.to_sym
 
     # allow only methods defined by the service class
@@ -34,20 +35,15 @@ class Provider
       m = self.method(action)
 
       begin
+        @socket = socket
         res = nil
         
         filters = evaluate_filters(action)
         filters.each do |f|
-          self.send(f, request)
+          send_ext(f, request, :filter)
         end
 
-        if m.parameters.size == 1
-          res = self.send(action, request)
-        elsif m.parameters.size == 0
-          res = self.send(action)
-        else
-          raise "Invalid action '#{action}': expected 0 or 1 parameter!" 
-        end
+        res = send_ext(action, request)
 
         if res.nil?
           res = response :ok
@@ -59,12 +55,21 @@ class Provider
         puts e.backtrace
 
         response :fail, :reason => e.message
+      ensure
+        @socket = nil
       end
     else
       response :fail, :reason => "Action not defined (#{action})"
     end
   end
 
+  # 
+  # provide response to client
+  #
+  # Use cases
+  # 1. return response :ok - to terminate processing and send response
+  # 2. response :ok - to send response and continue processing (not output possible after this)
+  #
   def response(res = :ok, options = {})
     res = {
       :status => res
@@ -73,6 +78,13 @@ class Provider
     res[:options] = options unless options.empty?
 
     res
+
+    if @socket
+      @socket.send_string Yajl::Encoder.encode(res)
+      @socket = nil
+    else
+      puts "socket not available (possibly duplicate response)"
+    end
   end
 
   
@@ -107,6 +119,22 @@ class Provider
 
   def Provider::filters
     @@filters
+  end
+
+private
+
+  def send_ext(action, request, type = :action)
+    method = self.method(action)
+
+    if method.parameters.size == 1
+      res = self.send(action, request)
+    elsif method.parameters.size == 0
+      res = self.send(action)
+    else
+      raise "Invalid #{type.to_s} '#{action}': expected none or single parameter; got #{method.parameters.size}"
+    end
+
+    res
   end
 
 end

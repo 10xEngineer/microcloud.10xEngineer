@@ -58,7 +58,5 @@ loop do
   request["options"] ||= {}
 
   action = request["action"]
-  response = service.fire(action, request)
-
-  socket.send_string Yajl::Encoder.encode(response)
+  response = service.fire(action, request, socket)
 end

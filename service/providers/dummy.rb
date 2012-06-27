@@ -3,7 +3,7 @@ class DummyService < Provider
   before_filter :do_something, :only => [:ping]
 
   def ping(request)
-    response :ok, :reply => "go #{@animal}"
+    return response :ok, :reply => "go #{@animal}"
   end
 
   def failwhale(request)
@@ -13,7 +13,7 @@ class DummyService < Provider
   end
 
 private
-  def do_something
+  def do_something(request)
     @animal = "tiger"
   end
 
