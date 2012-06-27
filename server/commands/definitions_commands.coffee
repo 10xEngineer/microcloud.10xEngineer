@@ -50,10 +50,6 @@ module.exports.destroy = (req, res, next) ->
 
 module.exports.allocate = (req, res, next) ->
   # TODO lab is created for (course, user); need to validate existing
-  # TODO 
-  #      (for starter - just pick first two available VMs)
-  #      need to have pool of VMs
-  #      allocate them (on same server)
   # TODO hardcoded username - need to build proper authentication
   user = "anonymous-123"
 
@@ -76,7 +72,7 @@ module.exports.allocate = (req, res, next) ->
             message: "Unable to save lab instance (#{err.message})"
             code: 409
         else next null, lab_def, lab
-    # TODO temporary load new lab
+    # TODO temporary load new lab (definition is not populated in last step; any way how to fix it?)
     (lab_def, lab, next) ->
       Lab
         .findOne({'token': lab.token})
@@ -88,46 +84,37 @@ module.exports.allocate = (req, res, next) ->
               code: 500
           else next null, lab_def, lab
     # allocate required VM from pool
-    # TODO pools are not implemented (yet), will pick any prepared VMs at the moment
     (lab_def, lab, next) ->
       async.forEach lab_def.vms, (vm_def, cb) ->
         Vm.findAndModify {'state': 'prepared'}, [], {$set: {state: 'locked', lab: lab._id, vm_name: vm_def.vm_name}}, {}, (err, vm) ->
           if !vm
             return cb(new Error("No suitable VM available"))
 
-          # TODO right now allocate is noop
-          # TODO service name should come up from vm definition (will allow multi-OS support)
           data = 
             id: vm.uuid
             # FIXME get the server hostname from vm.server.hostname
             server: 'no.hostname.lab.allocate'
 
-          broker.dispatch 'lxc', 'allocate', data, (message) ->
+          broker.dispatch 'lxc', 'allocate', data, (message) =>
             if message.status == 'ok'
-              # FIXME lab status will change when all VMs trigger vm_allocated 
-              vm.fire 'allocate', lab, (err) ->
-                if err
-                  return cb(new Error("Unable to confirm VM allocation (#{err.message})"))
-
-                return cb()
-            else
-              return cb(new Error("VM/LXC allocation failed #{message.options.reason}"))
+              return cb()
+            
+            return cb(new Error(message.options.reason))
       , (err) ->
         if err
-          log.error "VM allocation failed for lab '#{lab.token}': #{err.message}"
+          log.error "VM/LXC allocation request failed for lab '#{lab.token}': #{err.message}"
           # TODO notify something to cleanup VMs (or something should just pick them up)
           next
             message: "Unable to allocate VM (#{err.message})"
             code: 409
         else
           next null, lab
-    # TODO rest of the processing is event based (allocation will be too)
   ], (err, lab) ->
     if err
       log.error "Lab allocation failed: #{err.message}"
       res.send err.code, err.message
     else
-      log.info "Lab '#{lab.token}' created"
+      log.info "lab=#{lab.token} action=allocate accepted"
       res.send lab
 
   

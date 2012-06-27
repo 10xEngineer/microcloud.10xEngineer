@@ -24,11 +24,11 @@ Lab.plugin(state_machine, 'pending')
 #
 Lab.statics.paths = ->
   "pending":
-    vm_allocated: (lab, vms) =>
+    vm_allocated: (lab, active_vms) =>
       vm_count = lab.definition.vms.length
 
-      if vm_count == vms.length
-        return "running"
+      if vm_count == active_vms.length
+        return "available"
       else
         return "pending"
 
@@ -63,10 +63,14 @@ Lab.addListener 'vmStateChange', (lab, vm, prev_state) ->
     .find({lab: lab._id})
     .where('state').equals(vm.state)
     .exec (err, vms) ->
-      console.log action
       lab.fire(action, vms)
 
-  log.info "lab notified about vm=#{vm.uuid} change (#{prev_state} -> #{vm.state})"
+  log.debug "lab=#{lab.token} event=vmStateChange vm=#{vm.uuid} (#{prev_state} -> #{vm.state})"
+
+Lab.addListener 'onEntry', (lab, prev_state) ->
+  log.info "lab=#{lab.token} changed state to=#{lab.state}"
+
+
 
 # 
 # lab token generator

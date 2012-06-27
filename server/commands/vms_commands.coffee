@@ -18,16 +18,19 @@ module.exports.index = (req, res, next) ->
 module.exports.updates = (req, res, next) ->
   data = JSON.parse req.body
 
-  Vm.findOne {uuid: data.vm.id}, (err, vm) ->
-    if vm
-      vm.fire data.action, data.vm, (err) ->
-        if err
-          console.log err
+  Vm
+    .findOne({uuid: req.params.vm})
+    .populate("lab")
+    .exec (err, vm) ->
+      if vm
+        vm.fire data.action, {}, (err) ->
+          if err
+            console.log err
 
-      res.send 200
-    else
-      log.error("Notification for invalid vm=#{data.vm.id}")
-      res.send 404, {}
+        res.send 200
+      else
+        log.error("Notification for invalid vm=#{req.params.vm}")
+        res.send 404, {}
 
 module.exports.create = (req, res, next) ->
   # TODO support for multiple VM provisioning (?count=N)

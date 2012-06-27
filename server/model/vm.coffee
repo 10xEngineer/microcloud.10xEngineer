@@ -57,10 +57,16 @@ Vm.statics.paths = ->
 
       return "running"
 
+    allocate: (vm) ->
+      log.warn "Invalid event :alocate_xxx for VM in state=prepared"
+
+      return "allocated"
+
   "locked":
-    allocate: (vm, lab) ->
-      lab.vms.push(vm.id);
-      lab.save (err) ->
+    allocate: (vm) ->
+      # FIXME continue how to get lab instance
+      vm.lab.vms.push(vm.id);
+      vm.lab.save (err) ->
         if err
           log.error("Unable to add vm to lab=#{lab.token}")
 
