@@ -3,6 +3,10 @@ log   = require('log4js').getLogger()
 
 helper = 
   load : (@data) ->
+  handleErr: (res, err) ->
+    _.defaults err, code: 400
+    log.error "Unable to save provider: #{err.msg}"
+    res.send err.code, err.msg
   checkPresenceOf : (required, next) ->
     for attr in required
       if _.isUndefined(@data[attr]) or @data[attr] is ""
@@ -11,7 +15,9 @@ helper =
           code: 400
     next()
 
-for key, _fn of helper when _.isFunction(_fn) and key isnt 'load'
+helper[key].needLoad = true for key in ['checkPresenceOf']
+
+for key, _fn of helper when _.isFunction(_fn) and _fn.needLoad
   do ->
     fn = _fn
     helper[key] = ->

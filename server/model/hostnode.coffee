@@ -10,6 +10,7 @@ Hostnode = new Schema
   provider: String
   type: String
   token: String
+  _pools: [{ type: mongoose.Schema.ObjectId, ref: 'Pool' }]
 
 Hostnode.plugin timestamps
 Hostnode.plugin state_machine, 'new'

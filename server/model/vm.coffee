@@ -12,7 +12,7 @@ Vm = new mongoose.Schema(
   vm_type: String,
   vm_name: String,
   server: String,
-  pool: String,
+  pool: { type: mongoose.Schema.ObjectId, ref: 'Pool' }
   # Mixed - dont' forget vm.markModified('descriptor')
   # http://mongoosejs.com/docs/schematypes.html#mixed
   descriptor: {}

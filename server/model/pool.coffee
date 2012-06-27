@@ -11,7 +11,6 @@ Pool = new Schema
   name: String
   environment: String
   vm_type: String
-  hostnodes: [{ type: Schema.ObjectId, ref: 'Hostnode' }]
   # TODO owner
 
 Pool.plugin timestamps
@@ -19,13 +18,12 @@ Pool.plugin uniqueness
 Pool.plugin stateMachine, 'new'
 
 Pool.statics.paths = ->
-  "new":
-    confirm: (node, data) -> "running"
-
-  "running":
-    confirm: (node, data) ->
-      console.log("confirmed; yet again")
-
-    fail: (node, data) -> "failed"
+  'new':
+    startup: (node, data) -> 'running'
+  'running':
+    confirm: (node, data) -> 
+    shutdown: (node, data) -> 'down'
+  'down':
+    shutdown: ->
 
 module.exports.register = mongoose.model 'Pool', Pool
