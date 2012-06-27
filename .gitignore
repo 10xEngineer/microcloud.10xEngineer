@@ -25,7 +25,7 @@ server/db/*
 
 a_vagrant_machine/.cookbooks_path.json
 a_vagrant_machine/.vagrant
-config/vagrant.rb
+config/10xeng.yaml
 
 service/Procfile
 service/.foreman
