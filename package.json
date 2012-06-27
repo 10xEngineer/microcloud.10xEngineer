@@ -20,7 +20,7 @@
     "async": "~0.1.22"
   },
   "devDependencies": {
-    "mocha": "1.0.x",
+    "mocha": "*",
     "api-easy": "0.2.x"
   }
 }

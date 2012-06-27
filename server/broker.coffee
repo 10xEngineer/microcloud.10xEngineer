@@ -6,9 +6,9 @@ broker = config.get('broker')
 
 class ServiceClient
 	constructor: ->
-		@socket = zmq.socket 'req'
+		@socket = zmq.createSocket 'req'
 		@socket.connect broker
-
+		
 	send: (request) -> @socket.send JSON.stringify request
 
 module.exports.service_client = ServiceClient
@@ -26,3 +26,7 @@ module.exports.dispatch = (service, action, data = {}, cb) ->
 		response = JSON.parse message
 
 		cb response
+
+  client.socket.on 'error', (error) ->
+    console.log "0mq socket entered error state #{error}"
+    cb "{}"
