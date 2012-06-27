@@ -22,7 +22,8 @@ module.exports = exports = stateMachinePlugin = (schema, init_with) ->
     current = paths[this.state]
 
     unless current.hasOwnProperty event
-      return callback new Error "Event not found '#{event}'"
+      # TODO how to get object class/schema name
+      return callback new Error "Event not found '#{event}' for state=#{this.state}"
 
     action      = current[event]
     prev_state  = this.state
