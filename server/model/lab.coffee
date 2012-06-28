@@ -39,9 +39,9 @@ Lab.statics.paths = ->
 
   "available":
     start: (lab) ->
-      console.log "--- lab start requested"
+      Lab.emit 'start', lab.token
 
-      return "running"
+      return null
 
   "running":
     terminate: (lab) ->
@@ -69,6 +69,12 @@ Lab.addListener 'vmStateChange', (lab, vm, prev_state) ->
 
 Lab.addListener 'onEntry', (lab, prev_state) ->
   log.info "lab=#{lab.token} changed state to=#{lab.state}"
+
+Lab.addListener 'onEntry:available', (lab, prev_state) ->
+  console.log '--- onEntry:available'
+  # triger lab start
+  if lab.state == "available" && prev_state == "pending"
+    lab.fire 'start'
 
 
 
