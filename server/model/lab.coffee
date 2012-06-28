@@ -27,6 +27,7 @@ Lab.plugin(state_machine, 'pending')
 Lab.statics.paths = ->
   "pending":
     vm_allocated: (lab, active_vms) =>
+      # TODO make re-usable (vm_running, vm_allocated)
       vm_count = lab.definition.vms.length
 
       if vm_count == active_vms.length
@@ -34,22 +35,35 @@ Lab.statics.paths = ->
       else
         return "pending"
 
-    # TODO vm_running should really go under 'available', but right now allocation is synchronous, 
-    #      rather than notification based.
-    vm_running: () ->
-      console.log '--- in vm_running'
-
   "available":
     start: (lab) ->
       Lab.emit 'start', lab.token
 
       return null
 
-  "running":
-    terminate: (lab) ->
-      console.log "--- lab terminating..."
+    vm_running: (lab, running_vms) ->
+      vm_count = lab.definition.vms.length
 
-      return "terminating"
+      if vm_count == running_vms.length
+        return "running"
+      else
+        # TODO available not appropriate (it's state change pending)
+        return "available"
+
+    vm_allocated: (lab, active_vms) ->
+      log.debug "Notification out of order; lab already in state 'available'"
+
+      return "available"
+
+  "running":
+    vm_allocated: (lab, active_vms) ->
+      vm_count = lab.definition.vms.length
+
+      if vm_count == active_vms.length
+        return "available"
+      else
+        # TODO not really running (pending operation)
+        return "running"
 
   "terminating": {}
   "terminated": {}
@@ -84,10 +98,7 @@ Lab.methods.start = (lab) ->
           id: vm.uuid
           server: vm.server.hostname
 
-        console.log "--- lxc::start for #{vm.uuid}"
         broker.dispatch 'lxc', 'start', request, (message) =>
-          console.log '--- zmq message'
-          console.log message
           if message.status == "ok"
             return cb
 
@@ -108,9 +119,14 @@ Lab.methods.start = (lab) ->
 Lab.addListener 'vmStateChange', (lab, vm, prev_state) ->
   action = "vm_#{vm.state}"
 
+  vm_state = "available"
+  switch vm.state
+    when "allocated", "running" then vm_state = vm.state
+    # TODO how to handle failing
+
   Vm
     .find({lab: lab._id})
-    .where('state').equals(vm.state)
+    .where('state').equals(vm_state)
     .exec (err, vms) ->
       lab.fire(action, vms)
 
