@@ -40,6 +40,6 @@ module.exports = exports = stateMachinePlugin = (schema, init_with) ->
         unless err
           schema.emit 'afterTransition', this, prev_state
           if new_state isnt prev_state
-            schema.emit "onEntry:#{new_state}", this 
-            schema.emit "onEntry", this 
+            schema.emit "onEntry:#{new_state}", this, prev_state
+            schema.emit "onEntry", this, prev_state
         
