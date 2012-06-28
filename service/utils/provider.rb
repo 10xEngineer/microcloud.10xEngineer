@@ -1,6 +1,6 @@
 require 'yajl'
 require 'facets'
-require 'utils/microcloud'
+require '10xlabs/microcloud'
 
 # TODO before filter support (for shared logic)
 
@@ -90,11 +90,10 @@ class Provider
     end
   end
 
-  def notify(resource, resource_id, hash)
+  def notify(resource, resource_id, action, hash)
     body = Yajl::Encoder.encode(hash)
 
-    # TODO handle endpoint errors
-    microcloud.notify(resource.to_s, resource_id, hash)
+    microcloud.notify(resource, resource_id, action, hash)
   end
   
   def self.get(name)
@@ -133,7 +132,7 @@ class Provider
 private
 
   def microcloud
-    @microcloud ? @microcloud : Microcloud.new(@config["hostnode"]["endpoint"])
+    @microcloud ? @microcloud : TenxLabs::Microcloud.new(@config["hostnode"]["endpoint"])
   end
 
   def send_ext(action, request, type = :action)

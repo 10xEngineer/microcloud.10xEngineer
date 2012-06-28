@@ -64,9 +64,7 @@ class LxcService < Provider
     sleep 3 + (rand 10)
 
     # TODO build body with basic attributes (id used from resource_id)
-    notify :vms, request["options"]["id"], {
-        :action => :allocate
-      }
+    notify :vm, request["options"]["id"], :allocate, {}
   end
 
   def start(request)
