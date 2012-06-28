@@ -5,7 +5,7 @@ ServiceClient = require("../broker").service_client
 broker = require("../broker")
 
 pool = module.exports.pool = require("./pool-commands")
-server = module.exports.server = require("./server-commands")
+nodes = module.exports.nodes = require("./nodes_commands")
 notification = module.exports.notifications = require("./notifications_commands")
 providers = module.exports.providers = require("./providers_commands")
 definitions = module.exports.definitions = require("./definitions_commands")

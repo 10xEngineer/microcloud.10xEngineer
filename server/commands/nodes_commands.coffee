@@ -61,45 +61,44 @@ module.exports.create = (req, res, next) ->
 #
 # TODO how to periodically get server status
 module.exports.show = (req, res, next) ->
-  Hostnode.findOne {server_id: req.params.server}, (err, server) ->
-    console.log server
+  Hostnode.findOne {server_id: req.params.node_id}, (err, node) ->
     if err
       res.send 500, err
 
-    if server
-      res.send server
+    if node
+      res.send node
     else
-      res.send 404, 'Server not found.'
+      res.send 404, 'Node not found.'
   
 module.exports.destroy = (req, res, next) ->
-  Provider.for_server req.params.server, (err, provider) ->
+  Provider.for_server req.params.node_id, (err, provider) ->
     if err
       res.send 500, err
 
     if provider
       data = {
-        id: req.params.server
+        id: req.params.node_id
       }
       broker.dispatch provider.name , 'stop', data, (message) ->
         res.send message
     else
       # TODO trigger housekeeping
-      res.send 500, "No provider for server '#{req.params.server}'"
+      res.send 500, "Unknown provider for node '#{req.params.server}'"
 
 # TODO move to appropriate module (servers)
 module.exports.notify = (req, res, next) ->
   data = JSON.parse(req.body)
   # FIXME verify data/action
-  Hostnode.find_by_server_id req.params.server, (err, hostnode) ->
-    if hostnode
+  Hostnode.find_by_server_id req.params.node_id, (err, node) ->
+    if node
       # FIXME process body to find action
-      hostnode.fire data["action"], data.hostnode , (err) -> 
+      node.fire data["action"], data.node , (err) -> 
         if err
           console.log(err)
 
       res.send 200
     else
-      log.error("Notification for invalid hostnode=#{req.params.server}")
+      log.error("Notification for invalid hostnode=#{req.params.node_id}")
       res.send 404, {}
 
 # ==================================================================================================================================

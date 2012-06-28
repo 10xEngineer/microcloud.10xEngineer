@@ -34,7 +34,7 @@ module.exports.updates = (req, res, next) ->
 
 module.exports.create = (req, res, next) ->
   # TODO support for multiple VM provisioning (?count=N)
-  Hostnode.findOne {server_id: req.params.server_id}, (err,hostnode) ->
+  Hostnode.findOne {server_id: req.params.node}, (err,hostnode) ->
     data = {
       server: hostnode.hostname
     }
@@ -46,7 +46,7 @@ module.exports.create = (req, res, next) ->
           state: message.options.state,
           pool: message.options.pool,
           vm_type: message.options.type,
-          server: req.params.server_id,
+          server: req.params.node,
           descriptor: {
             storage: message.options.descriptor.fs.size
           }

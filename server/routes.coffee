@@ -19,23 +19,22 @@ module.exports.registerRoutes = (server)->
 	server.get '/providers/:provider', commands.providers.show
 	server.post '/providers', commands.providers.create
 	server.del '/providers/:provider', commands.providers.destroy
-	server.get '/providers/:provider/servers', commands.server.index
+	server.get '/providers/:provider/nodes', commands.nodes.index
 
 	#
 	# server/hostnode management
 	#
-	# TODO server.get '/servers', ...
-	server.post '/servers/:provider', commands.server.create
-	server.get '/servers/:server', commands.server.show
-	server.del '/servers/:server', commands.server.destroy
-	server.post '/servers/:server/notify', commands.server.notify
+	server.post '/nodes/:provider', commands.nodes.create
+	server.get '/nodes/:node_id', commands.nodes.show
+	server.del '/nodes/:node_id', commands.nodes.destroy
+	server.post '/nodes/:node_id/notify', commands.nodes.notify
 
 	#
 	# VMs
 	#
 	# TODO ambiguous definition server_id vs vm_id
-	server.get '/vms/:server_id', commands.vms.index
-	server.post '/vms/:server_id', commands.vms.create
+	server.get '/vms/:node_id', commands.vms.index
+	server.post '/vms/:node_id', commands.vms.create
 	server.post '/vms/:vm/notify', commands.vms.updates
 
   #
@@ -120,13 +119,13 @@ module.exports.registerRoutes = (server)->
 	server.get '/pools/:pool/allocate', commands.pool.allocate
 	server.get '/pool/:server/:container/deallocate', commands.pool.deallocate
 
-	server.get '/server/start/:destination', commands.server.start
-	server.get '/server/stop/:destination/:server', commands.server.stop
-	server.get '/server/stop/:destination', commands.server.stop
-	server.get '/server/status/:destination/:server', commands.server.status
-	server.get '/server/status/:destination', commands.server.status
-	server.get '/server/restart/:destination/:server', commands.server.restart
-	server.get '/server/restart/:destination', commands.server.restart
+  #server.get '/server/start/:destination', commands.server.start
+  #server.get '/server/stop/:destination/:server', commands.server.stop
+  #server.get '/server/stop/:destination', commands.server.stop
+  #server.get '/server/status/:destination/:server', commands.server.status
+  #server.get '/server/status/:destination', commands.server.status
+  #server.get '/server/restart/:destination/:server', commands.server.restart
+  #server.get '/server/restart/:destination', commands.server.restart
 
 	#
 	# lxc container verbs
