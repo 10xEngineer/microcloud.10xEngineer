@@ -87,15 +87,10 @@ module.exports.allocate = (req, res, next) ->
           else next null, lab_def, lab
     # allocate required VM from pool
     (lab_def, lab, next) ->
-      notification.send text: "Allocating required VMs"
-      # Nowjs should know about it once
-      Vm.addListener 'afterTransition', callback = (vm, prev_state) ->
-        notification.send 
-          text: "VM=#{vm.uuid} changed state from=#{prev_state} to=#{vm.state}"
-          stay: false
-          stayTime: 3000
-        Vm.removeListener 'afterTransition', callback
-      
+      notification.send 
+        text: "Microcloud is now preparing VMs required for the lab."
+        stay: true
+        id  : 'vmAllocation'
       async.forEach lab_def.vms, (vm_def, cb) ->
         Vm.findAndModify {'state': 'prepared'}, [], {$set: {state: 'locked', lab: lab._id, vm_name: vm_def.vm_name}}, {}, (err, vm) ->
           if !vm
@@ -122,6 +117,7 @@ module.exports.allocate = (req, res, next) ->
           next null, lab
   ], (err, lab) ->
     if err
+      notification.send method: 'removePendingNotification', id: 'vmAllocation'
       log.error text = "Lab allocation failed: #{err.message}"
       notification.send
         text: text
@@ -129,9 +125,6 @@ module.exports.allocate = (req, res, next) ->
       res.send err.code, err.message
     else
       log.info text = "lab=#{lab.token} action=allocate accepted"
-      notification.send
-        text: text
-        stayTime: 10000
       res.send lab
 
   

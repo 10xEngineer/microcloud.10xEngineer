@@ -1,4 +1,5 @@
 log = require("log4js").getLogger()
+_   = require 'underscore'
 
 module.exports.subscribe = (userid) ->
 	if userid.length && subscriptions.indexOf(userid) == -1
@@ -13,6 +14,7 @@ module.exports.unsubscribe = (userid) ->
 # res.everyone is initialized object, which is added in 
 # restify middleware (/microcloud.coffee)
 module.exports.send = (req, res, next) ->
-  notification = JSON.parse req.body
-  res.everyone.now.log notification
+  data = _.defaults JSON.parse(req.body), 
+    method: 'log'
+  res.everyone.now[data.method] data
   res.send 200

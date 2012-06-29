@@ -17,7 +17,6 @@ module.exports.index = (req, res, next) ->
 
 module.exports.updates = (req, res, next) ->
   data = JSON.parse req.body
-
   Vm
     .findOne({uuid: req.params.vm})
     .populate("lab")
