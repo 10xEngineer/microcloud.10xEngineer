@@ -2,9 +2,10 @@ log = require("log4js").getLogger()
 mongoose = require 'mongoose'
 timestamps = require "../utility/timestamp_plugin"
 state_machine = require "../utility/state_plugin"
-Vm = mongoose.model "Vm"
+Vm = mongoose.model 'Vm'
 async     = require 'async'
-broker = require("../broker")
+broker = require '../broker'
+notification = require '../utility/notification'
 
 ObjectId = mongoose.Schema.ObjectId
 
@@ -129,7 +130,9 @@ Lab.addListener 'vmStateChange', (lab, vm, prev_state) ->
     .where('state').equals(vm_state)
     .exec (err, vms) ->
       lab.fire(action, vms)
-
+      
+  notification.send text: "lab=#{lab.token} event=vmStateChange vm=#{vm.uuid} (#{prev_state} -> #{vm.state})"
+  
   log.debug "lab=#{lab.token} event=vmStateChange vm=#{vm.uuid} (#{prev_state} -> #{vm.state})"
 
 Lab.addListener 'onEntry', (lab, prev_state) ->

@@ -61,6 +61,9 @@ module.exports.registerRoutes = (server)->
 	# nowjs notification (subscribe/unsubscribe) - TODO review
 	server.post '/subscribe/:userid', commands.notifications.subscribe
 	server.post '/unsubscribe/:userid', commands.notifications.unsubscribe
+	
+	server.post '/notification', commands.notifications.send
+	
 
 	# notification support
 
