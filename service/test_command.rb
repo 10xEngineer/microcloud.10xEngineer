@@ -8,20 +8,26 @@ context = ZMQ::Context.new(1)
 # client should use REQ sockets
 socket = context.socket ZMQ::REQ
 
+socket.setsockopt(ZMQ::LINGER, 0, 8)
+
+poller = ZMQ::Poller.new
+poller.register(socket, ZMQ::POLLOUT)
+
 # sample message
-#request = {
-#  :service => :dummy,
-#  :action => :ping
-#}
-#
 request = {
-  :service => :lxc,
-  :action => :start,
-  :options => {
-    :server => "vagrant.local",
-    :id => "8b946490-9bfc-012f-c15c-0800272cf3a1",
-  }
+  :service => :dummy,
+  :action => :ping
 }
+
+#
+#request = {
+#  :service => :lxc,
+#  :action => :start,
+#  :options => {
+#    :server => "tenxeng-precise32",
+#    :id => "bc3cd5c0-a335-012f-b623-0800272cf3a1",
+#  }
+#}
 
 #request = {
 #  :service => :ec2,
@@ -44,7 +50,12 @@ message = Yajl::Encoder.encode(request)
 socket.connect "ipc:///tmp/mc.broker"
 
 # send message
-socket.send_string message
+socket.send_string message, ZMQ::NOBLOCK
+
+if poller.poll(2*1000)
+  raise "Send timeout (broker not available)"
+end
+
 
 puts "-> #{message}" 
 
