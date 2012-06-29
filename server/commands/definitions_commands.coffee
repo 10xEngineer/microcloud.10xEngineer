@@ -9,7 +9,6 @@ broker = require("../broker")
 _         = require 'underscore'
 async     = require 'async'
 
-
 #
 # Lab definition
 #
@@ -56,6 +55,7 @@ module.exports.allocate = (req, res, next) ->
   async.waterfall [
     # find lab definition
     (next) ->
+      res.everyone.now.log text: "Finding lab definition #{req.params.lab_definition_id}"
       LabDefinition.findOne {name: req.params.lab_definition_id}, (err, lab_def) ->
         if err
           next
@@ -64,6 +64,7 @@ module.exports.allocate = (req, res, next) ->
         else next null, lab_def
     # create lab instance
     (lab_def, next) ->
+      res.everyone.now.log text: "Creating Lab"
       lab = new Lab
       lab.definition = lab_def
       lab.save (err) ->
@@ -85,6 +86,15 @@ module.exports.allocate = (req, res, next) ->
           else next null, lab_def, lab
     # allocate required VM from pool
     (lab_def, lab, next) ->
+      res.everyone.now.log text: "Allocating required VMs"
+      # Nowjs should know about it once
+      Vm.addListener 'afterTransition', callback = (vm, prev_state) ->
+        res.everyone.now.log 
+          text: "VM=#{vm.uuid} changed state from=#{prev_state} to=#{vm.state}"
+          stay: false
+          stayTime: 3000
+        Vm.removeListener 'afterTransition', callback
+      
       async.forEach lab_def.vms, (vm_def, cb) ->
         Vm.findAndModify {'state': 'prepared'}, [], {$set: {state: 'locked', lab: lab._id, vm_name: vm_def.vm_name}}, {}, (err, vm) ->
           if !vm
@@ -111,10 +121,16 @@ module.exports.allocate = (req, res, next) ->
           next null, lab
   ], (err, lab) ->
     if err
-      log.error "Lab allocation failed: #{err.message}"
+      log.error text = "Lab allocation failed: #{err.message}"
+      res.everyone.now.log 
+        text: text
+        stayTime: 10000
       res.send err.code, err.message
     else
-      log.info "lab=#{lab.token} action=allocate accepted"
+      log.info text = "lab=#{lab.token} action=allocate accepted"
+      res.everyone.now.log 
+        text: text
+        stayTime: 10000
       res.send lab
 
   
