@@ -6,6 +6,7 @@ LabDefinition = mongoose.model("LabDefinition")
 Vm = mongoose.model("Vm")
 Lab = mongoose.model("Lab")
 broker = require("../broker")
+notification = require '../utility/notification'
 _         = require 'underscore'
 async     = require 'async'
 
@@ -55,7 +56,7 @@ module.exports.allocate = (req, res, next) ->
   async.waterfall [
     # find lab definition
     (next) ->
-      res.everyone.now.log text: "Finding lab definition #{req.params.lab_definition_id}"
+      notification.send text: "Finding lab definition #{req.params.lab_definition_id}"
       LabDefinition.findOne {name: req.params.lab_definition_id}, (err, lab_def) ->
         if err
           next
@@ -64,7 +65,7 @@ module.exports.allocate = (req, res, next) ->
         else next null, lab_def
     # create lab instance
     (lab_def, next) ->
-      res.everyone.now.log text: "Creating Lab"
+      notification.send text: "Creating Lab"
       lab = new Lab
       lab.definition = lab_def
       lab.save (err) ->
@@ -86,10 +87,10 @@ module.exports.allocate = (req, res, next) ->
           else next null, lab_def, lab
     # allocate required VM from pool
     (lab_def, lab, next) ->
-      res.everyone.now.log text: "Allocating required VMs"
+      notification.send text: "Allocating required VMs"
       # Nowjs should know about it once
       Vm.addListener 'afterTransition', callback = (vm, prev_state) ->
-        res.everyone.now.log 
+        notification.send 
           text: "VM=#{vm.uuid} changed state from=#{prev_state} to=#{vm.state}"
           stay: false
           stayTime: 3000
@@ -122,13 +123,13 @@ module.exports.allocate = (req, res, next) ->
   ], (err, lab) ->
     if err
       log.error text = "Lab allocation failed: #{err.message}"
-      res.everyone.now.log 
+      notification.send
         text: text
         stayTime: 10000
       res.send err.code, err.message
     else
       log.info text = "lab=#{lab.token} action=allocate accepted"
-      res.everyone.now.log 
+      notification.send
         text: text
         stayTime: 10000
       res.send lab
