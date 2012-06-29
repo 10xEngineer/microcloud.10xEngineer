@@ -11,7 +11,7 @@ Vm = new mongoose.Schema(
   lab: {type:ObjectId, default: null, ref: 'Lab'},
   vm_type: String,
   vm_name: String,
-  server: String,
+  server: {type: ObjectId, ref: 'Hostnode'}
   pool: { type: mongoose.Schema.ObjectId, ref: 'Pool' }
   # Mixed - dont' forget vm.markModified('descriptor')
   # http://mongoosejs.com/docs/schematypes.html#mixed

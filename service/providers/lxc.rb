@@ -11,6 +11,7 @@ class LxcService < Provider
 
   before_filter :validate_hostname
   before_filter :validate_vm, :only => [:allocate, :start, :stop, :status]
+  before_filter :setup_ssh
 
   # ssh stub
   # 
@@ -28,14 +29,7 @@ class LxcService < Provider
     command << "--vgname #{@vgname}" if @vgname
 
     begin
-      ssh_options = {
-        :port => @port
-      }
-
-      # TODO using key file directly, switch to ssh-agent later
-      ssh_options[:keys] = [@config["hostnode"]["ssh_key"]] if @config["hostnode"] && @config["hostnode"]["ssh_key"]
-
-      res = ssh_exec('mchammer', @hostname, command.join(' '), ssh_options)
+      res = ssh_exec('mchammer', @hostname, command.join(' '), @ssh_options)
 
       options = Yajl::Parser.parse(res)
 
@@ -72,7 +66,7 @@ class LxcService < Provider
     command << "--id #{@id}"
 
     begin
-      res = ssh_exec('mchammer', @hostname, command.join(' '), {:port => @port})
+      res = ssh_exec('mchammer', @hostname, command.join(' '), @ssh_options)
 
       options = Yajl::Parser.parse(res)
 
@@ -89,7 +83,7 @@ class LxcService < Provider
     command << "--id #{@id}"
 
     begin
-      res = ssh_exec('mchammer', @hostname, command.join(' '), {:port => @port})
+      res = ssh_exec('mchammer', @hostname, command.join(' '), @ssh_options)
 
       options = Yajl::Parser.parse(res)
 
@@ -106,7 +100,7 @@ class LxcService < Provider
     command << "--id #{@id}"
 
     begin
-      res = ssh_exec('mchammer', @hostname, command.join(' '), {:port => @port})
+      res = ssh_exec('mchammer', @hostname, command.join(' '), @ssh_options)
 
       options = Yajl::Parser.parse(res)
 
@@ -119,6 +113,15 @@ class LxcService < Provider
   end
 
   private
+
+  def setup_ssh(request)
+      @ssh_options = {
+        :port => @port
+      }
+
+      # TODO using key file directly, switch to ssh-agent later
+      @ssh_options[:keys] = [@config["hostnode"]["ssh_key"]] if @config["hostnode"] && @config["hostnode"]["ssh_key"]
+  end
 
   def validate_vm(request)
     raise "No VM ID provided." unless request["options"].include?("id")

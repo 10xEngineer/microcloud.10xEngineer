@@ -21,6 +21,7 @@ module.exports.updates = (req, res, next) ->
   Vm
     .findOne({uuid: req.params.vm})
     .populate("lab")
+    .populate("server")
     .exec (err, vm) ->
       if vm
         vm.fire data.action, data.vm, (err) ->
@@ -34,7 +35,7 @@ module.exports.updates = (req, res, next) ->
 
 module.exports.create = (req, res, next) ->
   # TODO support for multiple VM provisioning (?count=N)
-  Hostnode.findOne {server_id: req.params.node}, (err,hostnode) ->
+  Hostnode.findOne {server_id: req.params.node_id}, (err,hostnode) ->
     data = {
       server: hostnode.hostname
     }
@@ -46,7 +47,7 @@ module.exports.create = (req, res, next) ->
           state: message.options.state,
           pool: message.options.pool,
           vm_type: message.options.type,
-          server: req.params.node,
+          server: hostnode,
           descriptor: {
             storage: message.options.descriptor.fs.size
           }
