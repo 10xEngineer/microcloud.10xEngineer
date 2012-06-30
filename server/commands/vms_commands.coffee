@@ -39,7 +39,7 @@ module.exports.create = (req, res, next) ->
       server: hostnode.hostname
     }
 
-    broker.dispatch 'lxc', 'prepare', data, (message) ->
+    broker.dispatch hostnode.type, 'prepare', data, (message) ->
       if message.status == 'ok'
         vm_data = {
           uuid: message.options.id,
