@@ -131,7 +131,7 @@ Lab.addListener 'vmStateChange', (lab, vm, prev_state) ->
     .exec (err, vms) ->
       lab.fire(action, vms)
       
-  notification.send text: "lab=#{lab.token} event=vmStateChange vm=#{vm.uuid} (#{prev_state} -> #{vm.state})"
+  notification.send text: "One of the required VMs for this lab (#{vm.uuid}) just changed its state '#{prev_state}' to '#{vm.state}'"
   
   log.debug "lab=#{lab.token} event=vmStateChange vm=#{vm.uuid} (#{prev_state} -> #{vm.state})"
 
@@ -139,10 +139,11 @@ Lab.addListener 'onEntry', (lab, prev_state) ->
   log.info "lab=#{lab.token} changed state to=#{lab.state}"
 
 Lab.addListener 'onEntry:available', (lab, prev_state) ->
+  notification.send method: 'removePendingNotification', id: 'vmAllocation'
+  notification.send text: "Lab #{lab.token} is available."
   # triger lab start
   if lab.state == "available" && prev_state == "pending"
     lab.fire 'start'
-
 
 
 # 

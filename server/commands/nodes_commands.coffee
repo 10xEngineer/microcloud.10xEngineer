@@ -41,6 +41,7 @@ module.exports.create = (req, res, next) ->
                 server_id : message.options.id
                 hostname : message.options.hostname
                 provider : provider.name
+                type : provider.handler
                 token : message.options.token
                 state : 'new'
               )
