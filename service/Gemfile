@@ -7,6 +7,9 @@ gem "microcloud"
 
 gem "foreman"
 
+# TODO for stub commands only
+gem "rest-client"
+
 gem "vagrant"
 gem "fog"
 gem "net-ssh"

@@ -45,6 +45,8 @@ GEM
       net-ssh (>= 1.99.1)
     net-ssh (2.2.2)
     nokogiri (1.5.3)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     rspec (2.10.0)
       rspec-core (~> 2.10.0)
       rspec-expectations (~> 2.10.0)
@@ -76,6 +78,7 @@ DEPENDENCIES
   foreman
   microcloud
   net-ssh
+  rest-client
   rspec
   vagrant
   yajl-ruby
