@@ -7,9 +7,12 @@ uniqueness  = require "../utility/uniquenessPlugin"
 ProviderDataSchema = new mongoose.Schema {}
 
 Provider = new mongoose.Schema
-  name    : String
-  service : String
-  data    : {env: String}
+  name      : String
+  # provisioner service
+  service   : String
+  # default hostnode type (node service handler)
+  handler   : String 
+  data      : {env: String}
 
 Provider.plugin timestamps
 Provider.plugin uniqueness

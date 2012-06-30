@@ -5,6 +5,7 @@ ec2 = ->
   config = {
     name: 'ec2',
     service: 'ec2',
+    handler: 'lxc',
     data: {
       access_key_id: "AKIAJIPBWGE6PG5C2VGA",
       secret_access_key: "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",

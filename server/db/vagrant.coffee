@@ -9,6 +9,8 @@ vagrant = ->
   vagrant_def = 
     name: 'vagrant',
     service: 'vagrant',
+    handler: 'lxc',
+
     data: {'env': vagrant_root}
 
   vagrant = new Provider(vagrant_def)
