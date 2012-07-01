@@ -88,6 +88,8 @@ class Provider
     else
       puts "socket not available (possibly duplicate response)"
     end
+
+    res
   end
 
   def notify(resource, resource_id, action, hash)
