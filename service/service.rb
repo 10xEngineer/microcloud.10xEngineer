@@ -7,6 +7,7 @@ require 'utils/provider'
 require "utils/config"
 require 'ffi-rzmq'
 require 'net/ssh'
+require 'mongoid'
 require 'logger'
 require 'yaml'
 require 'yajl'
@@ -29,6 +30,13 @@ else
 end
 
 config = TenxEngineer.config(config_file)
+
+# configure mongoid
+unless ENV["MONGOID_ENV"] || ENV["RACK_ENV"] 
+  ENV["MONGOID_ENV"] = "development"
+end
+
+Mongoid.load!(File.join(File.dirname(__FILE__), "mongoid.yml"))
 
 # load service
 service_file = File.join(File.dirname(__FILE__), "providers/#{service_name}.rb")

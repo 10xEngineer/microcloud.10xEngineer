@@ -1,0 +1,6 @@
+development:
+  sessions:
+    default:
+      database: mc_services
+      hosts:
+        - localhost:27017

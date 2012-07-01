@@ -7,12 +7,16 @@ gem "microcloud"
 
 gem "foreman"
 
+# internal service storage
+gem "mongoid", "~> 3.0.0.rc"
+
 # TODO for stub commands only
 gem "rest-client"
 
 gem "vagrant"
 gem "fog"
 gem "net-ssh"
+gem "uuid"
 
 group :test do
   gem "rspec"
