@@ -42,7 +42,7 @@ module.exports.create = (req, res, next) ->
     broker.dispatch hostnode.type, 'prepare', data, (message) ->
       if message.status == 'ok'
         vm_data = {
-          uuid: message.options.id,
+          uuid: message.options.uuid,
           state: message.options.state,
           pool: message.options.pool,
           vm_type: message.options.type,
