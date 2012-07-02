@@ -46,6 +46,7 @@ Hostnode.statics.paths = ->
 
 Hostnode.addListener 'afterTransition', (node, prev_state) ->
   # TODO hardcoded hostnode type decision
+  # TODO replace with shared logic / wrapper / [shared] task queue (resque style)
   if node.type == "loop"
     # TODO configurable endpoint (or avoid HTTP call alltogether)
     opts = {
