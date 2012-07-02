@@ -18,6 +18,9 @@ gem "fog"
 gem "net-ssh"
 gem "uuid"
 
+# windows related
+gem "winrm"
+
 group :test do
   gem "rspec"
 end
