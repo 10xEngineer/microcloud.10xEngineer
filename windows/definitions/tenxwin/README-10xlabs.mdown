@@ -1,0 +1,15 @@
+# Windows 2008 R2 base image
+
+Use VeeWee for automated install (includes winrm setup and VirtualBox additions). 
+
+Once the build is finished (takes about 25 - 40 minutes), you need to manually:
+
+* set timezone (to UTC)
+* [enable remote desktop][rdp]
+* make sure networking is working
+
+[rdp]: http://technet.microsoft.com/en-us/library/cc794832(v=ws.10).aspx
+
+Default Administrator password: `vagrant`
+
+Rest is pretty much manual work (Vagrant can't be used without SSH, which requires Cygwin).
