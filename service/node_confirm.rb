@@ -14,7 +14,7 @@ url = "http://localhost:8080/nodes/#{node}/notify"
 message = {
   :action => :confirm,
   :node => {
-    :hostname => "no.hostname.from.node.confirm"
+    :hostname => "10.0.1.4"
   }
 }
 

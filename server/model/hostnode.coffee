@@ -3,6 +3,7 @@ mongoose = require 'mongoose'
 Schema = mongoose.Schema
 timestamps = require "../utility/timestamp_plugin"
 state_machine = require "../utility/state_plugin"
+http = require "http"
 
 Hostnode = new Schema
   server_id : {type: String, unique: true}
@@ -44,7 +45,25 @@ Hostnode.statics.paths = ->
       return "failed"
 
 Hostnode.addListener 'afterTransition', (node, prev_state) ->
-  log.info "hostnode=#{node.server_id} changed state from=#{prev_state} to=#{node.state}"
+  # TODO hardcoded hostnode type decision
+  if node.type == "loop"
+    # TODO configurable endpoint (or avoid HTTP call alltogether)
+    opts = {
+      host: 'localhost'
+      port: 8080
+      path: "/vms/#{node.server_id}"
+      method: "POST"
+    }
+    
+    req = http.request opts, (res) ->
+      log.debug "node=#{node.server_id} type=#{node.type} forcing VM prepare"
+
+    req.on 'error', (e) ->
+      log.error "node=#{node.server_id} type=#{node.tupe} VM prepare failed reason='#{e.message}'"
+
+    req.end()
+  
+  log.info "node=#{node.server_id} changed state from=#{prev_state} to=#{node.state}"
 
 
 module.exports.register = mongoose.model 'Hostnode', Hostnode

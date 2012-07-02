@@ -42,7 +42,7 @@ class LoopService < Provider
     uuid = UUID.new
     # TODO hardcoded default descriptor
     #      need to have way how to connect to managed hostnode
-    #      provide same mechanism (say as ssh in LXC, winrm for windows?):w
+    #      provide same mechanism (say as ssh in LXC, winrm for windows?)
     
     vm = Vm.new(uuid: uuid.generate, hostnode: @hostname, descriptor: descriptor)
     vm.save
