@@ -1,3 +1,10 @@
+# original chef instructions
+# http://wiki.opscode.com/display/chef/Knife+Windows+Bootstrap#KnifeWindowsBootstrap-Requirements%2FVersion
+#
+# Enable WinRM Basic Authentication (plaintext)
+# TODO Enable SSL
+# http://pubs.vmware.com/orchestrator-plugins/index.jsp?topic=/com.vmware.using.powershell.plugin.doc_10/GUID-D4ACA4EF-D018-448A-866A-DECDDA5CC3C1.html
+
 cmd /c winrm quickconfig -q
 cmd /c winrm quickconfig -transport:http # needs to be auto no questions asked
 cmd /c winrm set winrm/config @{MaxTimeoutms="1800000"}
