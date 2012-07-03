@@ -30,6 +30,7 @@ Vm.statics.findAndModify = (query, sort, doc, options, callback) ->
       mongoose.model("Vm")
         .findOne({uuid: raw_vm.uuid})
         .populate("lab")
+        .populate("server")
         .exec (err, vm) ->
           if err
             return callback(err,vm)

@@ -92,23 +92,23 @@ module.exports.allocate = (req, res, next) ->
         stay: true
         id  : 'vmAllocation'
       async.forEach lab_def.vms, (vm_def, cb) ->
-        Vm.findAndModify {'state': 'prepared'}, [], {$set: {state: 'locked', lab: lab._id, vm_name: vm_def.vm_name}}, {}, (err, vm) ->
+        # TODO add vm_type to lookup
+        Vm.findAndModify {'state': 'prepared', 'vm_type': vm_def.vm_type}, [], {$set: {state: 'locked', lab: lab._id, vm_name: vm_def.vm_name}}, {}, (err, vm) ->
           if !vm
             return cb(new Error("No suitable VM available"))
 
           data = 
             id: vm.uuid
-            # FIXME get the server hostname from vm.server.hostname
-            server: 'no.hostname.lab.allocate'
+            server: vm.server.hostname
 
-          broker.dispatch 'lxc', 'allocate', data, (message) =>
+          broker.dispatch vm.server.type, 'allocate', data, (message) =>
             if message.status == 'ok'
               return cb()
             
             return cb(new Error(message.options.reason))
       , (err) ->
         if err
-          log.error "VM/LXC allocation request failed for lab '#{lab.token}': #{err.message}"
+          log.error "VM allocation request failed for lab '#{lab.token}': #{err.message}"
           # TODO notify something to cleanup VMs (or something should just pick them up)
           next
             message: "Unable to allocate VM (#{err.message})"
