@@ -1,4 +1,5 @@
 require 'uuid'
+require 'resolv'
 require 'model/vm'
 require 'utils/windoze'
 
@@ -59,7 +60,9 @@ class LoopService < Provider
   def start(request)
     response :ok
 
-    # FIXME vm_descriptor to return ip_addr
+    vm_descriptor = {
+      :ip_addr => Resolv.getaddress(request["options"]["server"])
+    }
 
     notify :vm, request["options"]["id"], :start, vm_descriptor
   end
@@ -67,7 +70,9 @@ class LoopService < Provider
   def stop(request)
     response :ok
 
-      # FIXME vm_descriptor
+    vm_descriptor = {
+      :ip_addr => nil
+    }
 
     notify :vm, require["options"]["id"], :stop, vm_descriptor
   end

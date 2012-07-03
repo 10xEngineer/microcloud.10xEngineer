@@ -99,7 +99,7 @@ Lab.methods.start = (lab) ->
           id: vm.uuid
           server: vm.server.hostname
 
-        broker.dispatch 'lxc', 'start', request, (message) =>
+        broker.dispatch vm.server.type, 'start', request, (message) =>
           if message.status == "ok"
             return cb
 
