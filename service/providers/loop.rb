@@ -50,18 +50,26 @@ class LoopService < Provider
   end
 
   def allocate(request)
-    # TODO implement
+    # TODO implement (actual chef/provisioning run)
     response :ok
+
+    notify :vm, request["options"]["id"], :allocate, {}
   end
 
   def start(request)
-    # already running (one-to-one to hostnode)
     response :ok
+
+    # FIXME vm_descriptor to return ip_addr
+
+    notify :vm, request["options"]["id"], :start, vm_descriptor
   end
 
   def stop(request)
-    # doesn't make any sense (vm is mapped one-to-one to hostnode)
     response :ok
+
+      # FIXME vm_descriptor
+
+    notify :vm, require["options"]["id"], :stop, vm_descriptor
   end
 
   def status(request)
