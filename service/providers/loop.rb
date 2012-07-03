@@ -11,8 +11,7 @@ class LoopService < Provider
   before_filter :validate_hostname
 
   def prepare(request)
-    puts '---- prepare'
-    puts request.inspect
+    vm_type = "win2008r2"
 
     vm = Vm.where(hostnode: @hostname).first
     if vm
@@ -44,7 +43,7 @@ class LoopService < Provider
     #      need to have way how to connect to managed hostnode
     #      provide same mechanism (say as ssh in LXC, winrm for windows?)
     
-    vm = Vm.new(uuid: uuid.generate, hostnode: @hostname, descriptor: descriptor)
+    vm = Vm.new(uuid: uuid.generate, hostnode: @hostname, type: vm_type, descriptor: descriptor)
     vm.save
 
     response :ok, vm.as_document
