@@ -16,6 +16,8 @@ class Ec2Service < Provider
       :region => request["options"]["data"]["region"] || "us-east-1"
     })
 
+    # FIXME pluggable provider mechanism
+    #
     # TODO prepare temporary download URL (valid for 1 hour)
     #      ? how to maintain multiple ec2 accounts and URL signature (most likely single URL?)
     # TODO use current AWS account to sign it
@@ -40,6 +42,7 @@ class Ec2Service < Provider
     expiration = Time.now.utc + 60*15
     download_url = target_file.url(expiration)
 
+    # FIXME provide pluggable user-data mechanism
     template = ERB.new(File.read(File.join(File.dirname(__FILE__), "../dist/10xeng-dist.sh.erb")))
     user_data = template.result(binding)
 
@@ -54,16 +57,17 @@ class Ec2Service < Provider
   end
 
   def stop(request)
-    raise "No server id provided." unless request["options"].include?("id")
+    raise "No server id provided." unless request["options"].include?("server_id")
 
+    # TODO really ugly to pass such a complex structures - options.provider.data 
     connection = Fog::Compute.new({
       :provider => 'AWS',
-      :aws_secret_access_key => request["options"]["secret_access_key"],
-      :aws_access_key_id => request["options"]["access_key_id"],
-      :region => request["options"]["region"] || "us-east-1"
+      :aws_secret_access_key => request["options"]["provider"]["data"]["secret_access_key"],
+      :aws_access_key_id => request["options"]["provider"]["data"]["access_key_id"],
+      :region => request["options"]["provider"]["data"]["region"] || "us-east-1"
     })
 
-    server = connection.servers.get(request["options"]["id"])
+    server = connection.servers.get(request["options"]["server_id"])
 
     server.destroy
 

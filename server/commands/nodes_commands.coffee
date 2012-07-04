@@ -77,10 +77,12 @@ module.exports.destroy = (req, res, next) ->
       res.send 500, err
 
     if provider
-      data = {
-        id: req.params.node_id
-      }
-      broker.dispatch provider.name , 'stop', data, (message) ->
+      # TODO better way how to pass arguments (see ec2.rb stop)
+      options = 
+        server_id: req.params.node_id
+        provider: provider
+
+      broker.dispatch provider.name, 'stop', options, (message) ->
         res.send message
     else
       # TODO trigger housekeeping
