@@ -1,11 +1,11 @@
 module.exports = ->
 
-log = require("log4js").getLogger()
-commands = require("./commands")
-mongoose = require("mongoose")
-Provider = mongoose.model('Provider')
-Hostnode = mongoose.model('Hostnode')
-broker = require("../broker")
+log       = require("log4js").getLogger()
+commands  = require("./commands")
+mongoose  = require("mongoose")
+Provider  = mongoose.model('Provider')
+Hostnode  = mongoose.model('Hostnode')
+broker    = require("../broker")
 
 module.exports.index = (req, res, next) ->
   Provider.findOne {name: req.params.provider}, (err, provider) ->
@@ -22,7 +22,7 @@ module.exports.create = (req, res, next) ->
       res.send 409, err.message
 
     if provider
-      broker.dispatch provider.service , 'start', provider.data, (message) ->
+      broker.dispatch provider.service, 'start', provider, (message) ->
         if message.status == 'ok'
           # FIXME wtf? 
           Hostnode.find_by_server_id message.options.id, (err, hostnode) ->

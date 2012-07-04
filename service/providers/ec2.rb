@@ -11,9 +11,9 @@ class Ec2Service < Provider
   def start(request)
     connection = Fog::Compute.new({
       :provider => 'AWS',
-      :aws_secret_access_key => request["options"]["secret_access_key"],
-      :aws_access_key_id => request["options"]["access_key_id"],
-      :region => request["options"]["region"] || "us-east-1"
+      :aws_secret_access_key => request["options"]["data"]["secret_access_key"],
+      :aws_access_key_id => request["options"]["data"]["access_key_id"],
+      :region => request["options"]["data"]["region"] || "us-east-1"
     })
 
     # TODO prepare temporary download URL (valid for 1 hour)
@@ -24,15 +24,15 @@ class Ec2Service < Provider
     # sign URL
     s3 = Fog::Storage.new({
       :provider => 'AWS',
-      :aws_secret_access_key => request["options"]["secret_access_key"],
-      :aws_access_key_id => request["options"]["access_key_id"],
-      :region => request["options"]["region"] || "us-east-1"
+      :aws_secret_access_key => request["options"]["data"]["secret_access_key"],
+      :aws_access_key_id => request["options"]["data"]["access_key_id"],
+      :region => request["options"]["data"]["region"] || "us-east-1"
     })
 
     # TODO re-use signed URLs (general quite slow)
     # TODO bucket needs to be in same region (otherwise 301)
     #      might be easier to get single CF URL
-    bucket_name = "tenxops-#{request["options"]["region"]}"
+    bucket_name = "tenxops-#{request["options"]["data"]["region"]}"
 
     bucket = s3.directories.get(bucket_name)
     target_file = bucket.files.get(BINARY_DIST[:file])
@@ -44,9 +44,9 @@ class Ec2Service < Provider
     user_data = template.result(binding)
 
     # TODO availability zone
-    server = connection.servers.create(:key_name => request["options"]["key"],
-                                       :image_id => request["options"]["ami"],
-                                       :flavor_id => request["options"]["type"],
+    server = connection.servers.create(:key_name => request["options"]["data"]["key"],
+                                       :image_id => request["options"]["data"]["ami"],
+                                       :flavor_id => request["options"]["data"]["type"],
                                        :user_data => user_data )
 
     # TODO hostname is nil (might be good idea to create own hostname/DNS provisioning)
