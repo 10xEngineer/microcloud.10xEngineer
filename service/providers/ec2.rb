@@ -23,6 +23,7 @@ class Ec2Service < Provider
     # TODO use current AWS account to sign it
     # TODO and using ERB generate user_data
    
+    # TODO move to a separate method. Up to -----
     # sign URL
     s3 = Fog::Storage.new({
       :provider => 'AWS',
@@ -41,10 +42,18 @@ class Ec2Service < Provider
 
     expiration = Time.now.utc + 60*15
     download_url = target_file.url(expiration)
+    # TODO ----
 
-    # FIXME provide pluggable user-data mechanism
-    template = ERB.new(File.read(File.join(File.dirname(__FILE__), "../dist/10xeng-dist.sh.erb")))
-    user_data = template.result(binding)
+    # hostnode specific ec2 templates
+    hostnode_type = request["options"]["handler"]
+    dist_file = File.join(File.dirname(__FILE__), "../dist/10xlabs-ec2-#{hostnode_type}.erb")
+
+    if File.exists? dist_file
+      template = ERB.new(File.read()
+      user_data = template.result(binding)
+    else
+      user_data = nil
+    end
 
     # TODO availability zone
     server = connection.servers.create(:key_name => request["options"]["data"]["key"],
