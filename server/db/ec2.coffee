@@ -11,7 +11,7 @@ ec2 = ->
       secret_access_key: "nBVSF7hBS7uutlbO4ZT77mHKGTJKbg5+ANjNZzWz",
       region: "eu-west-1",
       key: "europe-default",
-      ami: "ami-55393c21"
+      ami: "ami-77f0f503"
     }
   }
 
