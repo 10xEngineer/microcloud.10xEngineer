@@ -11,7 +11,7 @@ mkdir -p ${TXENG_ROOT}
 
 # get hostnode distribution
 cd /tmp
-wget -O hostnode-dist.tar.gz "<%= download_url %>"
+wget -O hostnode-dist.tar.gz "<%= @download_url %>"
 tar xfz hostnode-dist.tar.gz -C $TXENG_ROOT
 
 cd $TXENG_ROOT

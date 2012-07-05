@@ -8,6 +8,8 @@ class Ec2Service < Provider
     :file => 'hostnode-dist.tar.gz'
   }
 
+  before_filter :user_data, :only => [:start]
+
   def start(request)
     connection = Fog::Compute.new({
       :provider => 'AWS',
@@ -16,37 +18,8 @@ class Ec2Service < Provider
       :region => request["options"]["data"]["region"] || "us-east-1"
     })
 
-    # FIXME pluggable provider mechanism
-    #
-    # TODO prepare temporary download URL (valid for 1 hour)
-    #      ? how to maintain multiple ec2 accounts and URL signature (most likely single URL?)
-    # TODO use current AWS account to sign it
-    # TODO and using ERB generate user_data
-   
-    # TODO move to a separate method. Up to -----
-    # sign URL
-    s3 = Fog::Storage.new({
-      :provider => 'AWS',
-      :aws_secret_access_key => request["options"]["data"]["secret_access_key"],
-      :aws_access_key_id => request["options"]["data"]["access_key_id"],
-      :region => request["options"]["data"]["region"] || "us-east-1"
-    })
-
-    # TODO re-use signed URLs (general quite slow)
-    # TODO bucket needs to be in same region (otherwise 301)
-    #      might be easier to get single CF URL
-    bucket_name = "tenxops-#{request["options"]["data"]["region"]}"
-
-    bucket = s3.directories.get(bucket_name)
-    target_file = bucket.files.get(BINARY_DIST[:file])
-
-    expiration = Time.now.utc + 60*15
-    download_url = target_file.url(expiration)
-    # TODO ----
-
     # hostnode specific ec2 templates
-    hostnode_type = request["options"]["handler"]
-    dist_file = File.join(File.dirname(__FILE__), "../dist/10xlabs-ec2-#{hostnode_type}.erb")
+    dist_file = File.join(File.dirname(__FILE__), "../dist/10xlabs-ec2-#{@hostnode_handler}.erb")
 
     if File.exists? dist_file
       template = ERB.new File.read(dist_file)
@@ -98,5 +71,39 @@ class Ec2Service < Provider
     raise "No server with id '#{request["options"]["id"]}'." if server.nil?
 
     response :ok, server.state
+  end
+
+  private
+
+  # 
+  # prepares per-hostnode-type user data
+  def user_data(request)
+    @hostnode_handler = request["options"]["handler"]
+
+    send_ext("#{@hostnode_handler}_user_data", request)
+  end
+
+  def lxc_user_data
+    s3 = Fog::Storage.new({
+      :provider => 'AWS',
+      :aws_secret_access_key => request["options"]["data"]["secret_access_key"],
+      :aws_access_key_id => request["options"]["data"]["access_key_id"],
+      :region => request["options"]["data"]["region"] || "us-east-1"
+    })
+
+    # TODO re-use signed URLs (general quite slow)
+    # TODO bucket needs to be in same region (otherwise 301)
+    #      might be easier to get single CF URL
+    bucket_name = "tenxops-#{request["options"]["data"]["region"]}"
+
+    bucket = s3.directories.get(bucket_name)
+    target_file = bucket.files.get(BINARY_DIST[:file])
+
+    expiration = Time.now.utc + 60*15
+    @download_url = target_file.url(expiration)
+  end
+
+  def loop_user_data
+    puts '--- loop_user_data'
   end
 end
