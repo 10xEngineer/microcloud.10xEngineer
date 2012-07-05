@@ -1,5 +1,6 @@
 require 'fog'
 require 'erb'
+require 'yajl'
 
 class Ec2Service < Provider
 
@@ -104,6 +105,11 @@ class Ec2Service < Provider
   end
 
   def loop_user_data
-    puts '--- loop_user_data'
+    # TODO add authorization details
+    instance_data = {
+      :endpoint => @config["hostnode"]["endpoint"]
+    }
+
+    @loop_user_data = Yajl::Encoder.encode(instance_data)
   end
 end
