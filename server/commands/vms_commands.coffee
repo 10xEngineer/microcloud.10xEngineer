@@ -35,35 +35,38 @@ module.exports.updates = (req, res, next) ->
 module.exports.create = (req, res, next) ->
   # TODO support for multiple VM provisioning (?count=N)
   Hostnode.findOne {server_id: req.params.node_id}, (err,hostnode) ->
-    data = {
-      server: hostnode.hostname
-    }
+    unless hostnode
+      res.send 404, "failed: specified hostnode not found"
+    else
+      data = {
+        server: hostnode.hostname
+      }
 
-    broker.dispatch hostnode.type, 'prepare', data, (message) ->
-      if message.status == 'ok'
-        vm_data = {
-          uuid: message.options.uuid,
-          state: message.options.state,
-          pool: message.options.pool,
-          vm_type: message.options.type,
-          server: hostnode,
-          descriptor: {
-            storage: message.options.descriptor.fs.size
+      broker.dispatch hostnode.type, 'prepare', data, (message) ->
+        if message.status == 'ok'
+          vm_data = {
+            uuid: message.options.uuid,
+            state: message.options.state,
+            pool: message.options.pool,
+            vm_type: message.options.type,
+            server: hostnode,
+            descriptor: {
+              storage: message.options.descriptor.fs.size
+            }
           }
-        }
-        vm = new Vm(vm_data)
-        vm.save (err) ->
-          if err
-            log.error "Unable to save VM state: #{err}"
+          vm = new Vm(vm_data)
+          vm.save (err) ->
+            if err
+              log.error "Unable to save VM state: #{err}"
 
-            res.send 409, err.message
-          else
-            log.info "vm=#{vm_data.uuid} saved"
+              res.send 409, err.message
+            else
+              log.info "vm=#{vm_data.uuid} saved"
 
-            res.send vm
-      else
-        log.error "#{hostnode.hostname}: Unable to prepare VM(#{message.options.reason})"
-        res.send 500, "failed: #{message.options.reason}"
+              res.send vm
+        else
+          log.error "#{hostnode.hostname}: Unable to prepare VM(#{message.options.reason})"
+          res.send 500, "failed: #{message.options.reason}"
 
 # TODO start
 # TODO stop
