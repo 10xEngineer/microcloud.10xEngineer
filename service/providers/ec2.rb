@@ -49,7 +49,7 @@ class Ec2Service < Provider
     dist_file = File.join(File.dirname(__FILE__), "../dist/10xlabs-ec2-#{hostnode_type}.erb")
 
     if File.exists? dist_file
-      template = ERB.new(File.read()
+      template = ERB.new File.read(dist_file)
       user_data = template.result(binding)
     else
       user_data = nil
