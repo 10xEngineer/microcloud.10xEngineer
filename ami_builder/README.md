@@ -49,3 +49,4 @@ Instance will stop and is ready to create AMI from it.
 ## Improvements
 
 * Clean-up resources in case of failure
+* Repeat Windows AMI provisioning to diagnose WinRM *Access denied* problems (so far getting them randomly)
