@@ -33,7 +33,7 @@ AMIs are saved using the AWS Credentials provided. In general no private informa
 
 ## Windows Images
 
-For windows images you need to setup base Windows AMI for WinRM. Script `definition/postinstall.ps1` contains all the logic for minimum bootstrap (without chef). [To run it](http://technet.microsoft.com/en-us/library/ee176949.aspx), you need to enabled PowerShell on the target instance
+For windows images (Windows 2008 R2 only) you need to setup base Windows AMI for WinRM. Script `definition/postinstall.ps1` contains all the logic for minimum bootstrap (without chef). [To run it](http://technet.microsoft.com/en-us/library/ee176949.aspx), you need to enabled PowerShell on the target instance
 
     Set-ExecutionPolicy RemoteSigned
 
