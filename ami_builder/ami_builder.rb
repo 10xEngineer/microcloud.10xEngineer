@@ -20,7 +20,7 @@ end
 aws_region = ARGV.shift
 key_name = ARGV.shift
 
-abort "Region not supported by ami_builder/invalid (#{aws_region})" unless TenxEngineer::SOURCE_AMI[aws_region]
+abort "Region not supported by ami_builder/invalid (#{aws_region})" unless TenxEngineer::SOURCE_AMI[:ubuntu][aws_region]
 
 aws = Fog::Compute.new({
   :provider => 'AWS',
@@ -33,7 +33,7 @@ puts "AWS connection established."
 
 # create server
 base = aws.servers.create(:flavor_id => "m1.small",
-                         :image_id => TenxEngineer::SOURCE_AMI[aws_region],
+                         :image_id => TenxEngineer::SOURCE_AMI[:ubuntu][aws_region],
                          :key_name => key_name)
 
 puts "Instance start request accepted - instance #{base.id}"

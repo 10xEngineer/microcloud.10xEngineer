@@ -31,6 +31,21 @@ All customization are done by `definition/postinstall.sh`.
 
 AMIs are saved using the AWS Credentials provided. In general no private information should be stored as part of postinstall process, and therefore AMIs are not confidential. Being critical part of infrastructure they should be audited regularly (TBD).
 
+## Windows Images
+
+For windows images you need to setup base Windows AMI for WinRM. Script `definition/postinstall.ps1` contains all the logic for minimum bootstrap (without chef). [To run it](http://technet.microsoft.com/en-us/library/ee176949.aspx), you need to enabled PowerShell on the target instance
+
+    Set-ExecutionPolicy RemoteSigned
+
+Copy paste the script to a file and run it (as powershell script).
+
+To create AMI use EC2Config Service and
+
+* uncheck "Enable SetPassword feature after sysprep" (to keep default password)
+* "Run Sysprep and Shutdown now" (Bundle tab).
+
+Instance will stop and is ready to create AMI from it.
+
 ## Improvements
 
 * Clean-up resources in case of failure
