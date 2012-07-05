@@ -33,7 +33,8 @@ class Ec2Service < Provider
     server = connection.servers.create(:key_name => request["options"]["data"]["key"],
                                        :image_id => request["options"]["data"]["ami"],
                                        :flavor_id => request["options"]["data"]["type"],
-                                       :user_data => user_data )
+                                       :security_group_ids => request["options"]["data"]["security_group"],
+                                       :user_data => user_data)
 
     # TODO hostname is nil (might be good idea to create own hostname/DNS provisioning)
     response :ok, :id => server.id, :hostname => server.dns_name

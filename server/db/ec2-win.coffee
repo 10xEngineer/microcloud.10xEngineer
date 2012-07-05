@@ -1,18 +1,18 @@
 mongoose = require("mongoose")
 Provider = mongoose.model('Provider')
 
-ec2 = ->
+ec2_win = ->
   config = {
-    name: 'ec2',
+    name: 'ec2-win',
     service: 'ec2',
-    handler: 'lxc',
+    handler: 'loop',
     data: {
       access_key_id: "AKIAJIPBWGE6PG5C2VGA",
       secret_access_key: "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",
       region: "eu-west-1",
       key: "europe-default",
-      ami: "ami-77f0f503",
-      security_group: "default"
+      ami: "ami-812125f5",
+      security_group: "windows-default"
     }
   }
 
@@ -21,5 +21,6 @@ ec2 = ->
     if err
       console.log "Unable to create ec2 provider: #{err}"
 
-module.exports.seed = ec2
+module.exports.seed = ec2_win
   
+
