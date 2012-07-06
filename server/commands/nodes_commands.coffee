@@ -82,7 +82,7 @@ module.exports.destroy = (req, res, next) ->
         server_id: req.params.node_id
         provider: provider
 
-      broker.dispatch provider.name, 'stop', options, (message) ->
+      broker.dispatch provider.service, 'stop', options, (message) ->
         res.send message
     else
       # TODO trigger housekeeping
@@ -92,7 +92,7 @@ module.exports.destroy = (req, res, next) ->
 module.exports.notify = (req, res, next) ->
   data = JSON.parse(req.body)
   # FIXME verify data/action
-  Hostnode.find_by_server_id req.params.node_id, (err, node) ->
+  Hostnode.find_by_server_id req.params.node, (err, node) ->
     if node
       # FIXME process body to find action
       node.fire data["action"], data.node , (err) -> 
