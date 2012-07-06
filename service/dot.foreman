@@ -1,1 +1,1 @@
-concurrency: vagrant=1,broker=1,dummy=1,lxc=2,ec2=1
+concurrency: vagrant=1,broker=1,dummy=1,lxc=2,ec2=1,brightbox=1

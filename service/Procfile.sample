@@ -2,3 +2,5 @@ broker: bundle exec ./broker.rb
 dummy: bin/service.sh dummy
 vagrant: bin/service.sh vagrant
 ec2: bin/service.sh ec2
+loop: bin/service.sh loop
+brightbox: bin/service.sh brightbox
