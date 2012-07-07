@@ -46,6 +46,12 @@ To create AMI use EC2Config Service and
 
 Instance will stop and is ready to create AMI from it.
 
+## Brightbox
+
+Windows image provided by Brightbox team is set differently compared to based images on EC2. You need to install .NET Framework (v4) to get service working. 
+
+**TODO** bootstrap script for windows.
+
 ## Improvements
 
 * Clean-up resources in case of failure
