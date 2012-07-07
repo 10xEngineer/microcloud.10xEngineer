@@ -26,8 +26,8 @@ class LoopService < Provider
     command = ['fsutil','volume','diskfree','C:']
 
     begin
-      # TODO create different user and use real-life authentication
-      res = winrm_exec('administrator', 'vagrant', @hostname, command.join(' '))
+      # TODO create different user and use real-life authentication (connected to provider)
+      res = winrm_exec('administrator', 'C9fcx2vTZAzeQt', @hostname, command.join(' '))
 
       # TODO this is really just a demonstration of winrm provider
       total_size = (res[1].split(':').last.to_f / (1024*1024*1024)).round

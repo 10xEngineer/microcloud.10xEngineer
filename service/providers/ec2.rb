@@ -59,7 +59,7 @@ class Ec2Service < Provider
   end
 
   def status(request)
-    raise "No server id provided." unless request["options"].include?("id")
+    raise "No server id provided." unless request["options"].include?("server_id")
 
     connection = Fog::Compute.new({
       :provider => 'AWS',

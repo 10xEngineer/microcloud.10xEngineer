@@ -14,20 +14,28 @@ poller = ZMQ::Poller.new
 poller.register(socket, ZMQ::POLLOUT)
 
 # sample message
-request = {
-  :service => :dummy,
-  :action => :ping
-}
+#request = {
+#  :service => :dummy,
+#  :action => :ping
+#}
 
 #
 #request = {
 #  :service => :lxc,
-#  :action => :start,
+#  :action => :prepare,
 #  :options => {
 #    :server => "tenxeng-precise32",
 #    :id => "bc3cd5c0-a335-012f-b623-0800272cf3a1",
 #  }
 #}
+
+request = {
+  :service => :loop,
+  :action => :prepare,
+  :options => {
+    :server => "test.local"
+  }
+}
 
 #request = {
 #  :service => :ec2,
@@ -52,7 +60,7 @@ socket.connect "ipc:///tmp/mc.broker"
 # send message
 socket.send_string message, ZMQ::NOBLOCK
 
-if poller.poll(2*1000)
+if poller.poll(5*1000)
   raise "Send timeout (broker not available)"
 end
 

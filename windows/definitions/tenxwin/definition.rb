@@ -28,7 +28,7 @@ Veewee::Session.declare({
     #:ssh_host_port => "59856", :ssh_guest_port => "5985", # NO winrm... yet
     # And run postinstall.sh for up to 10000 seconds
     :postinstall_timeout => "10000",
-    :postinstall_files => ["postinstall.sh"],
+    :postinstall_files => [],
     # No sudo on windows
     :sudo_cmd => "sh '%f'",
     # Shutdown is different as well

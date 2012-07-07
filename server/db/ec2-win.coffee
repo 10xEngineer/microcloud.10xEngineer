@@ -11,7 +11,7 @@ ec2_win = ->
       secret_access_key: "nBVSF7hBS7uutlbO4ZT77mHKGTJKbg5+ANjNZzWz",
       region: "eu-west-1",
       key: "europe-default",
-      ami: "ami-812125f5",
+      ami: "ami-cf2226bb",
       security_group: "windows-default"
     }
   }
