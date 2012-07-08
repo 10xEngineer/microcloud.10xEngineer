@@ -7,6 +7,8 @@ Lab.definition :lab1_10xeng do
   # TODO how to specify resource pool (and therefore provider)?
   # TODO how to override provider settings? (instance size?)
 
+  # TODO how to declare managed/unmanaged VM?
+  #      how to declare provisioning layer?
   # TODO how to declare remote access to VM/toolchain compliance?
 
   vm :web_serv do

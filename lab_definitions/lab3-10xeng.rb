@@ -13,16 +13,6 @@ Lab.definition :lab1_10xeng do
     end
   end
 
-  vm :db_serv do
-    base_image :ubuntu_precise32
-    hostname "dbserv.local"
-    network do
-      interface "10.0.0.2/24"
-    end
-
-    run_list ["recipe[postgresql:server]"]
-  end
-
   # web application component with unmanaged (ie plain chef recipe based) application
   component :webapp do
     # allocate webapp to specific VM
@@ -40,7 +30,11 @@ Lab.definition :lab1_10xeng do
 
   # DB (as actual dabase, not database server)
   component :acme_db do
-    vm :db_serv
+    # dynamically allote VM
+    # TODO naming strategy
+    instance 1
+
+    run_list ["role[pgql_dbserv"]
   end
 
 end
