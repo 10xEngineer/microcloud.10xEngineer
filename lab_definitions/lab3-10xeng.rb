@@ -28,6 +28,9 @@ Lab.definition :lab1_10xeng do
     depends_on :acme_db 
   end  
 
+  # defined as shared (resolve load-path/remote resources)
+  component :newrelic 
+
   # DB (as actual dabase, not database server)
   component :acme_db do
     # dynamically allote VM
