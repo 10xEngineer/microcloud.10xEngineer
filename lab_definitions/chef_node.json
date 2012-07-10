@@ -1,0 +1,33 @@
+{ "automatic" : 
+      "chef_packages" : { "chef" : { "chef_root" : "/opt/chef/embedded/lib/ruby/gems/1.9.1/gems/chef-10.12.0/lib",
+              "version" : "10.12.0"
+            },
+          "ohai" : { "ohai_root" : "/opt/chef/embedded/lib/ruby/gems/1.9.1/gems/ohai-6.14.0/lib/ohai",
+              "version" : "6.14.0"
+            }
+        },
+      "command" : { "ps" : "ps -ef" },
+      "domain" : "localdomain",
+      "ohai_time" : 1341825477.547308,
+      "os" : "linux",
+      "os_version" : "3.2.0-23-virtual",
+      "platform" : "ubuntu",
+      "platform_family" : "debian",
+      "platform_version" : "12.04",
+      "recipes" : [  ],
+      "roles" : [  ],
+      "uptime" : "8 minutes 57 seconds",
+      "uptime_seconds" : 537,
+      "virtualization" : { "role" : "guest",
+          "system" : "kvm"
+        }
+    },
+  "chef_environment" : "_default",
+  "chef_type" : "node",
+  "default" : {  },
+  "json_class" : "Chef::Node",
+  "name" : "srv-ksurl.localdomain",
+  "normal" : { "tags" : [  ] },
+  "override" : {  },
+  "run_list" : [  ]
+}
