@@ -1,7 +1,7 @@
 #
 # Basic lab definition - 
 #
-Lab.definition :lab1_10xeng do
+Lab.definition :lab3_10xeng do
   # VMs
   vm :web_serv do
     base_image :ubuntu_precise32
@@ -25,7 +25,7 @@ Lab.definition :lab1_10xeng do
     }
 
     # dependency also sets up component as subscriber to component's (or related) notifications
-    depends_on :acme_db 
+    depends_on :acme_db ud
   end  
 
   # defined as shared (resolve load-path/remote resources)

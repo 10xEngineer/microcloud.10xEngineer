@@ -1,7 +1,7 @@
 #
 # Basic lab definition - 
 #
-Lab.definition :lab1_10xeng do
+Lab.definition :lab2_10xeng do
   # VMs
   vm :web_serv do
     base_image :ubuntu_precise32

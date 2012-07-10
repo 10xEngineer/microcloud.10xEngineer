@@ -17,7 +17,7 @@ Lab.definition :lab1_10xeng do
     networking do
       # 10xeng lab requires fixed ip addressing
       # interface is alias for interface_ipv4
-      interface "10.0.0.1/24"
+      interface :subnet_1, "10.0.0.1/24"
     end
 
     run_list ["recipe[ruby]", "recipe[ntpdate::client"]
@@ -32,10 +32,19 @@ Lab.definition :lab1_10xeng do
     base_image :ubuntu_precise32
     hostname "dbserv.local"
     network do
-      interface "10.0.0.2/24"
+      # static IP address
+      interface :subnet_1, "10.0.0.2/24"
     end
 
     run_list ["recipe[postgresql:server]"]
+    vm_attributes {
+      :postgresql => {
+        :version => "9.1.4"
+      }
+    }
+
+    # notification received each time PgSQL archive command is executed 
+    on [:postgresql, :archive] => CustomLogic.archive_wal
   end
 
 

@@ -1,0 +1,93 @@
+## Jenkins Lab Setup
+
+- base image
+- job definitions	
+	- needs metadata
+
+1. simple jenkins deployment (original chef recipe)
+x. add/remove builds
+x. trigger job build (some sort of integration wrapper needed - action/notification for component). Similar logic to what's in cookbook's provider.
+
+## Use Cases / Roadmap
+
+Resource management / Direct VM operations
+
+Manage
+* Pools - create new pool, assign hostnodes into it, create provisoning kits, operation on pools
+	- directly integrate with openstack (several advantages, API), vsphere, or directly with hypervisors, or clouds
+* Labs - lab definitions
+* VMs - operate standalone VMs, from prepared images, vm definitions
+* Components - ....
+* Network - network management
+
+1) VM (and pools) management 
+
+## Rightscale
+
+http://www.rightscale.com/library/server_templates/Database-Manager-for-MySQL-5-5/lineage/13699
+
+imported ->
+https://my.rightscale.com/acct/15108/right_scripts/335545001
+
+- scripts -> aka providers (ruby like logic)
+- allow other languages (with right instrumentation)
+
+Manage
+	- Deployments / Servers / Arrays - something like Labs / VMs / Network / Pools
+
+Design
+	- Server Templates / RightScripts / Macros / Credentials / Widgets
+
+
+- ServerTemplates -> our VM (image + run_list / attributes)
+	* support for certain cloused (aka pool compatability)
+- RepoPaths - link local account with a cookbook (remote -> git)
+	- 
+
+## Architecture overview
+
+- VMs
+- Components (distinctive re-usable blocks); aka lego bricks
+
+component specific metadata storage domain/lab/component
+
+**TODO** namespacing - could be cluster, another domain. what about shared components and re-usability
+
+Chef Server API GET /nodes/:node
+
+Chef specific
+* automatic attributes (ohai) -> mostly VM information + ohai plugin might provide additional resources (component level). **TODO** how to interpret / requires chef run
+* runlist/attribute overrides
+
+!! information flow vs states vs notifications
+- allow for both local and centralized notifications / callbacks
+- example
+	* when new node is added it needs to be registered to load balancer
+	* when specific jenkins build finishes it needs to trigger something ... release?
+	* same applies to monitoring/performance (data are collected and sent over to ...?)
+
+storage (actual instances of objects)
+	- lab
+	- vm
+	- component
+
+10xLab specific
+* separate management API from lab specific API
+* 
+
+TODO vm specific notifications
+	- report/exception handlers 
+	- events
+ 		- confirm
+ 		- check
+ 		- 
+
+* Job 1: Linux hostnode toolchain (on-commit build of gem file)
+
+**TODO** job definition comes from metadata (originally data_bag)
+**TODO** how to expose cookbooks resources/providers to lab level? Considered harmful as it exposes executable code. Example - vagrant job definition, package provider (yum, apt.)
+**TODO** 
+
+## Misc notes
+
+* Alpha marked build will be short-lived (ie. limited support and need to push upgrade as fast as possible)
