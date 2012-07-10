@@ -68,6 +68,24 @@ module.exports.create = (req, res, next) ->
           log.error "#{hostnode.hostname}: Unable to prepare VM(#{message.options.reason})"
           res.send 500, "failed: #{message.options.reason}"
 
+module.exports.destroy = (req, res, next) ->
+  data = JSON.parse req.body
+  Vm
+    .findOne({uuid: req.params.vm})
+    .populate("lab")
+    .populate("server")
+    .exec (err, vm) ->
+      if vm
+        vm.fire 'destroy', data.vm, (err) ->
+          if err
+            console.log err
+
+        res.send 202
+      else
+        log.error("Notification for invalid vm=#{req.params.vm}")
+        res.send 404, {}
+
+
 # TODO start
 # TODO stop
 

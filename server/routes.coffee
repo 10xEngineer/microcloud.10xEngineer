@@ -36,6 +36,7 @@ module.exports.registerRoutes = (server)->
 	server.get '/vms/:node_id', commands.vms.index
 	server.post '/vms/:node_id', commands.vms.create
 	server.post '/vms/:vm/notify', commands.vms.updates
+	server.del '/vms/:vm', commands.vms.destroy
 
   #
   # Lab management
