@@ -1,3 +1,7 @@
+# Recognized events
+
+VM [:create, :start, :stop, :destroy]
+
 # Microcloud Events 
 
 Sources
