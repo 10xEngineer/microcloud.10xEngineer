@@ -12,10 +12,10 @@ class Redis
   readerFns = ['get']
   # Writer functions
   writerFns = ['set', 'mset', 'append']
-  do ->
-    _.each readerFns, (fn) ->
-      Redis::[fn] = -> @reader[fn].apply @reader, arguments
-    _.each writerFns, (fn) ->
-      Redis::[fn] = -> @writer[fn].apply @writer, arguments
+  
+  _.each readerFns, (fn) ->
+    Redis::[fn] = -> @reader[fn].apply @reader, arguments
+  _.each writerFns, (fn) ->
+    Redis::[fn] = -> @writer[fn].apply @writer, arguments
 
 module.exports = Redis
