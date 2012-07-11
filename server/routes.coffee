@@ -64,7 +64,7 @@ module.exports.registerRoutes = (server) ->
 	# TODO need to provide clear separation between events (10xlabs based) and
 	#      notifications (towards UI/API clients)
 	#
-	server.post /events/:object_id', commands.events.accept
+	server.post '/events/:object_id', commands.events.accept
 
 	# ----------- to be refactored/implemented
 

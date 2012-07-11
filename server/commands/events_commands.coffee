@@ -33,9 +33,8 @@ module.exports.accept = (req, res, next) ->
 	#		3. 
 
 	data = JSON.parse req.body
-
-	dummy_resolve_id req.params.object_id, (object_type)
-		console.log "--- object resolved: #{object}"
+	dummy_resolve_id req.params.object_id, (object_type) ->
+    console.log "--- object resolved: #{object}"
 
 		# TODO hostnode -> bind to Hostnode.fire
 		# TODO vm -> bind to Vm.fire (will issue updated notification's itself)
