@@ -10,7 +10,7 @@ class LxcService < Provider
   # descriptor (disk size, cgroups, firewall, etc). might come from course-lab-descriptor
 
   before_filter :validate_hostname
-  before_filter :validate_vm, :only => [:allocate, :start, :stop, :status]
+  before_filter :validate_vm, :only => [:allocate, :start, :stop, :status, :destroy]
   before_filter :setup_ssh
 
   # ssh stub
@@ -97,6 +97,23 @@ class LxcService < Provider
 
   def status(request)
     command = ["/usr/bin/sudo", "/usr/local/bin/10xeng-vm", "-j", "info"]
+    command << "--id #{@id}"
+
+    begin
+      res = ssh_exec('mchammer', @hostname, command.join(' '), @ssh_options)
+
+      options = Yajl::Parser.parse(res)
+
+      response :ok, options
+    rescue Net::SSH::AuthenticationFailed => e
+      response :fail, {:reason => "Hostnode authentication failed"}
+    rescue Exception => e
+      response :fail, "10xeng-vm: #{json_message(e.message)}"
+    end
+  end
+
+  def destroy(request)
+    command = ["/usr/bin/sudo", "/usr/local/bin/10xeng-vm", "-j", "destroy"]
     command << "--id #{@id}"
 
     begin

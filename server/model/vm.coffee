@@ -57,6 +57,9 @@ Vm.statics.paths = ->
 
       return "allocated"
 
+    destroy: (vm) ->
+      return "destroyed"
+
   "locked":
     allocate: (vm) ->
       # FIXME continue how to get lab instance
@@ -75,12 +78,17 @@ Vm.statics.paths = ->
 
       return "running"
 
+    destroy: (vm) ->
+      return "destroyed"
+
   "running":
     stop: (vm, vm_data) ->
       vm.descriptor.ip_addr = null
       vm.markModified('descriptor')
       
       return "allocated"
+
+  "destroyed": {}
 
 
 Vm.statics.reserve = (vm, lab) ->
@@ -93,6 +101,9 @@ Vm.methods.start = (data) ->
   this.markModified('descriptor')
 
 Vm.addListener 'afterTransition', (vm, prev_state) ->
+  # FIXME-events start/stop event notification
+  console.log "---- VM after transition: #{vm.state}"
+
   # notify associated lab
   if vm.lab && mongoose.model("Lab")
     # TODO reload lab as the original object doesn't have vm.lab.definition populated

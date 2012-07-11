@@ -33,6 +33,7 @@ module.exports.updates = (req, res, next) ->
         res.send 404, {}
 
 module.exports.create = (req, res, next) ->
+  # FIXME check for hostnode in 'new' state (not yet ready)
   # TODO support for multiple VM provisioning (?count=N)
   Hostnode.findOne {server_id: req.params.node_id}, (err,hostnode) ->
     unless hostnode
@@ -63,10 +64,36 @@ module.exports.create = (req, res, next) ->
             else
               log.info "vm=#{vm_data.uuid} saved"
 
+              # FIXME-events vm :create event notification
+
               res.send vm
         else
           log.error "#{hostnode.hostname}: Unable to prepare VM(#{message.options.reason})"
           res.send 500, "failed: #{message.options.reason}"
+
+module.exports.destroy = (req, res, next) ->
+  Vm
+    .findOne({uuid: req.params.vm})
+    .populate("lab")
+    .populate("server")
+    .exec (err, vm) ->
+      if vm
+        options = 
+          id: req.params.vm
+          server: vm.server.hostname
+
+        broker.dispatch vm.server.type, 'destroy', options, (message) ->
+          if message.status == 'ok'
+            vm.fire 'destroy', data.vm, (err) ->
+            if err
+              console.log err
+
+            # FIXME-events vm :destroy event notification (what about housekeeping initiated VM destroy? notification?)
+            res.send 202
+      else
+        log.error("Notification for invalid vm=#{req.params.vm}")
+        res.send 404, {}
+
 
 # TODO start
 # TODO stop
