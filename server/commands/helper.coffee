@@ -5,7 +5,7 @@ helper =
   load : (@data) ->
   handleErr: (res, err) ->
     _.defaults err, code: 400
-    log.error "Unable to save provider: #{err.msg}"
+    log.error "#{err.msg}"
     res.send err.code, err.msg
   checkPresenceOf : (required, next) ->
     for attr in required

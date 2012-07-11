@@ -12,7 +12,7 @@ Vm = new mongoose.Schema(
   vm_type: String,
   vm_name: String,
   server: {type: ObjectId, ref: 'Hostnode'}
-  pool: { type: mongoose.Schema.ObjectId, ref: 'Pool' }
+  pool: { type: ObjectId, ref: 'Pool' }
   # Mixed - dont' forget vm.markModified('descriptor')
   # http://mongoosejs.com/docs/schematypes.html#mixed
   descriptor: {}
@@ -23,21 +23,15 @@ Vm.plugin(state_machine, 'prepared')
 
 Vm.statics.findAndModify = (query, sort, doc, options, callback) ->
   this.collection.findAndModify query, sort, doc, options, (err, raw_vm) ->
-    if err
-      return callback(err,raw_vm)
-
+    if err then return callback err, raw_vm
     if raw_vm 
       mongoose.model("Vm")
-        .findOne({uuid: raw_vm.uuid})
+        .findOne(uuid: raw_vm.uuid)
         .populate("lab")
         .populate("server")
-        .exec (err, vm) ->
-          if err
-            return callback(err,vm)
-          else
-            return callback(null,vm)
+        .exec callback
     else
-      return callback(null, null)
+      return callback()
 
 #
 # state machine

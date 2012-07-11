@@ -4,7 +4,7 @@ commands = require './commands/commands'
 #       something like resources in rails
 # FIXME unify responses / response codes
 
-module.exports.registerRoutes = (server)->	
+module.exports.registerRoutes = (server) ->	
 	#
 	# internal/diagnostic commands
 	#
@@ -122,14 +122,12 @@ module.exports.registerRoutes = (server)->
   # 8. Deallocate VMs (mark VMs as used, will be removed as part of housekeeping)
 	server.post '/pools', commands.pool.create
 	server.del '/pools/:pool', commands.pool.destroy
-	server.get '/pools/:pool/status', commands.pool.status
-	server.get '/pools/:pool/startup', commands.pool.startup
-	server.get '/pools/:pool/shutdown', commands.pool.shutdown
+	server.get '/pools/:pool', commands.pool.get
 	# add/remove an ec2 instance to the pool
-	server.get '/pools/:pool/addserver/:server', commands.pool.addserver
+	server.post '/pools/:pool/servers', commands.pool.addserver
 	server.del '/pools/:pool/servers/:server', commands.pool.removeserver
 	# add/remove an LXC instance to the ec2 server in the pool
-	server.get '/pools/:pool/allocate', commands.pool.allocate
+	server.post '/pools/:pool/allocate', commands.pool.allocate
 	server.get '/pool/:server/:container/deallocate', commands.pool.deallocate
 
   #server.get '/server/start/:destination', commands.server.start
