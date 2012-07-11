@@ -88,9 +88,9 @@ module.exports =
           next null, avms
         # Now if there are not enough VMs, send a request to prepare them      	  
         else
-          countToAllocate = dataReq.vms.length - avms.length
+          countToPrepare = dataReq.vms.length - avms.length
           if _.isEmpty results.availableHostnodes then next
-            msg: "The Pool #{results.findPool.name} needs hostnodes to prepare #{countToAllocate} VMs but doesn't have any."
+            msg: "The Pool #{results.findPool.name} needs hostnodes to prepare #{countToPrepare} VMs but doesn't have any."
             code: 400
           # TODO here create new prepared VMs
           next 
@@ -106,7 +106,6 @@ module.exports =
             server: avm.server.hostname
   	      broker.dispatch avm.server.type, 'allocate', data, (message) ->  	        
             if message.status is 'ok' 
-              console.log("FFFooo")
               return _next() 
             _next new Error message.options.reason
           

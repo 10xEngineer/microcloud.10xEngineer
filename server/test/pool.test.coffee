@@ -96,48 +96,48 @@ describe "Pool", ->
             done err
       req.end JSON.stringify server_id: 'server_1'  
       
-  describe '-X POST /pools/:pool/allocate', ->        
-    it 'finds available VMs in the pool and returns them in response (pool has 2 VM and the request contains 2 VM)', (done) ->
-      req = microcloudRequest path: '/pools/pool_1/allocate', (res) ->
-        res.should.have.status 200
-        res.on 'end', (err) -> 
-          if err then return done err
-          data = JSON.parse res.data  
-          data.should.have.length 2
-          data[0].should.include vm_type: 'ubuntu'
-          data[1].should.include vm_type: 'ubuntu'
-          done() 
-      req.end JSON.stringify vms: [{vm_type:'ubuntu'}, {vm_type: 'ubuntu'}]
-      
-    it 'finds available VMs in the pool and returns them in response (pool has 2 VM and the request contains 1 VM)', (done) ->
-      req = microcloudRequest path: '/pools/pool_1/allocate', (res) ->
-        res.should.have.status 200
-        res.on 'end', (err) -> 
-          if err then return done err
-          data = JSON.parse res.data  
-          data.should.have.length 1
-          data[0].should.include vm_type: 'ubuntu'
-          done() 
-      req.end JSON.stringify vms: [vm_type:'ubuntu']
-      
-    it 'returns empty array in case that no VM is requested', (done) ->
-      req = microcloudRequest path: '/pools/pool_1/allocate', (res) ->
-        res.should.have.status 200
-        res.on 'end', (err) -> 
-          if err then return done err
-          data = JSON.parse res.data  
-          data.should.be.empty
-          done() 
-      req.end JSON.stringify vms: []
+  # describe '-X POST /pools/:pool/allocate', ->        
+  #     it 'finds available VMs in the pool and returns them in response (pool has 2 VM and the request contains 2 VM)', (done) ->
+  #       req = microcloudRequest path: '/pools/pool_1/allocate', (res) ->
+  #         res.should.have.status 200
+  #         res.on 'end', (err) -> 
+  #           if err then return done err
+  #           data = JSON.parse res.data  
+  #           data.should.have.length 2
+  #           data[0].should.include vm_type: 'ubuntu'
+  #           data[1].should.include vm_type: 'ubuntu'
+  #           done() 
+  #       req.end JSON.stringify vms: [{vm_type:'ubuntu'}, {vm_type: 'ubuntu'}]
+  #       
+  #     it 'finds available VMs in the pool and returns them in response (pool has 2 VM and the request contains 1 VM)', (done) ->
+  #       req = microcloudRequest path: '/pools/pool_1/allocate', (res) ->
+  #         res.should.have.status 200
+  #         res.on 'end', (err) -> 
+  #           if err then return done err
+  #           data = JSON.parse res.data  
+  #           data.should.have.length 1
+  #           data[0].should.include vm_type: 'ubuntu'
+  #           done() 
+  #       req.end JSON.stringify vms: [vm_type:'ubuntu']
+  #       
+  #     it 'returns empty array in case that no VM is requested', (done) ->
+  #       req = microcloudRequest path: '/pools/pool_1/allocate', (res) ->
+  #         res.should.have.status 200
+  #         res.on 'end', (err) -> 
+  #           if err then return done err
+  #           data = JSON.parse res.data  
+  #           data.should.be.empty
+  #           done() 
+  #       req.end JSON.stringify vms: []
+  #     
+  #     it 'finds available VMs in the pool and ask broker to dispatch remaining', (done) ->
+  #       req = microcloudRequest path: '/pools/pool_1/allocate', (res) ->
+  #         res.should.have.status 200
+  #         res.on 'end', (err) -> 
+  #           if err then return done err
+  #           data = JSON.parse res.data
+  #           done() 
+  #       req.end JSON.stringify vms: [{vm_type:'ubuntu'}, {vm_type: 'ubuntu'}, {vm_type: 'ubuntu'}]
     
-    it 'finds available VMs in the pool and ask broker to dispatch remaining', (done) ->
-      req = microcloudRequest path: '/pools/pool_1/allocate', (res) ->
-        res.should.have.status 200
-        res.on 'end', (err) -> 
-          if err then return done err
-          data = JSON.parse res.data
-          done() 
-      req.end JSON.stringify vms: [{vm_type:'ubuntu'}, {vm_type: 'ubuntu'}, {vm_type: 'ubuntu'}]
-  
       
     
