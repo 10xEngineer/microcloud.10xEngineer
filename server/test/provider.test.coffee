@@ -41,8 +41,8 @@ describe "Providers", ->
     ), response
     
   # Tests
-  describe 'Index', ->
-    it 'Returns list of providers', (done) ->
+  describe '-X GET /providers', ->
+    it 'returns list of providers', (done) ->
       http.get 
         host: 'localhost'
         port: config.get('server:port')
@@ -58,8 +58,8 @@ describe "Providers", ->
           object[1].should.have.property 'service', 'service_2'
           done err
   
-  describe 'Create', ->        
-    it 'Creates a new provider', (done) ->
+  describe '-X POST /providers', ->        
+    it 'creates a new provider', (done) ->
       req = microcloudRequest {}, (res) ->
         data = ""
         res.on 'data', (chunk) -> data += chunk
@@ -73,7 +73,7 @@ describe "Providers", ->
       req.write JSON.stringify name: 'provider_3', service: 'service_3'
       req.end()
       
-    it 'Creates a new provider with the same name, only if the previous one is soft deleted', (done) ->
+    it 'creates a new provider with the same name, only if the previous one is soft deleted', (done) ->
       req = microcloudRequest {}, (res) ->
         data = ""
         res.on 'data', (chunk) -> data += chunk
@@ -95,7 +95,7 @@ describe "Providers", ->
         res.on 'end', (err) -> req.end()
       delReq.end()
       
-    it 'Won\'t create a new provider without a name', (done) ->
+    it 'won\'t create a new provider without a name', (done) ->
       req = microcloudRequest {}, (res) ->
         data = ""
         res.should.have.status 400
@@ -109,7 +109,7 @@ describe "Providers", ->
       req.write JSON.stringify service: 'service_3'
       req.end()
       
-    it 'Won\'t create a new provider without a service name', (done) ->
+    it 'won\'t create a new provider without a service name', (done) ->
       req = microcloudRequest {}, (res) ->
         data = ""
         res.should.have.status 400
@@ -123,7 +123,7 @@ describe "Providers", ->
       req.write JSON.stringify name: 'provider_3'
       req.end()
       
-    it 'Won\'t create a new provider with the same name', (done) ->
+    it 'won\'t create a new provider with the same name', (done) ->
       req = microcloudRequest {}, (res) ->
         data = ""
         res.should.have.status 400
@@ -137,8 +137,8 @@ describe "Providers", ->
       req.write JSON.stringify name: 'provider_1', service: 'service_1'
       req.end()
   
-  describe 'Destroy', ->
-    it 'Soft deletes the record, i.e., it change deleted_at meta key', (done) ->
+  describe '-X DELETE /providers/:provider', ->
+    it 'deletes softly the record, i.e., it changes deleted_at meta key', (done) ->
       req = microcloudRequest 
         path  : '/providers/provider_1'
         method: 'DELETE'

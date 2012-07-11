@@ -16,5 +16,5 @@ module.exports.unsubscribe = (userid) ->
 module.exports.send = (req, res, next) ->
   data = _.defaults JSON.parse(req.body), 
     method: 'log'
-  res.everyone.now[data.method] data
+  if _.isFunction fn = res.everyone.now[data.method] then fn data
   res.send 200
