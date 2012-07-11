@@ -2,6 +2,12 @@
 
 VM [:create, :start, :stop, :destroy]
 
+# Notification / Messaging architecture
+
+- use pattern matching
+- qualify notifications with dot (.) syntax
+- TODO how to ma
+
 # Microcloud Events 
 
 Sources

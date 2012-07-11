@@ -43,7 +43,6 @@ Lab.definition :lab1_10xeng do
       }
     }
 
-
     # TODO how to select particular VM, or postgresql on particular VM or assigned to particular component
     on "vm::start" => DynectProvider.register_hostname
 

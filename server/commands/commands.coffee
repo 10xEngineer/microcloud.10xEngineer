@@ -12,6 +12,8 @@ definitions = module.exports.definitions = require("./definitions_commands")
 labs = module.exports.labs = require("./labs_commands")
 vms = module.exports.vms = require("./vms_commands")
 
+events = module.exports.events = require("./events_commands")
+
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 #
 #  Heartbeat

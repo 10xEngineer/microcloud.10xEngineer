@@ -51,11 +51,20 @@ module.exports.registerRoutes = (server)->
 	server.del '/defs/:lab_definition_id', commands.definitions.destroy
 
 	# lab provisioning
-  # TODO client should be able to pass additional data for allocate (attributes
-  #      passed via UI, or config, to customize instances)
-  #
+	# TODO client should be able to pass additional data for allocate (attributes
+	#      passed via UI, or config, to customize instances)
+	#
 	server.post '/defs/:lab_definition_id/labs', commands.definitions.allocate
 	server.get '/labs/:lab_id', commands.labs.show
+
+
+	# 
+	# microcloud events
+	#
+	# TODO need to provide clear separation between events (10xlabs based) and
+	#      notifications (towards UI/API clients)
+	#
+	server.post /events/:object_id', commands.events.accept
 
 	# ----------- to be refactored/implemented
 
