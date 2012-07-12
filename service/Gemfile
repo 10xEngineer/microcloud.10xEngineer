@@ -18,6 +18,9 @@ gem "fog"
 gem "net-ssh"
 gem "uuid"
 
+# git management
+gem "grit"
+
 # windows related
 gem "winrm"
 

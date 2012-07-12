@@ -29,12 +29,18 @@ poller.register(socket, ZMQ::POLLOUT)
 #  }
 #}
 
+#request = {
+#  :service => :loop,
+#  :action => :prepare,
+#  :options => {
+#    :server => "test.local"
+#  }
+#}
+
 request = {
-  :service => :loop,
-  :action => :prepare,
-  :options => {
-    :server => "test.local"
-  }
+  :service => :git_adm,
+  :action => :ping,
+  :options => {}
 }
 
 #request = {
