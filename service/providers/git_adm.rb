@@ -1,13 +1,15 @@
 require 'grit'
 require 'uuid'
 require 'yajl'
+require 'hmac-md5'
 require 'utils/external'
 
 class GitAdmService < Provider
   # FIXME currently can effectively work as singleton only
 
   # FIXME git config for user running git_adm service
-  # 
+  # FIXME resolve GIT store (part of tenant - shards / load spreading); currently hardcoded
+  # FIXME proper security (currently hardcoded)
 
   # FIXME hardcoded gitolite repository
   GITOLITE_ADMIN_REPO = "ssh://tenx@bunny.laststation.net:440/gitolite-admin"
@@ -31,8 +33,46 @@ class GitAdmService < Provider
   # - remote original repository
 
   def create_repository(request)
+    name = mkrepo(@gitolite)
+
+    return response :ok, :name => name
+  end
+
+  def clone_repository(request)
+    repo = request["options"]["repo"]
+    raise "No repository to clone!" unless repo
+
+    target_repo = nil
+
+    Dir.mktmpdir(temp_name(repo)) do |temp_dir|
+      # use grit to clone repo
+      git = Grit::Git.new(GITOLITE_ADMIN_TMP)
+
+      options = {
+        :quiet => false,
+        :verbose => true,
+        :progress => true,
+        :branch => "master"
+      }
+
+      git.clone(options, repo, temp_dir)
+
+      # create new repo
+      target_repo = mkrepo(@gitolite)
+
+      # push cloned repo 
+      # FIXME hardcoded URL
+      add_remote(temp_dir, "lab_repo", "ssh://tenx@bunny.laststation.net:440/#{target_repo}")
+      push_to temp_dir, "lab_repo"
+    end
+
+    return response :ok, :name => target_repo
+  end
+
+private
+
+  def mkrepo(gitolite, name = repo_name)
     metadata = read_metadata
-    name = repo_name
 
     repo = {
       # FIXME hardcoded permissions for now
@@ -48,24 +88,31 @@ class GitAdmService < Provider
       [GITOLITE_CONFIG, TENX_METADATA].each do |fname|
         file = File.join(GITOLITE_ADMIN_TMP, fname)
 
-        @gitolite.add(fname)
+        gitolite.add(fname)
       end
 
-      @gitolite.commit_index("Added repository #{name}")
+      gitolite.commit_index("Added repository #{name}")
     end
 
-    push_to_origin(GITOLITE_ADMIN_TMP)
+    push_to(GITOLITE_ADMIN_TMP)  
 
-    return response :ok, :name => name
+    name  
   end
 
-private
-
-  # keep repo list in json file -> generate gitolite.conf
-  def push_to_origin(repo)
+  def add_remote(repo, name, url)
     Dir.chdir(repo) do
       # FIXME configurable git location
-      cmd = ["/usr/local/bin/git", "push", "origin"]
+      cmd = ["/usr/local/bin/git", "remote", "add", name, url]
+      TenxLabs::External.execute(cmd.join(' ')) do 
+        # what to do with output
+      end
+    end
+  end
+
+  def push_to(repo, target = 'origin')
+    Dir.chdir(repo) do
+      # FIXME configurable git location
+      cmd = ["/usr/local/bin/git", "push", target, "master"]
       TenxLabs::External.execute(cmd.join(' ')) do 
         # what to do with output
       end
@@ -138,5 +185,9 @@ private
     # FIXME automatically pull latest changes / check repository 
 
     @gitolite = Grit::Repo.init(GITOLITE_ADMIN_TMP)
+  end
+
+  def temp_name(repo)
+    HMAC::MD5.new("#{Time.now}-#{repo}").hexdigest
   end
 end
