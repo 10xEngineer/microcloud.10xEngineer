@@ -22,16 +22,6 @@ class GitAdmService < Provider
 
   before_filter :gitolite_admin
 
-  # use case 1. create repository
-  # - get admin repository
-  # - create
-  #
-  # use case 2. clone repository
-  # - get the original repository (clone it to tmp location)
-  # - create repository
-  # - push the tmp repository to the new one
-  # - remote original repository
-
   def create_repository(request)
     name = mkrepo(@gitolite)
 
