@@ -8,10 +8,10 @@ context = ZMQ::Context.new(1)
 # client should use REQ sockets
 socket = context.socket ZMQ::REQ
 
-socket.setsockopt(ZMQ::LINGER, 0, 8)
+#socket.setsockopt(ZMQ::LINGER, 0, 8)
 
-poller = ZMQ::Poller.new
-poller.register(socket, ZMQ::POLLOUT)
+#poller = ZMQ::Poller.new
+#poller.register(socket, ZMQ::POLLOUT)
 
 # sample message
 #request = {
@@ -39,7 +39,7 @@ poller.register(socket, ZMQ::POLLOUT)
 
 request = {
   :service => :git_adm,
-  :action => :ping,
+  :action => :create_repository,
   :options => {}
 }
 
@@ -64,11 +64,12 @@ message = Yajl::Encoder.encode(request)
 socket.connect "ipc:///tmp/mc.broker"
 
 # send message
-socket.send_string message, ZMQ::NOBLOCK
+socket.send_string message
+#, ZMQ::NOBLOCK
 
-if poller.poll(5*1000)
-  raise "Send timeout (broker not available)"
-end
+#if poller.poll(10*1000)
+#  raise "Send timeout (broker not available)"
+#end
 
 
 puts "-> #{message}" 
