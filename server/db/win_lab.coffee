@@ -6,7 +6,7 @@ seed_lab = ->
     name: 'win_lab',
     token: 'MawNb8dPgHqwz9eoUVsotDAAMauNjJeh',
     version: "0.1.0",
-    use: "TenxLabs::ChefProvider",
+    use: "TenxLabs.ChefProvider",
     repo: "git://github.com/10xEngineer/wip-lab-definition.git"
     metadata: {    
       maintainer: "John Doe",
