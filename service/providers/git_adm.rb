@@ -36,24 +36,23 @@ class GitAdmService < Provider
 
     repo = {
       # FIXME hardcoded permissions for now
-      "permissions" => ["radim" => "RW+", "mchammer" => "RW+"]
+      "permissions" => [{"radim" => "RW+"},{"mchammer" => "RW+"}]
     }
 
     metadata[name] = repo
 
     generate_config(metadata)
 
-    # commit changes  
-    index = @gitolite.index
-    index.read_tree("master")
+    Dir.chdir(GITOLITE_ADMIN_TMP) do
+      # commit changes  
+      [GITOLITE_CONFIG, TENX_METADATA].each do |fname|
+        file = File.join(GITOLITE_ADMIN_TMP, fname)
 
-    [GITOLITE_CONFIG, TENX_METADATA].each do |fname|
-      file = File.join(GITOLITE_ADMIN_TMP, fname)
+        @gitolite.add(fname)
+      end
 
-      index.add(file, File.read(file))
+      @gitolite.commit_index("Added repository #{name}")
     end
-
-    index.commit("Added repository '#{name}'", [@gitolite.commits.first])    
 
     push_to_origin(GITOLITE_ADMIN_TMP)
 
@@ -89,9 +88,10 @@ private
       interim = "repo #{repo_name}\n"
 
       repo["permissions"].each do |perms|
+
         username = perms.keys.first
 
-        interim << "\t#{username} = #{perms[username]}\n"
+        interim << "    #{perms[username]}     =   #{username}\n"
       end
       interim << "\n"
 
@@ -137,6 +137,6 @@ private
 
     # FIXME automatically pull latest changes / check repository 
 
-    @gitolite = Grit::Repo.new(GITOLITE_ADMIN_TMP)
+    @gitolite = Grit::Repo.init(GITOLITE_ADMIN_TMP)
   end
 end
