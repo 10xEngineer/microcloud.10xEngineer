@@ -80,8 +80,6 @@ class Provider
 
     res[:options] = options unless options.empty?
 
-    res
-
     if @socket
       @socket.send_string Yajl::Encoder.encode(res)
       @socket = nil

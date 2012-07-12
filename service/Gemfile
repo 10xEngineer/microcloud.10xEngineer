@@ -20,6 +20,7 @@ gem "uuid"
 
 # git management
 gem "grit"
+gem "open4"
 
 # windows related
 gem "winrm"

@@ -72,6 +72,7 @@ GEM
     net-ssh (2.5.2)
     nokogiri (1.5.5)
     nori (1.1.2)
+    open4 (1.3.0)
     origin (1.0.4)
     posix-spawn (0.3.6)
     rack (1.4.1)
@@ -135,6 +136,7 @@ DEPENDENCIES
   microcloud
   mongoid (~> 3.0.0.rc)
   net-ssh
+  open4
   rest-client
   rspec
   uuid
