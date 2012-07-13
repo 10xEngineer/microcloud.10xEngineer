@@ -38,7 +38,7 @@ Vagrant::Config.run do |config|
     chef.log_level = :debug
 
     # guest configuration
-    chef.add_role 'microcloud'
+    #chef.add_role 'microcloud'
     chef.add_role 'hostnode'
     chef.add_recipe 'gateone::server'
 
