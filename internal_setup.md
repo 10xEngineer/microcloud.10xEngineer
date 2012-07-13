@@ -1,16 +1,16 @@
-# Internal setup
+# Microcloud internal setup
 
-Dependencies
-* Microcloud node
-* Providers
-* EC2 AMIs
-* Hostnode binary distribution (for ubuntu/lxc)
+To run microcloud, you need following dependencies
+* Microcloud node with broker
+* IaaS/hypervisor providers and associated services
+* Hostnode binary toolchain distribution
+* EC2 setup - security groups, AMIs
 
 ## EC2 Setup
 
 Existing AMIs:
-* _eu-west-1_: 
-* _ap-southeast-1_:
+* _eu-west-1_: ami-19eeea6d
+* _ap-southeast-1_: ami-2a430278
 * _us_east-1_: NA
 
 LXC/Ubuntu Hostnode toolchain distribution is done via S3 (origin is bucket tenxlabs-dev)

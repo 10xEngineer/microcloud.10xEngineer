@@ -34,7 +34,8 @@ puts "AWS connection established."
 # create server
 base = aws.servers.create(:flavor_id => "m1.small",
                          :image_id => TenxEngineer::SOURCE_AMI[:ubuntu][aws_region],
-                         :key_name => key_name)
+                         :key_name => key_name,
+                         :security_group_ids => "tenxlab_node")
 
 puts "Instance start request accepted - instance #{base.id}"
 
