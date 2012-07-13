@@ -85,7 +85,7 @@ class Ec2Service < Provider
     send_ext("#{@hostnode_handler}_user_data", request)
   end
 
-  def lxc_user_data
+  def lxc_user_data(request)
     s3 = Fog::Storage.new({
       :provider => 'AWS',
       :aws_secret_access_key => request["options"]["data"]["secret_access_key"],
