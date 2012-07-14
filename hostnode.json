@@ -1,7 +1,7 @@
 {
   "run_list": ["role[hostnode]", "recipe[10xeng-node::ec2]", "recipe[gateone::server]"],
   "microcloud": {
-    "endpoint": null
+    "endpoint": "http://mc.apac.internal.10xengineer.me/"
   },
   "lxc": {
     "arch": "amd64"
