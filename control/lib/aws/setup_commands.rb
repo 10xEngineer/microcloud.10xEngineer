@@ -35,7 +35,7 @@ command :config do |c|
         :region => "us-east-1"
         })
 
-      images = connection.describe_images
+      regions = connection.describe_regions
 
       # write credentials
       config = {
@@ -45,11 +45,16 @@ command :config do |c|
         }
       }
 
+      config[:regions] = []
+      regions.body["regionInfo"].each do |region|
+        config[:regions] << region["regionName"]
+      end
+
       File.open(config_file, 'w') do |f|
         f.puts YAML.dump(config)
       end
 
-      say "AWS credentials stored in #{config_file}"
+      say "AWS credentials stored in #{config_file} together with all available regions. If you want to limit regions, please, adjust list accordingly."
     rescue Fog::Compute::AWS::Error => e
       say e.message
 
