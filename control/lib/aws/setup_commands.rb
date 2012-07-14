@@ -1,6 +1,29 @@
 # aws/setup_commands.rb
 require 'aws/config'
 
+command :security do |c|
+  c.description = "Configure security groups"
+
+  c.option "--region REGION", String, "Use only selected region (overrides configuration)"
+  c.action do |args, options|
+    # regions to process
+    regions = []
+    if options.region
+      regions << options.region
+    else
+      regions = $config[:regions]
+    end
+
+    # create security group
+    regions.each do |region|
+      # FIXME continue
+    end
+
+    # TODO get config
+    # TOGO get regions or use the one specified in commands
+  end
+end
+
 command :config do |c|
   c.description = "Configure credentials used for AWS setup (not operations)"
   c.option "--access_key KEY", String, "AWS Access Key ID"
@@ -60,8 +83,5 @@ command :config do |c|
 
       abort
     end
-
-    # TODO continue
-
   end
 end

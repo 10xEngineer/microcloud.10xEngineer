@@ -13,6 +13,10 @@ program :version, "0.0.1"
 program :description, "10xLabs AWS setup"
 program :help_formatter, :compact
 
+require 'aws/config'
+
+$config = TenxLabs::load_config
+
 require 'aws/setup_commands.rb'
 
 Commander::Runner.instance.run!
