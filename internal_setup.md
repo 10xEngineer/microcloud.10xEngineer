@@ -28,10 +28,8 @@ To setup AWS account/individual region you need to
 
 ## Hostnode distribution
 
-Hostnode distribution is compiled using `./hostnode-dist.sh`. To run it you need to have **s3cmd** configured to access default bucket.
+Hostnode distribution is compiled using `./hostnode-dist.sh`. To run it you need to have **s3cmd** configured to access appropriate buckets (see TARGET).
 
-Right now the origin bucket is `s3://tenx-labs-ops/`
+**TODO** Use CloudFront and it's [Signed URLs to serve private content](http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html) for unified distribution. 
 
-CloudFront and it's [Signed URLs to serve private content](http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html) is used as distribution mechanism. 
-
-Binary distribution is done using CloudFront (TODO + change cloudfront expiry URLs).
+**TODO** due to issues with s3cmd in APAC regions binary setup is pretty much manual.

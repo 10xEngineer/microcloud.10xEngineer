@@ -96,7 +96,7 @@ class Ec2Service < Provider
     # TODO re-use signed URLs (general quite slow)
     # TODO bucket needs to be in same region (otherwise 301)
     #      might be easier to get single CF URL
-    bucket_name = "tenxops-#{request["options"]["data"]["region"]}"
+    bucket_name = "tenxlabs-#{request["options"]["data"]["region"]}"
 
     bucket = s3.directories.get(bucket_name)
     target_file = bucket.files.get(BINARY_DIST[:file])
