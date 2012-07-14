@@ -1,0 +1,15 @@
+source 'http://rubygems.org'
+
+gem "microcloud"
+gem "commander"
+
+# TODO for stub commands only
+gem "rest-client"
+
+gem "fog"
+gem "net-ssh"
+
+group :test do
+  gem "rspec"
+end
+

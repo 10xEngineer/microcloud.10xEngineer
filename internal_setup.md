@@ -26,10 +26,12 @@ To setup AWS account/individual region you need to
 * wait for instance to terminate / AMI to get become available
 * remove instance and it's backing EBS
 
----
+## Hostnode distribution
 
 Hostnode distribution is compiled using `./hostnode-dist.sh`. To run it you need to have **s3cmd** configured to access default bucket.
 
 Right now the origin bucket is `s3://tenx-labs-ops/`
+
+CloudFront and it's [Signed URLs to serve private content](http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html) is used as distribution mechanism. 
 
 Binary distribution is done using CloudFront (TODO + change cloudfront expiry URLs).

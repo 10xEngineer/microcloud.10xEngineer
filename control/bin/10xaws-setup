@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+#
+# 10xLabs control scripts to setup Amazon AWS dependencies
+#
+
+control_path = File.expand_path('../../lib', __FILE__)
+$:.unshift(control_path)
+
+require '10xaws-setup'
