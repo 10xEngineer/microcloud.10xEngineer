@@ -14,7 +14,12 @@ cd /tmp
 wget -O hostnode-dist.tar.gz "<%= @download_url %>"
 tar xfz hostnode-dist.tar.gz -C $TXENG_ROOT
 
+INSTANCE=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+
 cd $TXENG_ROOT
+mv hostnode.json hostnode.json.orig
+cat hostnode.json.orig | sed "s/x-replace-x/${INSTANCE}/" >hostnode.json
+
 #if [ -x boostrap.sh ]; then
   ./bootstrap.sh
 #fi
