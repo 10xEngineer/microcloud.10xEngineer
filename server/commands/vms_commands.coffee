@@ -33,6 +33,10 @@ module.exports.updates = (req, res, next) ->
         res.send 404, {}
 
 module.exports.create = (req, res, next) ->
+  try
+    options = JSON.parse req.body
+  catch e
+    options = {}
   # FIXME check for hostnode in 'new' state (not yet ready)
   # TODO support for multiple VM provisioning (?count=N)
   Hostnode.findOne {server_id: req.params.node_id}, (err,hostnode) ->
@@ -41,6 +45,7 @@ module.exports.create = (req, res, next) ->
     else
       data = {
         server: hostnode.hostname
+        option: options
       }
 
       broker.dispatch hostnode.type, 'prepare', data, (message) ->
@@ -65,8 +70,11 @@ module.exports.create = (req, res, next) ->
               log.info "vm=#{vm_data.uuid} saved"
 
               # FIXME-events vm :create event notification
-
-              res.send vm
+              Vm.findById(vm._id).populate('server').exec (err, vm) ->
+                if err 
+                  res.send 500, "failed: #{err.message}"
+                else
+                  res.send vm
         else
           log.error "#{hostnode.hostname}: Unable to prepare VM(#{message.options.reason})"
           res.send 500, "failed: #{message.options.reason}"
