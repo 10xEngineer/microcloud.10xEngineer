@@ -26,16 +26,59 @@ module.exports.show = (req, res, next) ->
       res.send 404, 'Lab definition not found'
   
 module.exports.create = (req, res, next) ->
+  # TODO validate if body is present
   data = JSON.parse req.body
 
-  lab = new LabDefinition(data)
-  lab.save (err) ->
-    if err
-      log.error "Unable to save lab: #{err.message}"
+  # name is required
+  if _.isUndefined(data["name"]) or data["name"] is ""
+    res.send 406,
+      reason: "Lab definition name is required."
 
-      res.send 409, err.message
+    return
+
+  # create/clone
+  if _.isUndefined(data["parent"]) or data["parent"] is ""
+    op = "create_repo"
+  else
+    op = "clone_repo"
+    # FIXME retrieve git repository from parent lab definition
+    # FIXME hardcoded for now
+    data["repo"] = "git@github.com:10xEngineer/wip-lab-definition.git"
+
+  async.waterfall [
+    (next) ->
+      lab_data = 
+        name: data["name"]
+
+      lab_def = new LabDefinition(lab_data)
+      lab_def.save (err) ->
+        if err
+          next
+            message: "Unable to create lab definition (#{err.message})"
+            code: 500
+        else next null, lab_def
+    (lab_def, next) ->
+      opts =
+        repo: data.repo
+
+      broker.dispatch 'git_adm', op, opts, (message) =>
+        if message.status == "ok"
+          repo = message.options.repo
+
+          next null, lab_def, repo
+    (lab_def, repo, next) ->
+      lab_def.repo = repo
+      lab_def.save (err) ->
+        if err
+          next 
+            message: "Unable to associate GIT repository with lab definition (#{err.message})"
+            code: 500
+        else next null, lab_def
+  ], (err, lab) ->
+    if err
+      res.send 500, 
+        reason: err.message
     else
-      log.info "Lab definition '#{lab.name}' saved"
       res.send lab
 
 module.exports.destroy = (req, res, next) ->

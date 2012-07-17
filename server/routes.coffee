@@ -58,6 +58,14 @@ module.exports.registerRoutes = (server) ->
 	server.post '/defs/:lab_definition_id/labs', commands.definitions.allocate
 	server.get '/labs/:lab_id', commands.labs.show
 
+	#
+	# cookbook management (chef style)
+	#
+	# server.get '/cookbooks'
+	# server.get '/cookbooks/:cookbook', commands.cookbooks.show
+	# server.get '/cookbooks/:cookbook/:version', commands.cookbooks.show
+	# 
+
 
 	# 
 	# microcloud events
