@@ -7,12 +7,12 @@ ec2 = ->
     service: 'ec2',
     handler: 'lxc',
     data: {
-      access_key_id: "AKIAJIPBWGE6PG5C2VGA",
-      secret_access_key: "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",
+      access_key_id: "AKIAJP7XP2CXAAVP3VHA",
+      secret_access_key: "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",
       region: "eu-west-1",
-      key: "europe-default",
-      ami: "ami-77f0f503",
-      security_group: "default"
+      key: "radim-eu",
+      ami: "ami-19eeea6d",
+      security_group: "tenxlab_node"
     }
   }
 
