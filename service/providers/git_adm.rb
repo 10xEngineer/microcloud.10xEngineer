@@ -36,6 +36,7 @@ class GitAdmService < Provider
     raise "No repository to clone!" unless repo
 
     target_repo = nil
+    repo_url = nil
 
     Dir.mktmpdir(temp_name(repo)) do |temp_dir|
       # use grit to clone repo
@@ -61,7 +62,7 @@ class GitAdmService < Provider
       push_to temp_dir, "lab_repo"
     end
 
-    return response :ok, :name => target_repo
+    return response :ok, :repo => repo_url
   end
 
 private

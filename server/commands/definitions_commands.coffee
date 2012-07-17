@@ -28,7 +28,6 @@ module.exports.show = (req, res, next) ->
 module.exports.create = (req, res, next) ->
   # TODO validate if body is present
   data = JSON.parse req.body
-  console.log data
 
   # name is required
   if _.isUndefined(data["name"]) or data["name"] is ""
@@ -48,7 +47,6 @@ module.exports.create = (req, res, next) ->
 
   async.waterfall [
     (next) ->
-      console.log "using name #{data.name}"
       lab_data = 
         name: data["name"]
 
@@ -60,10 +58,12 @@ module.exports.create = (req, res, next) ->
             code: 500
         else next null, lab_def
     (lab_def, next) ->
-      broker.dispatch 'git_adm', op, data, (message) =>
+      opts =
+        repo: data.repo
+
+      broker.dispatch 'git_adm', op, opts, (message) =>
         if message.status == "ok"
           repo = message.options.repo
-          console.log "--> repo #{repo} created"
 
           next null, lab_def, repo
     (lab_def, repo, next) ->
@@ -79,7 +79,6 @@ module.exports.create = (req, res, next) ->
       res.send 500, 
         reason: err.message
     else
-      console.log '--- got lab'
       res.send lab
 
 module.exports.destroy = (req, res, next) ->
