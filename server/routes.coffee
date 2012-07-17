@@ -110,11 +110,11 @@ module.exports.registerRoutes = (server) ->
   # 1. Create Pool (specify name, default vm_type, environment)
   # 2. Get Pool
   # 3. Destroy Pool
-  # 4. Assign server/hostnode to the pool (node can be used for provisioning of the 
+  # 4. Assign hostnode to the pool (node can be used for provisioning of the 
   #    VMs required by pool). 
   #    # TODO server can be within 1..N pools (different vm_types, hypervisor?)
   #    # TODO automatically try to assign VMs to a pools server belongs?
-  # 5. Remove server/hostnode from the pool
+  # 5. Remove hostnode from the pool
   # 6. Created N prepared VMs within the pool (find servers and round-robin way allocate
   #    necessary VMs)
   # 7. Allocate VM (allocate single VM for Lab instance)
@@ -125,8 +125,8 @@ module.exports.registerRoutes = (server) ->
 	server.del '/pools/:pool', commands.pool.destroy
 	server.get '/pools/:pool', commands.pool.get
 	# add/remove an ec2 instance to the pool
-	server.post '/pools/:pool/servers', commands.pool.addserver
-	server.del '/pools/:pool/servers/:server', commands.pool.removeserver
+	server.post '/pools/:pool/nodes', commands.pool.addserver
+	server.del '/pools/:pool/nodes/:server_id', commands.pool.removeserver
 	# add/remove an LXC instance to the ec2 server in the pool
 	server.post '/pools/:pool/allocate', commands.pool.allocate
 	server.post '/pool/:server/:container/deallocate', commands.pool.deallocate

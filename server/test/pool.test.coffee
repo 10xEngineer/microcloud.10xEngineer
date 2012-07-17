@@ -53,9 +53,7 @@ describe "Pool", ->
       if err then return done err 
       Pool.findOne name: 'pool_1', (err, pool) ->
         if err then return done err
-        Vm.update {}, {pool: pool}, {multi: true}, (err) ->
-          if err then done err
-          Hostnode.update {}, {$push: _pools: pool}, done
+        Vm.update {}, {pool: pool}, {multi: true}, done
     
   # Helpers
   microcloudRequest = (options, response) ->
@@ -85,29 +83,47 @@ describe "Pool", ->
       req.end()
       
               
-  describe '-X POST /pools/:pool/servers', ->        
+  describe '-X POST /pools/:pool/nodes', ->        
     it 'creates a reference between hostnode and pool (on the hostnodes side)', (done) ->
-      req = microcloudRequest path: '/pools/pool_1/servers', (res) ->
+      req = microcloudRequest path: '/pools/pool_1/nodes', (res) ->
         res.should.have.status 200
         Pool.findOne name: 'pool_1', (err, pool) -> 
           if err then return done err
           Hostnode.findOne server_id: 'server_1', ['_pools'], (err, hostnode) ->
-            hostnode._pools.should.include pool._id
+            hostnode._pools.should.have.length 1
+            hostnode._pools[0].should.have.property 'name', 'pool_1'
             done err
       req.end JSON.stringify server_id: 'server_1'  
       
+  describe '-X DEL /pools/:pool/nodes/:server', ->        
+    it 'remove the reference between hostnode and pool (on the hostnodes side)', (done) ->
+      req = microcloudRequest 
+        path: '/pools/pool_1/nodes/server_1'
+        method: 'DELETE'
+      , (res) ->
+        res.should.have.status 200
+        Hostnode.findOne server_id: 'server_1', ['_pools'], (err, hostnode) ->
+          hostnode._pools.should.be.empty
+          done err
+      # Firstly add server to pool
+      createReq = microcloudRequest path: '/pools/pool_1/nodes', (res) ->
+        # Now finish remove request
+        req.end()
+      createReq.end JSON.stringify server_id: 'server_1'
+      
+      
   # describe '-X POST /pools/:pool/allocate', ->        
-  #     it 'finds available VMs in the pool and returns them in response (pool has 2 VM and the request contains 2 VM)', (done) ->
-  #       req = microcloudRequest path: '/pools/pool_1/allocate', (res) ->
-  #         res.should.have.status 200
-  #         res.on 'end', (err) -> 
-  #           if err then return done err
-  #           data = JSON.parse res.data  
-  #           data.should.have.length 2
-  #           data[0].should.include vm_type: 'ubuntu'
-  #           data[1].should.include vm_type: 'ubuntu'
-  #           done() 
-  #       req.end JSON.stringify vms: [{vm_type:'ubuntu'}, {vm_type: 'ubuntu'}]
+  #   it 'finds available VMs in the pool and returns them in response (pool has 2 VM and the request contains 2 VM)', (done) ->
+  #     req = microcloudRequest path: '/pools/pool_1/allocate', (res) ->
+  #       res.should.have.status 200
+  #       res.on 'end', (err) -> 
+  #         if err then return done err
+  #         data = JSON.parse res.data  
+  #         data.should.have.length 2
+  #         data[0].should.include vm_type: 'ubuntu'
+  #         data[1].should.include vm_type: 'ubuntu'
+  #         done() 
+  #     req.end JSON.stringify vms: [{vm_type:'ubuntu'}, {vm_type: 'ubuntu'}]
   #       
   #     it 'finds available VMs in the pool and returns them in response (pool has 2 VM and the request contains 1 VM)', (done) ->
   #       req = microcloudRequest path: '/pools/pool_1/allocate', (res) ->
