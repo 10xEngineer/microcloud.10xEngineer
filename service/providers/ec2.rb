@@ -19,6 +19,8 @@ class Ec2Service < Provider
       :region => request["options"]["data"]["region"] || "us-east-1"
     })
 
+    provider_name = request["options"]["name"]
+
     # hostnode specific ec2 templates
     dist_file = File.join(File.dirname(__FILE__), "../dist/10xlabs-ec2-#{@hostnode_handler}.erb")
 
@@ -35,6 +37,10 @@ class Ec2Service < Provider
                                        :flavor_id => request["options"]["data"]["type"],
                                        :security_group_ids => request["options"]["data"]["security_group"],
                                        :user_data => user_data)
+
+    # tag newly created server
+    connection.tags.create :key => "source", :value => "10xlabs", :resource_id => server.id
+    connection.tags.create :key => "provider", :value => provider_name, :resource_id => server.id
 
     # TODO hostname is nil (might be good idea to create own hostname/DNS provisioning)
     response :ok, :id => server.id, :hostname => server.dns_name
