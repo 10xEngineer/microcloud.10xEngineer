@@ -6,15 +6,14 @@ mongoose  = require("mongoose")
 Provider  = mongoose.model('Provider')
 Hostnode  = mongoose.model('Hostnode')
 broker    = require("../broker")
+helper    = require("./helper")
 
 module.exports.index = (req, res, next) ->
-  Provider.findOne {name: req.params.provider}, (err, provider) ->
+  Hostnode.find (err, hostnodes) ->
     if err
-      res.send 404, "Provider does not exist"
-    if provider
-      Hostnode.find {"provider": provider.name}, {_id:0}, (err, hostnodes) ->
-        res.send hostnodes
-
+      return helper.handlerErr res, err
+    res.send hostnodes
+    
 module.exports.create = (req, res, next) ->
   Provider.findOne {name: req.params.provider}, (err, provider) ->
     if err

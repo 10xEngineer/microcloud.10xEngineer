@@ -25,6 +25,7 @@ module.exports.registerRoutes = (server) ->
 	# server/hostnode management
 	#
 	server.post '/nodes/:provider', commands.nodes.create
+	server.get '/nodes', commands.nodes.index
 	server.get '/nodes/:node_id', commands.nodes.show
 	server.del '/nodes/:node_id', commands.nodes.destroy
 	server.post '/nodes/:node_id/notify', commands.nodes.notify
@@ -136,7 +137,7 @@ module.exports.registerRoutes = (server) ->
 	server.del '/pools/:pool/servers/:server', commands.pool.removeserver
 	# add/remove an LXC instance to the ec2 server in the pool
 	server.post '/pools/:pool/allocate', commands.pool.allocate
-	server.get '/pool/:server/:container/deallocate', commands.pool.deallocate
+	server.post '/pool/:server/:container/deallocate', commands.pool.deallocate
 
   #server.get '/server/start/:destination', commands.server.start
   #server.get '/server/stop/:destination/:server', commands.server.stop
