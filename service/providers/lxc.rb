@@ -20,6 +20,7 @@ class LxcService < Provider
 
   def prepare(request)
     template = request["options"]["template"] || nil
+    pool = request["options"]["pool"] || nil
 
     # TODO better protection from hostname fixing
     # TODO where to get vgname from?
@@ -27,6 +28,7 @@ class LxcService < Provider
     command = ["/usr/bin/sudo", "/usr/local/bin/10xeng-vm", "-j", "prepare"]
     command << "--template #{template}" if template
     command << "--vgname #{@vgname}" if @vgname
+    command << "--pool #{pool}" if pool
 
     begin
       res = ssh_exec('mchammer', @hostname, command.join(' '), @ssh_options)
