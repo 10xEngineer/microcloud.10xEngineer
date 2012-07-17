@@ -39,7 +39,7 @@ socket = context.socket ZMQ::REQ
 
 request = {
   :service => :git_adm,
-  :action => :create_repository,
+  :action => :create_repo,
   :options => {}
 }
 

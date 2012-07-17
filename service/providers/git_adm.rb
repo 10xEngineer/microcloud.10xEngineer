@@ -11,8 +11,9 @@ class GitAdmService < Provider
   # FIXME resolve GIT store (part of tenant - shards / load spreading); currently hardcoded
   # FIXME proper security (currently hardcoded)
 
-  # FIXME hardcoded gitolite repository
-  GITOLITE_ADMIN_REPO = "ssh://tenx@bunny.laststation.net:440/gitolite-admin"
+  # FIXME hardcoded hosting/gitolite repository
+  GITOLITE_HOST = "ssh://tenx@bunny.laststation.net:440/"
+  GITOLITE_ADMIN_REPO = GITOLITE_HOST + "gitolite-admin"
   GITOLITE_ADMIN_TMP = "/tmp/tenx-gitolite-admin"
 
   GITOLITE_CONFIG = "conf/gitolite.conf"
@@ -22,13 +23,15 @@ class GitAdmService < Provider
 
   before_filter :gitolite_admin
 
-  def create_repository(request)
-    name = mkrepo(@gitolite)
+  def create_repo(request)
+    repo_id = mkrepo(@gitolite)
 
-    return response :ok, :name => name
+    repo_url = GITOLITE_HOST + repo_id
+
+    return response :ok, :repo => repo_url
   end
 
-  def clone_repository(request)
+  def clone_repo(request)
     repo = request["options"]["repo"]
     raise "No repository to clone!" unless repo
 
@@ -49,6 +52,8 @@ class GitAdmService < Provider
 
       # create new repo
       target_repo = mkrepo(@gitolite)
+
+      repo_url = GITOLITE_HOST + target_repo
 
       # push cloned repo 
       # FIXME hardcoded URL
