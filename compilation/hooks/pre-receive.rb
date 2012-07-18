@@ -12,11 +12,23 @@ ext_puts "10xLabs receiving push"
 data = process_push_data
 
 begin
-  # TODO the compilation
   ext_puts "Starting compilation service..."
 
+  # retrieve lab definition token
+  config = File.join(ENV['HOME'], '.10xlab-repo')
+  if File.exist? config
+    repo_prefix = IO.read(config).strip
+  else
+    io = IO.popen('hostname')
+    host_raw = io.readlines.first.strip
+
+    repo_prefix = "#{ENV['USER']}@#{host_raw.first}"
+  end
+
+  repo = "#{repo_prefix}/#{data[:repo]}"
+
   # TODO use absolute path (need to set location)
-  command = ["./10xlabs-compile.sh", data[:repo], data[:new_rev], data[:ref_name]]
+  command = ["/home/tenx/compilation/hooks/10xlabs-compile.sh", data[:repo], data[:new_rev], data[:ref_name]]
 
   stat = Open4.popen4(command.join(' ')) do |pid, stdin, stdout, stderr|
     while line = stdout.gets
