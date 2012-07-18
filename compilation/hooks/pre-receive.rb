@@ -15,6 +15,7 @@ begin
   # TODO the compilation
   ext_puts "Starting compilation service..."
 
+  # TODO use absolute path (need to set location)
   command = ["./10xlabs-compile.sh", data[:repo], data[:new_rev], data[:ref_name]]
 
   stat = Open4.popen4(command.join(' ')) do |pid, stdin, stdout, stderr|

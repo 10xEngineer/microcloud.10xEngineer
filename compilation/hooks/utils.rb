@@ -11,7 +11,7 @@ def process_push_data
   refs = arr[2].split('/')
   
   oldrev   = arr[0] #
-  newrev   = arr[1] #
+  newrev   = revarr[1] #
   ref_type = refs[1] # tags || heads (branch)
   ref_name = refs[2] # develop, 1.4 etc.
 
