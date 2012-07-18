@@ -12,7 +12,7 @@ class GitAdmService < Provider
   # FIXME proper security (currently hardcoded)
 
   # FIXME hardcoded hosting/gitolite repository
-  GITOLITE_HOST = "ssh://tenx@bunny.laststation.net:440/"
+  GITOLITE_HOST = "tenx@bunny.laststation.net:440/"
   GITOLITE_ADMIN_REPO = GITOLITE_HOST + "gitolite-admin"
   GITOLITE_ADMIN_TMP = "/tmp/tenx-gitolite-admin"
 
@@ -58,7 +58,7 @@ class GitAdmService < Provider
 
       # push cloned repo 
       # FIXME hardcoded URL
-      add_remote(temp_dir, "lab_repo", "ssh://tenx@bunny.laststation.net:440/#{target_repo}")
+      add_remote(temp_dir, "lab_repo", "tenx@bunny.laststation.net:440/#{target_repo}")
       push_to temp_dir, "lab_repo"
     end
 
