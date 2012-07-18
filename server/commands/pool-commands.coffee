@@ -44,17 +44,28 @@ module.exports =
       unless pool then return helper.handleErr res, 
         msg: "No such Pool with name '#{poolName}' found"
         code: 404
-      Hostnode.findOne server_id: server_id = data.server_id, (err, server) ->
+      Hostnode.findOne server_id: server_id = data.server_id, (err, hostnode) ->
         if err
           return helper.handleErr res, err
-        unless server then return helper.handleErr res, 
-          msg: "No such Server with server_id '#{server_id}' found"
+        unless hostnode then return helper.handleErr res, 
+          msg: "No such hostnode with server_id '#{server_id}' found"
           code: 404
-        server._pools.push pool
-        server.save (err) ->
+        hostnode._pools.push pool
+        hostnode.save (err) ->
           res.send 200
   removeserver : (req, res, next) ->
-	  res.send "pool_removeserver NOT IMPLEMENTED"
+    query = 
+      server_id: server_id = req.params.server_id
+    update = 
+      $pull: _pools: name: req.params.pool
+    Hostnode.update query, update, (err, hostnode) ->
+      console.log hostnode
+      if err
+        return helper.handleErr res, err
+      unless hostnode then return helper.handleErr res, 
+        msg: "No such hostnode with server_id '#{server_id}' found"
+        code: 404
+      res.send 200
   allocate  : (req, res, next) ->
     dataReq = JSON.parse req.body
     if _.isUndefined(dataReq.vms) or _.isEmpty dataReq.vms then return res.send []
@@ -92,7 +103,6 @@ module.exports =
       # Now if there are not enough VMs, send a request to prepare them      	  
       else
         countToPrepare = dataReq.vms.length - avms.length
-        console.log countToPrepare
         if _.isEmpty results.availableHostnodes then next
           msg: "The Pool #{results.findPool.name} needs hostnodes to prepare #{countToPrepare} VMs but doesn't have any."
           code: 400

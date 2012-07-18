@@ -26,4 +26,5 @@ Pool.statics.paths = ->
   'down':
     shutdown: ->
 
+module.exports.schema = Pool
 module.exports.register = mongoose.model 'Pool', Pool
