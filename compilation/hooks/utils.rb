@@ -5,17 +5,15 @@ def process_push_data
   repository = /([^\/]*?)\.git$/.match(`pwd`.chomp)[1]
 
   stdins = []; stdins << $_ while gets
-  stdins.each do |str|
-    arr = str.split
-    refs = arr[2].split('/')
-    
-    oldrev   = arr[0] #
-    newrev   = arr[1] #
-    ref_type = refs[1] # tags || heads (branch)
-    ref_name = refs[2] # develop, 1.4 etc.
-    
-    puts "New revision #{newrev}"  
-  end
+
+  str = stdins.last
+  arr = str.split
+  refs = arr[2].split('/')
+  
+  oldrev   = arr[0] #
+  newrev   = arr[1] #
+  ref_type = refs[1] # tags || heads (branch)
+  ref_name = refs[2] # develop, 1.4 etc.
 
   {
     :repo => repository,
@@ -33,6 +31,16 @@ def ext_puts(*obj)
     else
       print trailing_sym(' ', ' ')
     end
+    
+    puts o
+  end
+
+  nil
+end
+
+def ext_puts_x(*obj)
+  obj.each do |o|
+    print trailing_sym(' ', ' ')
     
     puts o
   end
