@@ -17,6 +17,7 @@ GEM
     rspec-expectations (2.11.1)
       diff-lcs (~> 1.1.3)
     rspec-mocks (2.11.1)
+    yajl-ruby (1.1.0)
 
 PLATFORMS
   ruby
@@ -25,3 +26,4 @@ DEPENDENCIES
   grit
   open4
   rspec
+  yajl-ruby

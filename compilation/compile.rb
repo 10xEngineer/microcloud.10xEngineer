@@ -6,6 +6,7 @@ $stdout.sync = true
 require 'grit'
 require 'tmpdir'
 require 'fileutils'
+require 'definition/metadata'
 
 def prepare_repo(source)
   # FIXME hardcoded for now
@@ -29,6 +30,7 @@ end
 
 # get repository
 repo_dir = prepare_repo('fixme')
+puts "Compile environment ready."
 
 # verify pre-requisuites
 metadata_rb = File.join(repo_dir, 'metadata.rb')
@@ -39,6 +41,18 @@ unless File.exists? metadata_rb
 end
 
 # read metadata
+m = Metadata.new(metadata_rb)
+begin 
+  m.evaluate
+rescue Exception => e
+  warn "Metadata evaluation failed: #{e.message}"
+
+  exit 99
+end
+
+json = m.to_json
+puts json
+
 # push to microcloud
 
 # remove fragments

@@ -2,6 +2,7 @@ source 'http://rubygems.org'
 
 gem "open4"
 gem "grit"
+gem "yajl-ruby"
 
 group :test do
   gem "rspec"
