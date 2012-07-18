@@ -1,0 +1,10 @@
+source 'http://rubygems.org'
+
+gem "fog"
+gem "net-ssh"
+gem "net-scp"
+
+group :test do
+  gem "rspec"
+end
+
