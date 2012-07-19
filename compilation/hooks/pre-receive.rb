@@ -5,7 +5,6 @@ $stdout.sync = true
 
 require 'open4'
 require 'utils'
-require 'common/compile'
 
 ext_puts "10xLabs receiving push"
 
@@ -31,7 +30,10 @@ begin
   repo = "#{repo_prefix}/#{data[:repo]}"
 
   # TODO use absolute path (need to set location)
-  command = ["/home/tenx/compilation/hooks/10xlabs-compile.sh", data[:repo], data[:new_rev], data[:ref_name]]
+  script_file = File.join(ENV['HOME'], 'compilation/hooks/10xlabs-compile.sh')
+  command = [script_file, data[:repo], lab_token, data[:new_rev], data[:ref_name]]
+
+  error = nil
 
   stat = Open4.popen4(command.join(' ')) do |pid, stdin, stdout, stderr|
     while line = stdout.gets

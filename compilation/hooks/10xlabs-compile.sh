@@ -1,11 +1,11 @@
 #!/bin/sh
+#
+# arguments:
+# * repository name
+# * lab_token
+# * revision
+# * ref_name
 
-echo "Doing something"
+# FIXME hardcoded ip address of compilation node
 
-sleep 1
-
-echo "Still there..."
-
-sleep 2
-
-echo "Bye bye, cruel world!"
+ssh -A -o "StrictHostKeyChecking=no" -i ~/.ssh/compile compile@176.34.236.201 "cd /home/compile/deploy/compilation && bin/compile.sh $@"

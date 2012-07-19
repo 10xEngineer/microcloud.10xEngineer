@@ -28,6 +28,12 @@ def prepare_repo(source)
   temp_dir
 end
 
+# parse arguments
+repo_name = ARGV.shift
+lab_token = ARGV.shift
+repo_rev = ARGV.shift
+repo_ref = ARGV.shit
+
 # get repository
 repo_dir = prepare_repo('fixme')
 puts "Compile environment ready."
