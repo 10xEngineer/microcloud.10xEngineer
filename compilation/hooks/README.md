@@ -12,23 +12,9 @@ Use following hook code (shell script)
 
 		echo `pwd` | grep "gitolite-admin.git$"
 		if [ $? -eq 0 ]; then
-		  echo "gitolite admin repository; refreshing local metadata"
-		  ~/gitolite-admin.sh
+		  echo "gitolite-admin repository; skipping 10xlabs hooks"
 		else
 		  ~/compilation/hooks/pre-receive.rb
-		fi
-
-and `gitolite-admin.sh` script
-
-		#!/bin/sh
-
-		unset GIT_DIR
-
-		if [ -d "/home/tenx/gitolite-admin" ]; then
-		   cd ~/gitolite-admin
-		   git pull
-		else
-		  git clone ~/repositories/gitolite-admin.git ~/gitolite-admin
 		fi
 
 Don't forget to run `gitolite setup` to install hooks.

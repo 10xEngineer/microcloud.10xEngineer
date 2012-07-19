@@ -1,5 +1,20 @@
 #!/usr/bin/env ruby
 
+require 'yajl'
+
+def get_lab_token(repo)
+  metadata_file = File.join(ENV['HOME'], ".gitolite/10xlabs/metadata.json")
+  
+  raise "Unable to find gitolite/10xlabs metadata; invalid setup!" unless File.exists? metadata_file
+
+  raw_data = File.read(metadata_file)
+  metadata = Yajl::Parser.parse(raw_data)
+
+  raise "Unable to find repository #{repo}" unless metadata.has_key? repo
+
+  metadata[repo]["token"]
+end
+
 def process_push_data
   # from # https://gist.github.com/478846
   repository = /([^\/]*?)\.git$/.match(`pwd`.chomp)[1]

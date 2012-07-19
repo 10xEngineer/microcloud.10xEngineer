@@ -50,10 +50,13 @@ rescue Exception => e
   exit 99
 end
 
-json = m.to_json
-puts json
+json_def = m.to_json
 
 # push to microcloud
+# FIXME how to lookup lab definition
+# => git url is located within lab definition
+# => implicit authentication
+
 
 # remove fragments
 FileUtils.rm_rf repo_dir

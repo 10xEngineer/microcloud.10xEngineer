@@ -14,7 +14,10 @@ data = process_push_data
 begin
   ext_puts "Starting compilation service..."
 
-  # retrieve lab definition token
+  # retrieve lab token
+  lab_token = get_lab_token(data[:repo])
+
+  # build git repository URL
   config = File.join(ENV['HOME'], '.10xlab-repo')
   if File.exist? config
     repo_prefix = IO.read(config).strip
