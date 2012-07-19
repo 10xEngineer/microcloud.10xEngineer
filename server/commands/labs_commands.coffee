@@ -11,6 +11,9 @@ async     = require 'async'
 
 #
 # Lab management
+# 
+# FIXME lab is deprecated
+# FIXME remove the context
 #
 module.exports.show = (req, res, next) ->
   Lab
