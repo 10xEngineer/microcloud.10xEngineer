@@ -11,7 +11,7 @@ require 'definition/metadata'
 def prepare_repo(source)
   # FIXME hardcoded for now
   # FIXME hardcoded repo (should be resolved from name)
-  repo = "git://github.com/10xEngineer/wip-lab-definition.git"
+  repo = "ssh://#{source}"
 
   temp_dir = Dir.mktmpdir
   git = Grit::Git.new(temp_dir)
@@ -29,13 +29,13 @@ def prepare_repo(source)
 end
 
 # parse arguments
-repo_name = ARGV.shift
+repo = ARGV.shift
 lab_token = ARGV.shift
 repo_rev = ARGV.shift
 repo_ref = ARGV.shift
 
 # get repository
-repo_dir = prepare_repo('fixme')
+repo_dir = prepare_repo(repo)
 puts "Compile environment ready."
 
 # verify pre-requisuites

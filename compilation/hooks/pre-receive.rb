@@ -31,7 +31,7 @@ begin
 
   # TODO use absolute path (need to set location)
   script_file = File.join(ENV['HOME'], 'compilation/hooks/10xlabs-compile.sh')
-  command = [script_file, data[:repo], lab_token, data[:new_rev], data[:ref_name]]
+  command = [script_file, repo, lab_token, data[:new_rev], data[:ref_name]]
 
   error = nil
 
