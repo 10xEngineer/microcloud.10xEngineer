@@ -55,6 +55,8 @@ begin
 rescue Exception => e
   # TODO integrate to syslog
   ext_puts "Message: #{e.message}", "Stacktrace:", *e.backtrace
+
+  exit 1
 end
 
 

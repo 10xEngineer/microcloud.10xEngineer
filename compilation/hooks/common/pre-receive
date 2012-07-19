@@ -7,4 +7,6 @@ if [ $? -eq 0 ]; then
   echo "gitolite-admin repository; skipping 10xlabs hooks"
 else
   ~/compilation/hooks/pre-receive.rb
+
+  exit $?
 fi
