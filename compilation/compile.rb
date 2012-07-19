@@ -32,7 +32,7 @@ end
 repo_name = ARGV.shift
 lab_token = ARGV.shift
 repo_rev = ARGV.shift
-repo_ref = ARGV.shit
+repo_ref = ARGV.shift
 
 # get repository
 repo_dir = prepare_repo('fixme')
