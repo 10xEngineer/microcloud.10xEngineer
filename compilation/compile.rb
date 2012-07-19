@@ -57,6 +57,8 @@ rescue Exception => e
 end
 
 json_def = m.to_json
+puts "Temporary definition output:"
+puts json_def
 
 # push to microcloud
 # FIXME how to lookup lab definition
