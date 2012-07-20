@@ -11,13 +11,15 @@ timestamps = require "../utility/timestamp_plugin"
 ObjectId = mongoose.Schema.ObjectId
 
 LabSchema = new mongoose.Schema({
-	# TODO link to owner (user/domain)
+	# TODO link to owner (user/domain) + add it to compound index (below)
 	name: { type: String, required: true }
 	token: { type: String, unique: true }
 	repo: String
 
 	current_definition: {type: ObjectId, ref: 'Definition'}
 })
+
+LabSchema.index({ name: 1 }, { unique: true })
 
 LabSchema.plugin(timestamps)
 

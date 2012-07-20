@@ -7,11 +7,12 @@ broker = require("../broker")
 async     = require 'async'
 
 module.exports.create = (req, res, next) ->
+	# FIXME integrate owner/domain/user
 	# FIXME not yet finished
 	# 
 	# 1. get link to other lab definition
 	# 2. generate name (if not provided)
-	# 3. clone based on 10xlabs URL
+	# 3. clone based on 10xlabs URL (currently only git repo)
 	data = {}
 
 	try 
@@ -19,6 +20,10 @@ module.exports.create = (req, res, next) ->
 	catch error
 		return res.send 406, 
 			reason: "Invalid request data: #{error}"
+
+	unless data.name
+		return res.send 412
+			reason: "Lab 'name' is required."
 
 	async.waterfall [
 		(next) ->
@@ -36,7 +41,7 @@ module.exports.create = (req, res, next) ->
 		(repo, token, next) ->
 			# save lab instance
 			lab_data = 
-				name: "test_lab"
+				name: data.name
 				token: token
 				repo: repo
 
