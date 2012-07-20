@@ -86,4 +86,9 @@ module.exports.create = (req, res, next) ->
 	   		res.send lab
 
 
+module.exports.show = (req, res, next) ->
+	console.log '--> lab get'
+	console.log req.params
+
+	res.send {}
 

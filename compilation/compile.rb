@@ -7,6 +7,7 @@ require 'grit'
 require 'tmpdir'
 require 'fileutils'
 require 'definition/metadata'
+require '10xlabs/microcloud'
 
 def prepare_repo(temp_dir, repo)
   repo = "ssh://#{repo}" unless repo.match /^ssh\:\/\//
@@ -56,6 +57,11 @@ Dir.mktmpdir do |repo_dir|
 
     json_def = m.to_json
     puts "Temporary definition output:"
+
+    @microcloud = TenxLabs::Microcloud.new("http://bunny.laststation.net:8080/")
+    lab = @microcloud.get(:lab, 1)
+
+    # lab definition
     puts json_def
   end
 end
