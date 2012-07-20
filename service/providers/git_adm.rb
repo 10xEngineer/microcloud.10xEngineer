@@ -26,26 +26,13 @@ class GitAdmService < Provider
 
   def create_repo(request)
     token = generate_token
-    repo_id = mkrepo(@gitolite, token)
-
-    repo_url = GITOLITE_HOST + repo_id
-
-    return response :ok, {:repo => repo_url, :token => token }
-  end
-
-  def clone_repo(request)
     repo = request["options"]["repo"]
-    raise "No repository to clone!" unless repo
 
-    target_repo = nil
-    repo_url = nil
+    if repo
+      # clone requested repository
+      temp_dir = Dir.mktmpdir
 
-    token = generate_token
-
-    Dir.mktmpdir(temp_name(repo)) do |temp_dir|
-      # use grit to clone repo
       git = Grit::Git.new(GITOLITE_ADMIN_TMP)
-
       options = {
         :quiet => false,
         :verbose => true,
@@ -54,17 +41,18 @@ class GitAdmService < Provider
       }
 
       git.clone(options, repo, temp_dir)
-
-      # create new repo
-      target_repo = mkrepo(@gitolite, token)
-
-      repo_url = GITOLITE_HOST + target_repo
-
-      # push cloned repo 
-      # FIXME hardcoded URL
-      add_remote(temp_dir, "lab_repo", "tenx@bunny.laststation.net:440/#{target_repo}")
-      push_to temp_dir, "lab_repo"
     end
+
+    # create new repository
+    repo_id = mkrepo(@gitolite, token)
+
+    if repo
+      # FIXME hardcoded repository URL
+      add_remote(temp_dir, "lab_repo", "ssh://tenx@bunny.laststation.net:440/#{repo_id}")
+      push_to temp_dir, "lab_repo"      
+    end
+
+    repo_url = GITOLITE_HOST + repo_id
 
     return response :ok, {:repo => repo_url, :token => token }
   end
