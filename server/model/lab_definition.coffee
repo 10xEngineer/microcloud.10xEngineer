@@ -14,6 +14,8 @@ LabDefinition = new mongoose.Schema(
   name: {type: String, unique: true},
   token: String,
   repo: String,
+
+  metadata: {},
   vms: [VMDefinition]
 )
 

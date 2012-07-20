@@ -3,6 +3,7 @@ require 'uuid'
 require 'yajl'
 require 'hmac-md5'
 require 'utils/external'
+require 'securerandom'
 
 class GitAdmService < Provider
   # FIXME currently can effectively work as singleton only
@@ -24,11 +25,12 @@ class GitAdmService < Provider
   before_filter :gitolite_admin
 
   def create_repo(request)
-    repo_id = mkrepo(@gitolite)
+    token = generate_token
+    repo_id = mkrepo(@gitolite, token)
 
     repo_url = GITOLITE_HOST + repo_id
 
-    return response :ok, :repo => repo_url
+    return response :ok, {:repo => repo_url, :token => token }
   end
 
   def clone_repo(request)
@@ -37,6 +39,8 @@ class GitAdmService < Provider
 
     target_repo = nil
     repo_url = nil
+
+    token = generate_token
 
     Dir.mktmpdir(temp_name(repo)) do |temp_dir|
       # use grit to clone repo
@@ -52,27 +56,31 @@ class GitAdmService < Provider
       git.clone(options, repo, temp_dir)
 
       # create new repo
-      target_repo = mkrepo(@gitolite)
+      target_repo = mkrepo(@gitolite, token)
 
       repo_url = GITOLITE_HOST + target_repo
 
       # push cloned repo 
       # FIXME hardcoded URL
-      add_remote(temp_dir, "lab_repo", "ssh://tenx@bunny.laststation.net:440/#{target_repo}")
+      add_remote(temp_dir, "lab_repo", "tenx@bunny.laststation.net:440/#{target_repo}")
       push_to temp_dir, "lab_repo"
     end
 
-    return response :ok, :repo => repo_url
+    return response :ok, {:repo => repo_url, :token => token }
   end
 
 private
+  def generate_token(length = 32)
+    SecureRandom.urlsafe_base64(length)
+  end
 
-  def mkrepo(gitolite, name = repo_name)
+  def mkrepo(gitolite, token, name = repo_name)
     metadata = read_metadata
 
     repo = {
       # FIXME hardcoded permissions for now
-      "permissions" => [{"radim" => "RW+"},{"mchammer" => "RW+"}]
+      "permissions" => [{"radim" => "RW+"},{"mchammer" => "RW+"}],
+      "token" => token
     }
 
     metadata[name] = repo
