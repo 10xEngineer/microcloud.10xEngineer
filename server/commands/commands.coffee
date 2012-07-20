@@ -8,8 +8,6 @@ pool = module.exports.pool = require("./pool-commands")
 nodes = module.exports.nodes = require("./nodes_commands")
 notification = module.exports.notifications = require("./notifications_commands")
 providers = module.exports.providers = require("./providers_commands")
-definitions = module.exports.definitions = require("./definitions_commands")
-labs = module.exports.labs = require("./labs_commands")
 vms = module.exports.vms = require("./vms_commands")
 
 events = module.exports.events = require("./events_commands")

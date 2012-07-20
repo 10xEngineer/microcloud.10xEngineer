@@ -39,24 +39,26 @@ module.exports.registerRoutes = (server) ->
 	server.post '/vms/:vm/notify', commands.vms.updates
 	server.del '/vms/:vm', commands.vms.destroy
 
-  #
-  # Lab management
-  #
+	#
+	# Lab management
+	#
+	# TODO subject to heavy refactoring
+	#
 
-  # -- original
+	# ---------------- original -----------------------------------------
 	# lab definition
 	# TODO visible on course token based authorization
-	server.get '/defs/', commands.definitions.index
-	server.get '/defs/:lab_definition_id', commands.definitions.show
-	server.post '/defs', commands.definitions.create
-	server.del '/defs/:lab_definition_id', commands.definitions.destroy
+	#server.get '/defs/', commands.definitions.index
+	#server.get '/defs/:lab_definition_id', commands.definitions.show
+	#server.post '/defs', commands.definitions.create
+	#server.del '/defs/:lab_definition_id', commands.definitions.destroy
 
 	# lab provisioning
 	# TODO client should be able to pass additional data for allocate (attributes
 	#      passed via UI, or config, to customize instances)
 	#
-	server.post '/defs/:lab_definition_id/labs', commands.definitions.allocate
-	server.get '/labs/:lab_id', commands.labs.show
+	#server.post '/defs/:lab_definition_id/labs', commands.definitions.allocate
+	#server.get '/labs/:lab_id', commands.labs.show
 
 	#
 	# cookbook management (chef style)
