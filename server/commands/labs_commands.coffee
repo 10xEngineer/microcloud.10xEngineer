@@ -35,31 +35,42 @@ module.exports.create = (req, res, next) ->
 					code: 501
 			else next null
 		(next) ->
+		    # generate token
 			crypto.randomBytes 32, (ex,buf) ->
 				# TODO url safe base64 encoding
 				token = buf.toString('base64')
 				next null, token
 		(token, next) ->
+			# create lab object before repository/compilation service kicks in
+			# to prevent any sort of race condition (highly unlikely)
+			# TODO consider setting lab temporary status (need further analysis)
+			lab_data = 
+				name: data.name
+				token: token
+
+			lab = new Lab(lab_data)
+			lab.save (err) ->
+				if err
+					next 
+						message: "Unable to save lab instance: #{err.message}"
+						code: 500
+				else next null, lab
+		(lab, next) ->
 			# create respository
 			options = 
 			    repo: data.repo
-			    token: token
+			    token: lab.token
 
 			broker.dispatch 'git_adm', "create_repo", options, (message) =>
 				if message.status == 'ok'
-					next null, message.options.repo, message.options.token
+					next null, lab, message.options.repo
 				else
 					next 
 						message: "Unable to create GIT repository: #{message.options.reason}"
 						code: 500
-		(repo, token, next) ->
-			# save lab instance
-			lab_data = 
-				name: data.name
-				token: token
-				repo: repo
-
-			lab = new Lab(lab_data)
+		(lab, repo, next) ->
+			# update lab definition
+			lab.repo = repo
 			lab.save (err) ->
 				if err
 					next 
