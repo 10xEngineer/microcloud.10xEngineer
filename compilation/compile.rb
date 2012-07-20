@@ -9,6 +9,7 @@ require 'fileutils'
 require 'definition/metadata'
 
 def prepare_repo(temp_dir, repo)
+  repo = "ssh://#{repo}" unless repo.match /^ssh\:\/\//
   puts "Cloning #{repo}"
 
   git = Grit::Git.new(temp_dir)
