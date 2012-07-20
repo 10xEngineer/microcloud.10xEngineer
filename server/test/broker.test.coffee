@@ -15,19 +15,19 @@ describe "Broker", ->
     
   it 'should emit data, when message contains no error', (done) ->
     req = broker.dispatch() 
+    req.on 'error', (err) -> throw err
     req.on 'data', (err) ->
       err = JSON.parse err.toString()
-      err.should.have.property 'message'
-      err.message.should.include status: 'ok'
+      err.should.include status: 'ok'
       done()
-    socket.send JSON.stringify {message: status: 'ok'}
+    socket.send JSON.stringify {status: 'ok'}
     
   it 'should emit error on err data', (done) ->
     req = broker.dispatch() 
+    req.on 'data', (err) -> throw err
     req.on 'error', (err) ->
       err = JSON.parse err.toString()
-      err.should.have.property 'message'
-      err.message.should.include status: 'false'
+      err.should.include status: 'false'
       done()
-    socket.send JSON.stringify {message: status: 'false'}
+    socket.send JSON.stringify {status: 'false'}
     

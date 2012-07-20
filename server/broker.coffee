@@ -24,8 +24,8 @@ module.exports.dispatch = (service, action, data = {}) ->
 
 	client.send request
 	client.socket.on 'message', (message) ->
-    response = JSON.parse message
-    if message.status is 'ok'
+    _message = JSON.parse message.toString()
+    if _message.status is 'ok'
       client.emitter.emit 'data', message
     else
       client.emitter.emit 'error', message
