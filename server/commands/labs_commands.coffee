@@ -5,6 +5,7 @@ mongoose = require("mongoose")
 Lab = mongoose.model("Lab")
 broker = require("../broker")
 async     = require 'async'
+crypto    = require 'crypto'
 
 module.exports.create = (req, res, next) ->
 	# FIXME not yet finished
@@ -32,11 +33,17 @@ module.exports.create = (req, res, next) ->
 				next
 					message: "Cloning from lab is not (yet) supported, sorry."
 					code: 501
-			else next
+			else next null
 		(next) ->
+			crypto.randomBytes 32, (ex,buf) ->
+				# TODO url safe base64 encoding
+				token = buf.toString('base64')
+				next null, token
+		(token, next) ->
 			# create respository
 			options = 
 			    repo: data.repo
+			    token: token
 
 			broker.dispatch 'git_adm', "create_repo", options, (message) =>
 				if message.status == 'ok'
