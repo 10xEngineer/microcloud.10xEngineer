@@ -44,6 +44,25 @@ module.exports.registerRoutes = (server) ->
 	#
 	# TODO subject to heavy refactoring
 	#
+	# use-cases
+	# 1. create new lab (from scratch)
+	# 2. clone existing lab
+	# 3. push new lab definition (from compilation service)
+	# 4. switch to particular version (release/rollback)
+	#
+	# basic commands
+	#server.post '/labs', commands.labs.create
+	#server.get '/labs/:lab', commands.labs.show
+	#server.post '/labs/:lab/versions', commands.labs.create_version
+	#server.get '/labs/:lab/versions/:version', commands.labs.show
+	#server.get '/labs/:lab/versions/compare/:ver_from...:ver_to', commands.labs.compare
+	
+	#
+	# actions
+	#server.post '/labs/:lab', commands.labs.update
+
+
+
 
 	# ---------------- original -----------------------------------------
 	# lab definition
