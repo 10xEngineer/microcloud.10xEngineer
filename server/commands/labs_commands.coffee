@@ -7,11 +7,10 @@ broker = require("../broker")
 async     = require 'async'
 
 module.exports.create = (req, res, next) ->
-	# FIXME integrate owner/domain/user
 	# FIXME not yet finished
+	# FIXME integrate owner/domain/user
 	# 
 	# 1. get link to other lab definition
-	# 2. generate name (if not provided)
 	# 3. clone based on 10xlabs URL (currently only git repo)
 	data = {}
 
@@ -26,6 +25,14 @@ module.exports.create = (req, res, next) ->
 			reason: "Lab 'name' is required."
 
 	async.waterfall [
+		(next) ->
+			# TODO process parent lab/repo
+			# https://trello.com/card/clone-from-lab/50067c2712a969ae032917f4/24
+			if data.parent_lab
+				next
+					message: "Cloning from lab is not (yet) supported, sorry."
+					code: 501
+			else next
 		(next) ->
 			# create respository
 			options = 
