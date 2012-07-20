@@ -45,9 +45,10 @@ module.exports.create = (req, res, next) ->
     else
       data = {
         server: hostnode.hostname
-        option: options
+        options: options
       }
-
+      # TODO
+      # options.pool not recognized
       broker.dispatch hostnode.type, 'prepare', data, (message) ->
         if message.status == 'ok'
           vm_data = {
