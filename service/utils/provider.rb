@@ -31,14 +31,15 @@ class Provider
   end
 
   def fire(_action, request, socket)
+    @socket = socket
     action = _action.to_sym
 
     # allow only methods defined by the service class
+    
     if self.class.instance_methods(false).include?(action.to_sym)
       m = self.method(action)
 
       begin
-        @socket = socket
         res = nil
         
         filters = evaluate_filters(action)
@@ -57,12 +58,12 @@ class Provider
         puts "error=#{e.message}"
         puts e.backtrace
 
-        response :fail, :reason => e.message
+        return response :fail, :reason => e.message
       ensure
         @socket = nil
       end
     else
-      response :fail, :reason => "Action not defined (#{action})"
+      return response :fail, :reason => "Action not defined (#{action})"
     end
   end
 
