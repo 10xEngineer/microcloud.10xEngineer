@@ -7,7 +7,6 @@
 #
 mongoose = require 'mongoose'
 timestamps = require "../utility/timestamp_plugin"
-state_machine = require "../utility/state_plugin"
 
 ObjectId = mongoose.Schema.ObjectId
 
