@@ -25,7 +25,12 @@ class GitAdmService < Provider
   before_filter :gitolite_admin
 
   def create_repo(request)
-    token = generate_token
+    if request["options"]["token"]
+      token = request["options"]["token"]
+    else
+      token = generate_token
+    end
+    
     repo = request["options"]["repo"]
 
     if repo
@@ -46,15 +51,19 @@ class GitAdmService < Provider
     # create new repository
     repo_id = mkrepo(@gitolite, token)
 
+    # repo is created, return control to microcloud
+    repo_url = GITOLITE_HOST + repo_id
+
+    response :ok, {:repo => repo_url, :token => token }
+
+    # push cloned repo to target repository
     if repo
       # FIXME hardcoded repository URL
       add_remote(temp_dir, "lab_repo", "ssh://tenx@bunny.laststation.net:440/#{repo_id}")
       push_to temp_dir, "lab_repo"      
+
+      # FIXME update microcloud (data ...?)
     end
-
-    repo_url = GITOLITE_HOST + repo_id
-
-    return response :ok, {:repo => repo_url, :token => token }
   end
 
 private
