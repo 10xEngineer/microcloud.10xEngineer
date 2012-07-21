@@ -59,12 +59,11 @@ Dir.mktmpdir do |repo_dir|
     json_def = m.to_json
     puts "Temporary definition output:"
 
+    # push to microcloud
+    # TODO handle return code
+    # TODO security model
     @microcloud = TenxLabs::Microcloud.new("http://bunny.laststation.net:8080/")
-    # TODO get lab name
-    #lab = @microcloud.post_ext("")
-
-    # lab definition
-    puts json_def
+    lab = @microcloud.post_ext("/labs/#{lab_name}/versions", m.to_obj)
   end
 end
 
