@@ -53,7 +53,7 @@ module.exports.registerRoutes = (server) ->
 	# basic commands
 	server.post '/labs', commands.labs.create
 	server.get '/labs/:lab', commands.labs.show
-	#server.post '/labs/:lab/versions', commands.labs.create_version
+	server.post '/labs/:lab/versions', commands.labs.submit_version
 	#server.get '/labs/:lab/versions/:version', commands.labs.show
 	#server.get '/labs/:lab/versions/compare/:ver_from...:ver_to', commands.labs.compare
 

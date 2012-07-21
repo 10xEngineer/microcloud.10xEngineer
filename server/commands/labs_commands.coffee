@@ -90,7 +90,21 @@ module.exports.create = (req, res, next) ->
 
 module.exports.show = (req, res, next) ->
 	console.log '--> lab get'
-	console.log req.params
+	console.log req
 
 	res.send {}
 
+module.exports.submit_version = (req, res, next) ->
+	unless req.body
+		return res.send 412, 
+			reason: "Missing request body."
+	
+	try 
+		data = JSON.parse req.body if req.body
+	catch error
+		return res.send 406, 
+			reason: "Invalid request data: #{error}"
+
+	# FIXME process incoming definition
+	res.send 200,
+		reason: "Not yet implemented"
