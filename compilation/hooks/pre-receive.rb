@@ -14,7 +14,9 @@ begin
   ext_puts "Starting compilation service..."
 
   # retrieve lab token
-  lab_token = get_lab_token(data[:repo])
+  res = get_lab_token(data[:repo])
+  lab_token = res[:lab_token]
+  lab_name = res[:lab_name]
 
   # build git repository URL
   config = File.join(ENV['HOME'], '.10xlab-repo')
@@ -31,7 +33,7 @@ begin
 
   # TODO use absolute path (need to set location)
   script_file = File.join(ENV['HOME'], 'compilation/hooks/10xlabs-compile.sh')
-  command = [script_file, repo, lab_token, data[:new_rev], data[:ref_name]]
+  command = [script_file, repo, lab_name, lab_token, data[:new_rev], data[:ref_name]]
 
   error = nil
 

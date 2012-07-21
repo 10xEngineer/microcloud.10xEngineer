@@ -25,6 +25,10 @@ class GitAdmService < Provider
   before_filter :gitolite_admin
 
   def create_repo(request)
+    lab_name = request["options"]["name"]
+
+    raise "Lab name not provided." if lab_name.nil?
+
     if request["options"]["token"]
       token = request["options"]["token"]
     else
@@ -49,7 +53,7 @@ class GitAdmService < Provider
     end
 
     # create new repository
-    repo_id = mkrepo(@gitolite, token)
+    repo_id = mkrepo(@gitolite, token, lab_name)
 
     # repo is created, return control to microcloud
     repo_url = GITOLITE_HOST + repo_id
@@ -71,13 +75,15 @@ private
     SecureRandom.urlsafe_base64(length)
   end
 
-  def mkrepo(gitolite, token, name = repo_name)
+  def mkrepo(gitolite, token, lab_name, name = repo_name)
     metadata = read_metadata
 
     repo = {
       # FIXME hardcoded permissions for now
       "permissions" => [{"radim" => "RW+"},{"mchammer" => "RW+"}],
-      "token" => token
+      "token" => token,
+      # TODO extend as part of owner/domain/user inclusion
+      "lab_name" => lab_name
     }
 
     metadata[name] = repo

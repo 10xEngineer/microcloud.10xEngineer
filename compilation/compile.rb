@@ -29,6 +29,7 @@ end
 Dir.mktmpdir do |repo_dir|
   # parse arguments
   repo = ARGV.shift
+  lab_name = ARGV.shift
   lab_token = ARGV.shift
   repo_rev = ARGV.shift
   repo_ref = ARGV.shift
@@ -59,7 +60,8 @@ Dir.mktmpdir do |repo_dir|
     puts "Temporary definition output:"
 
     @microcloud = TenxLabs::Microcloud.new("http://bunny.laststation.net:8080/")
-    lab = @microcloud.get(:lab, 1)
+    # TODO get lab name
+    #lab = @microcloud.post_ext("")
 
     # lab definition
     puts json_def

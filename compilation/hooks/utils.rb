@@ -12,7 +12,10 @@ def get_lab_token(repo)
 
   raise "Unable to find repository #{repo}" unless metadata.has_key? repo
 
-  metadata[repo]["token"]
+  return {
+    :lab_token => metadata[repo]["token"],
+    :lab_name => metadata[repo]["lab_name"]
+  }
 end
 
 def process_push_data

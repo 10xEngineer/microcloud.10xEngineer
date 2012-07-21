@@ -60,6 +60,8 @@ module.exports.create = (req, res, next) ->
 			options = 
 			    repo: data.repo
 			    token: lab.token
+			    # TODO extend as part of owner/user inclusing (see above)
+			    lab_name: data.name
 
 			broker.dispatch 'git_adm', "create_repo", options, (message) =>
 				if message.status == 'ok'
