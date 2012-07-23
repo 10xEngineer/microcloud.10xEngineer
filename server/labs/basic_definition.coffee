@@ -2,6 +2,7 @@ module.exports = ->
 
 mongoose = require "mongoose"
 Definition = mongoose.model "Definition"
+compare_versions = require('./versioning').compare_versions
 
 DefinitionBase = require "./definition_base"
 
@@ -13,8 +14,9 @@ module.exports = class BasicDefinition extends DefinitionBase
 		super(lab, definition)
 
 	validate: ->
-		# TODO compare versions if > 0
-		if @lab.current_version is undefined 
+		current = @lab.current_definition
+
+		if current is undefined or compare_versions(@definition.version, current.version)
 			def_data = @definition
 			def_data.lab = @lab
 
@@ -23,6 +25,7 @@ module.exports = class BasicDefinition extends DefinitionBase
 				if err
 					this.emit "refused", "Unable to save definition: #{err}"
 				else
+					console.log "accepted new lab definition version=#{def_data.version} for lab=#{@lab.name}"
 					this.emit "accepted"
 		else
 			this.emit 'refused', 'Lab definition needs to have different version (consider increasing build number'
