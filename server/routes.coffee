@@ -56,7 +56,7 @@ module.exports.registerRoutes = (server) ->
 	server.get '/labs/:lab/versions', commands.labs.show_versions
 	server.post '/labs/:lab/versions', commands.labs.submit_version
 	#server.get '/labs/:lab/versions/:version', commands.labs.show
-	#server.post '/labs/:lab/versions/:version/release', commands.labs.release_version
+	server.post '/labs/:lab/versions/:version/release', commands.labs.release_version
 	#server.get '/labs/:lab/versions/compare/:ver_from...:ver_to', commands.labs.compare
 
 	#

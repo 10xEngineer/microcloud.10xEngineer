@@ -13,3 +13,8 @@ module.exports = class DefinitionBase extends Base
 	validate: ->
 		# refuse by default; has to be overriden by sub-class implementation
 		this.emit 'refused', "DefinitionBase has to be overriden with custom logic."
+
+	release: (metadata) ->
+		# refuse by default; has to be overriden by sub-class implementation
+		this.emit 'refused', "DefinitionBase has to be overriden with custom logic."
+

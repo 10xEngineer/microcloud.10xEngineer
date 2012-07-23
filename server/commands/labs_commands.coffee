@@ -141,8 +141,7 @@ module.exports.submit_version = (req, res, next) ->
 				processor = new processor_type(lab, data)
 
 				processor.on "accepted", () ->
-					res.send 201,
-						reason: "Not yet implemented"
+					res.send 201
 
 				processor.on "refused", (message) ->
 					log.debug "definition for lab=#{lab.name} refused"
@@ -154,3 +153,65 @@ module.exports.submit_version = (req, res, next) ->
 				log.debug "invalid lab"
 				return res.send 404,
 					reason: "Lab not found."		
+
+module.exports.release_version = (req, res, next) ->
+	# TODO parse req.body - reserved for authorization and other meta information related 
+	#      release workflow
+	metadata = {}
+
+	# FIXME hardcoded definition processing class (should be configurable
+	#       possibly with lab itself/10xlab installation)
+	processor_type = BasicDefinition
+
+	async.waterfall [
+		(next) ->
+			# get lab
+			Lab
+				.findOne({name: req.params.lab})
+				.populate("current_definition")
+				.exec (err, lab) ->
+					if err
+						return next 
+							code: 500
+							reason: "Unable to get lab: #{err}"
+
+					if lab
+						next null, lab
+					else next 
+						code: 404
+						reason: "Lab '#{req.params.lab}' not found."
+		(lab, next) ->
+			# find request lab definition version
+			Definition
+				.findOne({lab: lab, version: req.params.version})
+				.exec (err, lab_def) ->
+					if err
+						return next 
+							code: 500
+							reason: "Unable to get lab definition version: #{err}"
+
+					if lab_def
+						next null, lab, lab_def
+					else
+						next
+							code: 404
+							reason: "Lab definition with version '#{req.params.version}' not found"
+	], (err, lab, definition) ->
+		if err
+			res.send err.code, { reason: err.reason }
+		else
+			processor = new processor_type(lab, definition)
+			processor.on "accepted", () ->
+					res.send 202,
+						message: "Request to release version '#{definition.version}' successfully accepted."
+			processor.on "refused", (message) ->
+					res.send 406, 
+						reason: message
+
+			processor.release(metadata)				
+
+	# TODO compare current / requested version
+	# TODO if conditions are met, switch 
+	#      - run down migration (not part of the command itself - async)
+	#      - run up migration (not part of the command itself - async)
+	# TODO confirm
