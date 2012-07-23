@@ -3,6 +3,7 @@ module.exports = ->
 log = require("log4js").getLogger()
 mongoose = require("mongoose")
 Lab = mongoose.model("Lab")
+Definition = mongoose.model("Definition")
 broker = require("../broker")
 async     = require 'async'
 crypto    = require 'crypto'
@@ -90,12 +91,28 @@ module.exports.create = (req, res, next) ->
 
 
 module.exports.show = (req, res, next) ->
-	# FIXME not implemented
 	Lab
 		.findOne({name: req.params.lab})
 		.populate("current_definition")
 		.exec (err, lab) ->
 			res.send lab
+
+module.exports.show_versions = (req, res, next) ->
+	versions = []
+	Lab
+		.findOne({name: req.params.lab})
+		.exec (err, lab) ->
+			if err
+				return res.send 500,
+					reason: "Unable to get lab '#{req.params.lab}': #{err}"
+
+			if lab
+				Definition.find {lab: lab}, ['version', 'revision', 'meta'], (err, defs) ->
+					if err
+						return res.send 500,
+							reason: "Unable to get definitions versions: #{err}"
+
+					return res.send defs
 
 module.exports.submit_version = (req, res, next) ->
 	unless req.body
@@ -136,5 +153,4 @@ module.exports.submit_version = (req, res, next) ->
 			else
 				log.debug "invalid lab"
 				return res.send 404,
-					reason: "Lab not found."
-
+					reason: "Lab not found."		
