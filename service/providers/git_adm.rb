@@ -25,7 +25,7 @@ class GitAdmService < Provider
   before_filter :gitolite_admin
 
   def create_repo(request)
-    lab_name = request["options"]["name"]
+    lab_name = request["options"]["lab_name"]
 
     raise "Lab name not provided." if lab_name.nil?
 
