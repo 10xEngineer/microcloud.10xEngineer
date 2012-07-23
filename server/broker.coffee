@@ -26,9 +26,9 @@ module.exports.dispatch = (service, action, data = {}) ->
 	client.socket.on 'message', (message) ->
     _message = JSON.parse message.toString()
     if _message.status is 'ok'
-      client.emitter.emit 'data', message
+      client.emitter.emit 'data', _message
     else
-      client.emitter.emit 'error', message
+      client.emitter.emit 'error', _message
 
   client.socket.on 'error', (error) ->
     console.log "0mq socket entered error state #{error}"
