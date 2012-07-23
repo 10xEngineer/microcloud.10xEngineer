@@ -107,7 +107,8 @@ module.exports.submit_version = (req, res, next) ->
 		return res.send 406, 
 			reason: "Invalid request data: #{error}"
 
-	# FIXME hardcoded definition processing class (should be configurable)
+	# FIXME hardcoded definition processing class (should be configurable
+	#       possibly with lab itself/10xlab installation)
 	processor_type = BasicDefinition
 	
 	Lab.findOne {name: req.params.lab}, (err, lab) ->
@@ -117,9 +118,16 @@ module.exports.submit_version = (req, res, next) ->
 
 		if lab
 			processor = new processor_type(null, data)
-			processor.validate (definition) ->
+			
+			processor.on "accepted", () ->
 				res.send 202,
 					reason: "Not yet implemented"
+
+			processor.on "refused", (message) ->
+				res.send 303, 
+					reason: message
+
+			processor.validate()
 		else
 			return res.send 404,
 				reason: "Lab not found."
