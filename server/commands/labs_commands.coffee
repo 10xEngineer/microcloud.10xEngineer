@@ -65,13 +65,14 @@ module.exports.create = (req, res, next) ->
 			    # TODO extend as part of owner/user inclusing (see above)
 			    lab_name: data.name
 
-			broker.dispatch 'git_adm', "create_repo", options, (message) =>
-				if message.status == 'ok'
-					next null, lab, message.options.repo
-				else
-					next 
-						message: "Unable to create GIT repository: #{message.options.reason}"
-						code: 500
+			req = broker.dispatch 'git_adm', "create_repo", options
+			req.on 'data', (message) =>
+				next null, lab, message.options.repo
+			
+			req.on 'error', (message) ->
+				next 
+					message: "Unable to create GIT repository: #{message.options.reason}"
+					code: 500
 		(lab, repo, next) ->
 			# update lab definition
 			lab.repo = repo
