@@ -111,24 +111,27 @@ module.exports.submit_version = (req, res, next) ->
 	#       possibly with lab itself/10xlab installation)
 	processor_type = BasicDefinition
 	
-	Lab.findOne {name: req.params.lab}, (err, lab) ->
-		if err
-			return res.send 500,
-				reason: "Unable to get lab: #{err}"
+	Lab
+		.findOne({name: req.params.lab})
+		.populate("current_definition")
+		.exec (err, lab) ->
+			if err
+				return res.send 500,
+					reason: "Unable to get lab: #{err}"
 
-		if lab
-			processor = new processor_type(null, data)
-			
-			processor.on "accepted", () ->
-				res.send 202,
-					reason: "Not yet implemented"
+			if lab
+				processor = new processor_type(lab, data)
 
-			processor.on "refused", (message) ->
-				res.send 303, 
-					reason: message
+				processor.on "accepted", () ->
+					res.send 202,
+						reason: "Not yet implemented"
 
-			processor.validate()
-		else
-			return res.send 404,
-				reason: "Lab not found."
+				processor.on "refused", (message) ->
+					res.send 303, 
+						reason: message
+
+				processor.validate()
+			else
+				return res.send 404,
+					reason: "Lab not found."
 
