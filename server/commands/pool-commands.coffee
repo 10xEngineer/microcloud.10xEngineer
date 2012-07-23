@@ -152,7 +152,8 @@ module.exports =
         data = 
           id: avm.uuid
           server: avm.server.hostname
-        broker.dispatch avm.server.type, 'allocate', data, (message) ->  	        
+        req = broker.dispatch avm.server.type, 'allocate', data
+        req.on 'data', (message) ->  	        
           if message.status is 'ok' 
             return _next() 
           _next new Error message.options.reason

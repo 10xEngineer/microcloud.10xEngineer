@@ -99,10 +99,11 @@ Lab.methods.start = (lab) ->
           id: vm.uuid
           server: vm.server.hostname
 
-        broker.dispatch vm.server.type, 'start', request, (message) =>
-          if message.status == "ok"
-            return cb
+        req = broker.dispatch vm.server.type, 'start', request
+        req.on 'data', (message) =>
+          return cb
 
+        req.on 'error', (message) =>
           return cb(new Error(message.options.reason), vm)
       , (err, vm) ->
         if err
