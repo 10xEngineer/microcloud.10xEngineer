@@ -6,6 +6,7 @@ Lab = mongoose.model("Lab")
 broker = require("../broker")
 async     = require 'async'
 crypto    = require 'crypto'
+BasicDefinition = require "../labs/basic_definition"
 
 module.exports.create = (req, res, next) ->
 	# FIXME not yet finished
@@ -89,6 +90,7 @@ module.exports.create = (req, res, next) ->
 
 
 module.exports.show = (req, res, next) ->
+	# FIXME not implemented
 	console.log '--> lab get'
 	console.log req
 
@@ -105,6 +107,20 @@ module.exports.submit_version = (req, res, next) ->
 		return res.send 406, 
 			reason: "Invalid request data: #{error}"
 
-	# FIXME process incoming definition
-	res.send 200,
-		reason: "Not yet implemented"
+	# FIXME hardcoded definition processing class (should be configurable)
+	processor_type = BasicDefinition
+	
+	Lab.findOne {name: req.params.lab}, (err, lab) ->
+		if err
+			return res.send 500,
+				reason: "Unable to get lab: #{err}"
+
+		if lab
+			processor = new processor_type(null, data)
+			processor.validate (definition) ->
+				res.send 202,
+					reason: "Not yet implemented"
+		else
+			return res.send 404,
+				reason: "Lab not found."
+
