@@ -61,8 +61,8 @@ module.exports.create = (req, res, next) ->
       opts =
         repo: data.repo
 
-      broker.dispatch 'git_adm', op, opts, (message) =>
-        if message.status == "ok"
+      req = broker.dispatch 'git_adm', op, opts
+      req.on 'data', (message) ->
           repo = message.options.repo
 
           next null, lab_def, repo
@@ -144,7 +144,8 @@ module.exports.allocate = (req, res, next) ->
             id: vm.uuid
             server: vm.server.hostname
 
-          broker.dispatch vm.server.type, 'allocate', data, (message) =>
+          req = broker.dispatch vm.server.type, 'allocate', data
+          req.on 'data', (message) ->
             if message.status == 'ok'
               return cb()
             

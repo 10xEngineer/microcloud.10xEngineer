@@ -3,30 +3,35 @@
 zmq = require 'zmq'
 config = require('../server/config')
 broker = config.get('broker')
+EventEmitter = require('events').EventEmitter
 
 class ServiceClient
 	constructor: ->
 		@socket = zmq.createSocket 'req'
 		@socket.connect broker
+		@emitter = new EventEmitter()
 		
 	send: (request) -> @socket.send JSON.stringify request
 
 module.exports.service_client = ServiceClient
 
-module.exports.dispatch = (service, action, data = {}, cb) ->
+module.exports.dispatch = (service, action, data = {}) ->
 	client = new ServiceClient
-	request = {
+	request = 
 		"service": service
 		"action": action
 		"options": data
-	}
 
 	client.send request
 	client.socket.on 'message', (message) ->
-		response = JSON.parse message
-
-		cb response
+    _message = JSON.parse message.toString()
+    if _message.status is 'ok'
+      client.emitter.emit 'data', _message
+    else
+      client.emitter.emit 'error', _message
 
   client.socket.on 'error', (error) ->
     console.log "0mq socket entered error state #{error}"
-    cb "{}"
+    client.emitter.emit 'error', error
+  
+  client.emitter

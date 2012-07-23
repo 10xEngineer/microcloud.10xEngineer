@@ -82,8 +82,8 @@ module.exports =
           
     # Check all available Hostnodes for current pool
     availableHostnodes = ['findPool', (next, results) -> 
-        Hostnode.find _pools: results.findPool, next
-      ]
+      Hostnode.find _pools: results.findPool._id, next
+    ]
       
     # Check parallely all available prepared VM, which are in that pool
     availableVMs = ['findPool', (next, results) ->
@@ -103,7 +103,7 @@ module.exports =
       # Now if there are not enough VMs, send a request to prepare them      	  
       else
         countToPrepare = dataReq.vms.length - avms.length
-        if _.isEmpty results.availableHostnodes then next
+        if _.isEmpty results.availableHostnodes then return next
           msg: "The Pool #{results.findPool.name} needs hostnodes to prepare #{countToPrepare} VMs but doesn't have any."
           code: 400
         # We've got hostnodes, pool -> let's ask for new VM
@@ -123,7 +123,7 @@ module.exports =
             method  : 'POST'
             headers : 'Content-Type': 'application/json'
           , (res) -> createVmRequest res, opt
-          req.end JSON.stringify {pool: results.findPool}  
+          req.end JSON.stringify {pool: results.findPool._id}  
         createVmRequest = (res, opt) ->
           unless res.statusCode is 200 then countToPrepare++
           data = ""
@@ -139,8 +139,8 @@ module.exports =
             else
               forEachNext.failCounter++
               iterator
-          fn node, forEachNext
-                  
+          # TODO
+          # Immediatelly lock the VM                  
         nodes = results.availableHostnodes[0...countToPrepare]
         async.forEach nodes, iterator, (err) ->
           next err, avms
@@ -152,7 +152,8 @@ module.exports =
         data = 
           id: avm.uuid
           server: avm.server.hostname
-        broker.dispatch avm.server.type, 'allocate', data, (message) ->  	        
+        req = broker.dispatch avm.server.type, 'allocate', data
+        req.on 'data', (message) ->  	        
           if message.status is 'ok' 
             return _next() 
           _next new Error message.options.reason
@@ -165,7 +166,7 @@ module.exports =
       availableVMs: availableVMs
       prepare: prepare
       allocate: allocate
-    , (err, results) ->        
+    , (err, results) -> 
         console.log err
         if err
           helper.handleErr res, err

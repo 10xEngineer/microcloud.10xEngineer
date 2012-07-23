@@ -21,39 +21,39 @@ module.exports.create = (req, res, next) ->
       res.send 409, err.message
 
     if provider
-      broker.dispatch provider.service, 'start', provider, (message) ->
-        if message.status == 'ok'
-          # FIXME wtf? 
-          Hostnode.find_by_server_id message.options.id, (err, hostnode) ->
-            if hostnode
-              hostnode.token = message.options.token
-              hostnode.save (err) ->
-                if err
-                  log.error "Unable to save hostnode: #{err.message}"
-                  res.send 409, err.message
-                else
-                  log.info "hostnode '#{hostnode.server_id}' saved"
-                  delete hostnode._id
-                  res.send hostnode
-            else
-              hostnode = new Hostnode(
-                server_id : message.options.id
-                hostname : message.options.hostname
-                provider : provider.name
-                type : provider.handler
-                token : message.options.token
-                state : 'new'
-              )
-              hostnode.save (err) ->
-                if err
-                  log.error "Unable to save hostnode: #{err.message}"
+      req = broker.dispatch provider.service, 'start', provider, (message) ->
+      req.on 'data', (message) ->
+        # FIXME wtf? 
+        Hostnode.find_by_server_id message.options.id, (err, hostnode) ->
+          if hostnode
+            hostnode.token = message.options.token
+            hostnode.save (err) ->
+              if err
+                log.error "Unable to save hostnode: #{err.message}"
+                res.send 409, err.message
+              else
+                log.info "hostnode '#{hostnode.server_id}' saved"
+                delete hostnode._id
+                res.send hostnode
+          else
+            hostnode = new Hostnode(
+              server_id : message.options.id
+              hostname : message.options.hostname
+              provider : provider.name
+              type : provider.handler
+              token : message.options.token
+              state : 'new'
+            )
+            hostnode.save (err) ->
+              if err
+                log.error "Unable to save hostnode: #{err.message}"
 
-                  res.send 409, err.message
-                else
-                  log.info "hostnode '#{hostnode.server_id}' saved"
-                  delete hostnode._id
-                  res.send hostnode
-        else
+                res.send 409, err.message
+              else
+                log.info "hostnode '#{hostnode.server_id}' saved"
+                delete hostnode._id
+                res.send hostnode
+      req.on 'error', (message) ->
           res.send message
     else
       res.send 404, "No provider found."
@@ -81,7 +81,8 @@ module.exports.destroy = (req, res, next) ->
         server_id: req.params.node_id
         provider: provider
 
-      broker.dispatch provider.service, 'stop', options, (message) ->
+      req = broker.dispatch provider.service, 'stop', options
+      req.on 'data', (message) ->
         res.send message
     else
       # TODO trigger housekeeping

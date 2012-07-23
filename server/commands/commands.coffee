@@ -28,7 +28,8 @@ module.exports.post_ping = (req, res, next) ->
 	res.send 200, {}, req.data
 
 module.exports.broker_ping = (req, res, next) ->
-	broker.dispatch 'dummy','ping', {}, (message) ->
+	req = broker.dispatch 'dummy','ping', {}
+	req.on 'data', (message) ->
 		res.send message
 
 
