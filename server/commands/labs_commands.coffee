@@ -209,10 +209,9 @@ module.exports.release_version = (req, res, next) ->
 					res.send 406, 
 						reason: message
 
-			processor.release(metadata)				
+			processor.release(metadata)
 
-	# TODO compare current / requested version
-	# TODO if conditions are met, switch 
+	# TODO release
 	#      - run down migration (not part of the command itself - async)
 	#      - run up migration (not part of the command itself - async)
-	# TODO confirm
+	# TODO keep history in files (include version information in filename)

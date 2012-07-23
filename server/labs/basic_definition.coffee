@@ -32,3 +32,20 @@ module.exports = class BasicDefinition extends DefinitionBase
 					this.emit "accepted"
 		else
 			this.emit 'refused', 'Lab definition needs to have different version (consider increasing build number'
+
+	release: (metadata = {}) ->
+		# TODO use metadata for security/auditing/sign-off functionality
+		direction = "release"
+
+		# if defined, compare, otherwise is always release
+		if @lab.current_definition? 
+			res = compare_versions(@lab.current_definition.version, @definition.version)
+
+			if res < 0
+				direction = "rollback"
+			else if res == 0
+				this.emit 'refused', "Target lab definition is already deployed."
+		
+		# FIXME initiate release workflow
+
+		this.emit 'accepted', "Lab definition #{direction} requested"
