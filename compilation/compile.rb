@@ -47,7 +47,7 @@ Dir.mktmpdir do |repo_dir|
     # FIXME need to find more elegant solution
   else
     # read metadata
-    m = Metadata.new(metadata_rb)
+    m = Metadata.new(metadata_rb, repo_rev)
     begin 
       m.evaluate
     rescue Exception => e
