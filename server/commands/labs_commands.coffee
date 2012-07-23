@@ -123,15 +123,17 @@ module.exports.submit_version = (req, res, next) ->
 				processor = new processor_type(lab, data)
 
 				processor.on "accepted", () ->
-					res.send 202,
+					res.send 201,
 						reason: "Not yet implemented"
 
 				processor.on "refused", (message) ->
+					log.debug "definition for lab=#{lab.name} refused"
 					res.send 303, 
 						reason: message
 
 				processor.validate()
 			else
+				log.debug "invalid lab"
 				return res.send 404,
 					reason: "Lab not found."
 

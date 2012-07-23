@@ -9,8 +9,9 @@ class Metadata
   # FIXME DRY way how to define attributes/assign/evaluate
   # FIXME translate into JSON structure (mixin?)
   # FIXME lookup handler (initially Chef only)
+  # FIXME revision must not be specified in metadata directly
 
-  def initialize(metadata_rb)
+  def initialize(metadata_rb, revision = nil)
     @metadata_rb = metadata_rb
 
     @maintainer = nil
@@ -18,6 +19,7 @@ class Metadata
     @handler = nil
     @version = nil
     @description = nil
+    @revision = revision
   end
 
   def evaluate
@@ -47,6 +49,7 @@ class Metadata
   def to_obj
     {
       :version => @version,
+      :revision => @revision,
       :maintainer => @maintainer,
       :maintainer_email => @maintainer_email,
       :handler => @handler,
