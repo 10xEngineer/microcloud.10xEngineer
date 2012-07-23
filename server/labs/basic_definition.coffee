@@ -37,6 +37,10 @@ module.exports = class BasicDefinition extends DefinitionBase
 		# TODO use metadata for security/auditing/sign-off functionality
 		direction = "release"
 
+		if @lab.state is "pending"
+			this.emit 'refused', "There is a pending change."
+			return
+
 		# if defined, compare, otherwise is always release
 		if @lab.current_definition? 
 			res = compare_versions(@lab.current_definition.version, @definition.version)
@@ -47,5 +51,6 @@ module.exports = class BasicDefinition extends DefinitionBase
 				this.emit 'refused', "Target lab definition is already deployed."
 		
 		# FIXME initiate release workflow
+		@lab.fire 'lock'
 
 		this.emit 'accepted', "Lab definition #{direction} requested"
