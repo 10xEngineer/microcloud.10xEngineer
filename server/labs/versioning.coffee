@@ -1,20 +1,49 @@
+_ = require 'underscore'
 # labs/versioning.coffee
 module.exports = ->
 
-# TODO function/class to get major/minor/build
+defs = ['major', 'minor', 'build', 'status']
+statuses = ['alpha', 'beta', 'rc', 0]
+class Version 
+  constructor: (version) ->
+    versionArray = version.split '.'
+    _.each defs, (def, index) =>
+      # Convert number string to Integer ("1" -> 1)
+      val = versionArray[index]
+      if +val is parseVal = parseInt val, 10
+        val = parseVal
+      # status ("Alpha", "Beta", ..) stays as string
+      # but lower case ("ALPHA" -> "alpha")
+      else if _.isString val
+        val = val.toLowerCase()
+      @[defs[index]] = val ? 0
 
 module.exports.compare_versions = (ver1, ver2) ->
-	# major.minor.build[.status] 
-	# status = {alpha, beta, rc}
-	# 0.0.2 > 0.0.1
-	# 0.1.1 > 0.0.3
-	# 1.2.3 > 4.3.4
-	# 1.1.1 > 1.1.1.beta
-	# 1.1.1.beta > 1.1.1.alpha
-	# 1.2.3.rc > 1.2.3.beta
-
-	# 0 ==
-	# 1 a > b
-	# -1 a < b
-
-
+  ver1 = new Version ver1
+  ver2 = new Version ver2
+  result = 0
+  _.find defs, (def) ->
+    def1 = ver1[def]
+    def2 = ver2[def]
+    # Both are numbers, compare
+    if _.isNumber(def1) and _.isNumber(def2)
+      result = 
+        if def1 > def2 then 1
+        else if def1 < def2 then -1
+        else 0
+    # At least one of them is string
+    else if _.isString(def1) or _.isString(def2)
+      statusVal1 = statuses.indexOf def1
+      statusVal2 = statuses.indexOf def2
+      result = 
+        if statusVal1 > statusVal2 then 1
+        else if statusVal1 < statusVal2 then -1
+        else 0
+    # If result changes, versions are different
+    # and the _.find loop can be terminated (by returning true)
+    if result isnt 0 
+      return true
+    else 
+      return false
+      
+  return result
