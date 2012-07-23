@@ -1,4 +1,5 @@
 require 'definition/mixins/transform'
+require 'pathname'
 
 class Metadata
   include TenxLabs::Mixin::ObjectTransform
@@ -20,10 +21,17 @@ class Metadata
     @version = nil
     @description = nil
     @revision = revision
+
+    @vms = []
+
+    # internal definition structure
+    @vms_path = "vms"
   end
 
   def evaluate
     self.instance_eval(IO.read(@metadata_rb), @metadata_rb)
+
+    evaluate_vms
   end
 
   def use(handler_klass)
@@ -46,6 +54,10 @@ class Metadata
     @description = desc
   end
 
+  def vms_path(vms_path)
+    @vms_path = vms_path
+  end
+
   def to_obj
     {
       :version => @version,
@@ -53,7 +65,32 @@ class Metadata
       :maintainer => @maintainer,
       :maintainer_email => @maintainer_email,
       :handler => @handler,
-      :description => @description
+      :description => @description,
+      :vms => @vms.map {|vm| vm.to_obj}
     }
+  end
+
+private
+
+  def evaluate_vms
+    # read default location
+    full_vms_path = nil
+    if @vms_path.match /^\//
+      full_vms_path = File.join(@vms_path, "*.rb")
+    else
+      full_vms_path = File.join(base_dir, @vms_path, "*.rb")
+    end
+
+    # TODO read manual vms/*.rb
+    Dir.glob(full_vms_path).each do |file|
+      # evaluate individual files
+      vm = Vm.class_eval(IO.read(file), file)
+
+      @vms << vm
+    end
+  end
+
+  def base_dir
+    Pathname.new(@metadata_rb).dirname
   end
 end

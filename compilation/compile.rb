@@ -7,6 +7,7 @@ require 'grit'
 require 'tmpdir'
 require 'fileutils'
 require 'definition/metadata'
+require 'definition/vm'
 require '10xlabs/microcloud'
 
 def prepare_repo(temp_dir, repo)
