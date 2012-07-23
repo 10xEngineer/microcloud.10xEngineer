@@ -10,6 +10,9 @@ class Version
     _.each defs, (def, index) =>
       # Convert number string to Integer ("1" -> 1)
       val = versionArray[index]
+      # If val is a word, then parseInt returns NaN
+      # NaN is NaN returns false, therefore status
+      # wont pass this condition
       if +val is parseVal = parseInt val, 10
         val = parseVal
       # status ("Alpha", "Beta", ..) stays as string
