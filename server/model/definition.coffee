@@ -21,6 +21,7 @@ DefinitionSchema = new mongoose.Schema({
 	description: String
 })
 
+DefinitionSchema.index({ lab:1, version: 1 }, { unique: true })
 DefinitionSchema.plugin(timestamps)
 
 module.exports.register = mongoose.model 'Definition', DefinitionSchema

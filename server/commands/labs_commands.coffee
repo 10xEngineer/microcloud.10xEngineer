@@ -91,10 +91,11 @@ module.exports.create = (req, res, next) ->
 
 module.exports.show = (req, res, next) ->
 	# FIXME not implemented
-	console.log '--> lab get'
-	console.log req
-
-	res.send {}
+	Lab
+		.findOne({name: req.params.lab})
+		.populate("current_definition")
+		.exec (err, lab) ->
+			res.send lab
 
 module.exports.submit_version = (req, res, next) ->
 	unless req.body

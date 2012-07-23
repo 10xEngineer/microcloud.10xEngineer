@@ -16,7 +16,10 @@ module.exports = class BasicDefinition extends DefinitionBase
 	validate: ->
 		current = @lab.current_definition
 
-		if current is undefined or compare_versions(@definition.version, current.version)
+		# check lab definition version (existence of two same versions is enforce by unique 
+		# compound key on definition shema - see model).
+
+		if !current? or compare_versions(@definition.version, current.version)
 			def_data = @definition
 			def_data.lab = @lab
 
