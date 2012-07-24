@@ -50,7 +50,7 @@ module.exports = class BasicDefinition extends DefinitionBase
 			else if res == 0
 				this.emit 'refused', "Target lab definition is already deployed."
 		
-		# FIXME initiate release workflow
 		@lab.fire 'lock'
+		# FIXME initiate release workflow
 
 		this.emit 'accepted', "Lab definition #{direction} requested"
