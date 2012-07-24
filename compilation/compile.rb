@@ -10,6 +10,9 @@ require 'definition/metadata'
 require 'definition/vm'
 require '10xlabs/microcloud'
 
+# TODO pre-receive hook is not getting references when using clone from remote repository
+# TODO consider cloning local repository (shared via some kind of networking system)
+# https://trello.com/card/gitolite-pre-receive-hook/50067c2712a969ae032917f4/21
 def prepare_repo(temp_dir, repo, rev = nil)
   repo = "ssh://#{repo}" unless repo.match /^ssh\:\/\//
 

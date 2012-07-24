@@ -29,6 +29,9 @@ begin
     repo_prefix = "#{ENV['USER']}@#{host_raw.first}"
   end
 
+  # TODO pre-receive hook is not getting references when using clone from remote repository
+  # TODO consider cloning local repository (shared via some kind of networking system)
+  # https://trello.com/card/gitolite-pre-receive-hook/50067c2712a969ae032917f4/21
   repo = "#{repo_prefix}/#{data[:repo]}"
 
   # TODO use absolute path (need to set location)
