@@ -32,6 +32,7 @@ class Vm
 
   def to_obj
     {
+      :__type__ => self.class.to_s.underscore,
       :name => @name,
       :base_image => @base_image,
       :hostname => @hostname,

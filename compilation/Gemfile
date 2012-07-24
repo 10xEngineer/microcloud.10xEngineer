@@ -4,6 +4,7 @@ gem "open4"
 gem "grit"
 gem "yajl-ruby"
 gem "microcloud"
+gem "facets"
 
 group :test do
   gem "rspec"

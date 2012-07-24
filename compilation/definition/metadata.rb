@@ -60,6 +60,7 @@ class Metadata
 
   def to_obj
     {
+      :__type__ => self.class.to_s.underscore,
       :version => @version,
       :revision => @revision,
       :maintainer => @maintainer,
@@ -73,7 +74,6 @@ class Metadata
 private
 
   def evaluate_vms
-    # read default location
     full_vms_path = nil
     if @vms_path.match /^\//
       full_vms_path = File.join(@vms_path, "*.rb")
@@ -81,7 +81,7 @@ private
       full_vms_path = File.join(base_dir, @vms_path, "*.rb")
     end
 
-    # TODO read manual vms/*.rb
+    # read manual @vms_path/*.rb
     Dir.glob(full_vms_path).each do |file|
       # evaluate individual files
       vm = Vm.class_eval(IO.read(file), file)
