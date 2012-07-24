@@ -10,7 +10,7 @@ require 'definition/metadata'
 require 'definition/vm'
 require '10xlabs/microcloud'
 
-def prepare_repo(temp_dir, repo)
+def prepare_repo(temp_dir, repo, rev = nil)
   repo = "ssh://#{repo}" unless repo.match /^ssh\:\/\//
 
   git = Grit::Git.new(".")
@@ -24,6 +24,11 @@ def prepare_repo(temp_dir, repo)
 
   git.clone(options, repo, temp_dir)
 
+  if rev
+    repo = Grit::Repo.new(temp_dir)
+    repo.git.run("", "checkout", "", {}, [rev])
+  end
+
   temp_dir
 end
 
@@ -36,8 +41,10 @@ Dir.mktmpdir do |repo_dir|
   repo_ref = ARGV.shift
 
   # get repository
-  prepare_repo(repo_dir, repo)
+  prepare_repo(repo_dir, repo, repo_rev)
   puts "Compile environment ready."
+
+  #repo_dir = "/Users/radim/tmp/labs/source"
 
   # verify pre-requisuites
   metadata_rb = File.join(repo_dir, "metadata.rb")
@@ -59,6 +66,8 @@ Dir.mktmpdir do |repo_dir|
 
     json_def = m.to_json
     puts "Temporary definition output:"
+
+    puts json_def
 
     # push to microcloud
     # TODO handle return code
