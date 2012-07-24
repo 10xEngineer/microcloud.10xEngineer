@@ -1,0 +1,2243 @@
+{
+  "node": {
+    "name": "ip-10-234-109-238.eu-west-1.compute.internal",
+    "chef_environment": "_default",
+    "json_class": "Chef::Node",
+    "automatic": {
+      "languages": {
+        "ruby": {
+          "platform": "x86_64-linux",
+          "version": "1.9.3",
+          "release_date": "2011-10-30",
+          "target": "x86_64-pc-linux-gnu",
+          "target_cpu": "x86_64",
+          "target_vendor": "pc",
+          "target_os": "linux",
+          "host": "x86_64-pc-linux-gnu",
+          "host_cpu": "x86_64",
+          "host_os": "linux-gnu",
+          "host_vendor": "pc",
+          "bin_dir": "/usr/bin",
+          "ruby_bin": "/usr/bin/ruby1.9.1",
+          "gems_dir": "/var/lib/gems/1.9.1",
+          "gem_bin": "/usr/bin/gem1.9.1"
+        },
+        "perl": {
+          "version": "5.14.2",
+          "archname": "x86_64-linux-gnu-thread-multi"
+        },
+        "python": {
+          "version": "2.7.3",
+          "builddate": "Apr 20 2012, 22:39:59"
+        }
+      },
+      "kernel": {
+        "name": "Linux",
+        "release": "3.2.0-25-virtual",
+        "version": "#40-Ubuntu SMP Wed May 23 22:20:17 UTC 2012",
+        "machine": "x86_64",
+        "modules": {
+          "isofs": {
+            "size": "40257",
+            "refcount": "0"
+          },
+          "acpiphp": {
+            "size": "24231",
+            "refcount": "0"
+          }
+        },
+        "os": "GNU/Linux"
+      },
+      "os": "linux",
+      "os_version": "3.2.0-25-virtual",
+      "keys": {
+        "ssh": {
+          "host_dsa_public": "AAAAB3NzaC1kc3MAAACBALhEqOOHcYWPWav28NEANj1C18mW/+40bvuBnbnMJswFMpK5+Ww81F9ejHzS2YSUCA/qephSvZWzS5egg4C988/qQ+19KwgNBycEDyraBya0OYbStPCBMYoQHUBAT4VA+vU8d+cUkNwgoEwdi+i6DY3nsVwV3vhYCN9AvUoDv3+NAAAAFQCYyvaC6leI6PnGKYN04Zqz3igkhQAAAIAOQE1TQZ+Pmj5+A3HAVds/ONd7A7GsvYu53vg9e1Q4AITBBTUONtkQw3DZaC2A3GDV7jF/YPInRGwD1ikt5hiligXBIGL6sePXd0mwPoBvcffyyK9cL5uDOCXA8tyjxjndU71oN/VOWPe+aErHk116FJgHAlOlwpZpwdku7uzk3wAAAIEAk5CQD2EUdY4bGsz89dTm/3txAPzS1rqh44jnuQ2GDRWU04+CYpst5QeRLJRmqviZ1fJHV9O/dwpligmnKVfnZDycVjC/Pdna1jizfIUo287l1L2IR3umtZPLQLCrtUwVBO9bDBW+WR6mQLRdb59pppn92rHgG3DEmG/SJfGBQDo=",
+          "host_rsa_public": "AAAAB3NzaC1yc2EAAAADAQABAAABAQDAbX93y+eHRIkIoqXzHkOS+qeS2ueI2Fr+NbJZCiA+mpja9u6BHPsrWwekKVF3uL/YqBx14QMEnL/IDSFDhrCrrQmRgFVlu7iUVpdgGjjC94XybNuEor8MSe3BBWN6UA7weLmSaZnPxY8NqKnx/BrLQ1VlKuKkWP0oXkq+VQPyJ+q0IKgfZxZSN/mya7GYbPZlBGGNUmxLJoGYF+8CAgbyp+6H4wERF2b0y8NnpfHupl5nFgmjU/8KZeyB2sBb3oxGb/Ag7nwbq5H/yvjHOW1xpk1kg2Qp7lWeuT0Vcrn7bjBGOz279ZtpFJQgCilLQYPbpFCX0+ketMQ39AP/aa5z"
+        }
+      },
+      "hostname": "ip-10-234-109-238",
+      "fqdn": "ip-10-234-109-238.eu-west-1.compute.internal",
+      "domain": "eu-west-1.compute.internal",
+      "chef_packages": {
+        "ohai": {
+          "version": "6.14.0",
+          "ohai_root": "/var/lib/gems/1.9.1/gems/ohai-6.14.0/lib/ohai"
+        },
+        "chef": {
+          "version": "10.12.0",
+          "chef_root": "/var/lib/gems/1.9.1/gems/chef-10.12.0/lib"
+        }
+      },
+      "command": {
+        "ps": "ps -ef"
+      },
+      "etc": {
+        "passwd": {
+          "root": {
+            "dir": "/root",
+            "gid": 0,
+            "uid": 0,
+            "shell": "/bin/bash",
+            "gecos": "root"
+          },
+          "daemon": {
+            "dir": "/usr/sbin",
+            "gid": 1,
+            "uid": 1,
+            "shell": "/bin/sh",
+            "gecos": "daemon"
+          },
+          "bin": {
+            "dir": "/bin",
+            "gid": 2,
+            "uid": 2,
+            "shell": "/bin/sh",
+            "gecos": "bin"
+          },
+          "sys": {
+            "dir": "/dev",
+            "gid": 3,
+            "uid": 3,
+            "shell": "/bin/sh",
+            "gecos": "sys"
+          },
+          "sync": {
+            "dir": "/bin",
+            "gid": 65534,
+            "uid": 4,
+            "shell": "/bin/sync",
+            "gecos": "sync"
+          },
+          "games": {
+            "dir": "/usr/games",
+            "gid": 60,
+            "uid": 5,
+            "shell": "/bin/sh",
+            "gecos": "games"
+          },
+          "man": {
+            "dir": "/var/cache/man",
+            "gid": 12,
+            "uid": 6,
+            "shell": "/bin/sh",
+            "gecos": "man"
+          },
+          "lp": {
+            "dir": "/var/spool/lpd",
+            "gid": 7,
+            "uid": 7,
+            "shell": "/bin/sh",
+            "gecos": "lp"
+          },
+          "mail": {
+            "dir": "/var/mail",
+            "gid": 8,
+            "uid": 8,
+            "shell": "/bin/sh",
+            "gecos": "mail"
+          },
+          "news": {
+            "dir": "/var/spool/news",
+            "gid": 9,
+            "uid": 9,
+            "shell": "/bin/sh",
+            "gecos": "news"
+          },
+          "uucp": {
+            "dir": "/var/spool/uucp",
+            "gid": 10,
+            "uid": 10,
+            "shell": "/bin/sh",
+            "gecos": "uucp"
+          },
+          "proxy": {
+            "dir": "/bin",
+            "gid": 13,
+            "uid": 13,
+            "shell": "/bin/sh",
+            "gecos": "proxy"
+          },
+          "www-data": {
+            "dir": "/var/www",
+            "gid": 33,
+            "uid": 33,
+            "shell": "/bin/sh",
+            "gecos": "www-data"
+          },
+          "backup": {
+            "dir": "/var/backups",
+            "gid": 34,
+            "uid": 34,
+            "shell": "/bin/sh",
+            "gecos": "backup"
+          },
+          "list": {
+            "dir": "/var/list",
+            "gid": 38,
+            "uid": 38,
+            "shell": "/bin/sh",
+            "gecos": "Mailing List Manager"
+          },
+          "irc": {
+            "dir": "/var/run/ircd",
+            "gid": 39,
+            "uid": 39,
+            "shell": "/bin/sh",
+            "gecos": "ircd"
+          },
+          "gnats": {
+            "dir": "/var/lib/gnats",
+            "gid": 41,
+            "uid": 41,
+            "shell": "/bin/sh",
+            "gecos": "Gnats Bug-Reporting System (admin)"
+          },
+          "nobody": {
+            "dir": "/nonexistent",
+            "gid": 65534,
+            "uid": 65534,
+            "shell": "/bin/sh",
+            "gecos": "nobody"
+          },
+          "libuuid": {
+            "dir": "/var/lib/libuuid",
+            "gid": 101,
+            "uid": 100,
+            "shell": "/bin/sh",
+            "gecos": ""
+          },
+          "syslog": {
+            "dir": "/home/syslog",
+            "gid": 103,
+            "uid": 101,
+            "shell": "/bin/false",
+            "gecos": ""
+          },
+          "messagebus": {
+            "dir": "/var/run/dbus",
+            "gid": 105,
+            "uid": 102,
+            "shell": "/bin/false",
+            "gecos": ""
+          },
+          "whoopsie": {
+            "dir": "/nonexistent",
+            "gid": 106,
+            "uid": 103,
+            "shell": "/bin/false",
+            "gecos": ""
+          },
+          "landscape": {
+            "dir": "/var/lib/landscape",
+            "gid": 109,
+            "uid": 104,
+            "shell": "/bin/false",
+            "gecos": ""
+          },
+          "sshd": {
+            "dir": "/var/run/sshd",
+            "gid": 65534,
+            "uid": 105,
+            "shell": "/usr/sbin/nologin",
+            "gecos": ""
+          },
+          "ubuntu": {
+            "dir": "/home/ubuntu",
+            "gid": 1000,
+            "uid": 1000,
+            "shell": "/bin/bash",
+            "gecos": "Ubuntu"
+          },
+          "mongodb": {
+            "dir": "/home/mongodb",
+            "gid": 65534,
+            "uid": 106,
+            "shell": "/bin/false",
+            "gecos": ""
+          },
+          "microcloud": {
+            "dir": "/home/microcloud",
+            "gid": 100,
+            "uid": 1666,
+            "shell": "/bin/sh",
+            "gecos": "Microcloud user"
+          },
+          "compile": {
+            "dir": "/home/compile",
+            "gid": 100,
+            "uid": 1667,
+            "shell": "/bin/sh",
+            "gecos": "10xLabs compile service"
+          }
+        },
+        "group": {
+          "root": {
+            "gid": 0,
+            "members": [
+
+            ]
+          },
+          "daemon": {
+            "gid": 1,
+            "members": [
+
+            ]
+          },
+          "bin": {
+            "gid": 2,
+            "members": [
+
+            ]
+          },
+          "sys": {
+            "gid": 3,
+            "members": [
+
+            ]
+          },
+          "adm": {
+            "gid": 4,
+            "members": [
+              "ubuntu"
+            ]
+          },
+          "tty": {
+            "gid": 5,
+            "members": [
+
+            ]
+          },
+          "disk": {
+            "gid": 6,
+            "members": [
+
+            ]
+          },
+          "lp": {
+            "gid": 7,
+            "members": [
+
+            ]
+          },
+          "mail": {
+            "gid": 8,
+            "members": [
+
+            ]
+          },
+          "news": {
+            "gid": 9,
+            "members": [
+
+            ]
+          },
+          "uucp": {
+            "gid": 10,
+            "members": [
+
+            ]
+          },
+          "man": {
+            "gid": 12,
+            "members": [
+
+            ]
+          },
+          "proxy": {
+            "gid": 13,
+            "members": [
+
+            ]
+          },
+          "kmem": {
+            "gid": 15,
+            "members": [
+
+            ]
+          },
+          "dialout": {
+            "gid": 20,
+            "members": [
+              "ubuntu"
+            ]
+          },
+          "fax": {
+            "gid": 21,
+            "members": [
+
+            ]
+          },
+          "voice": {
+            "gid": 22,
+            "members": [
+
+            ]
+          },
+          "cdrom": {
+            "gid": 24,
+            "members": [
+              "ubuntu"
+            ]
+          },
+          "floppy": {
+            "gid": 25,
+            "members": [
+              "ubuntu"
+            ]
+          },
+          "tape": {
+            "gid": 26,
+            "members": [
+
+            ]
+          },
+          "sudo": {
+            "gid": 27,
+            "members": [
+
+            ]
+          },
+          "audio": {
+            "gid": 29,
+            "members": [
+              "ubuntu"
+            ]
+          },
+          "dip": {
+            "gid": 30,
+            "members": [
+              "ubuntu"
+            ]
+          },
+          "www-data": {
+            "gid": 33,
+            "members": [
+
+            ]
+          },
+          "backup": {
+            "gid": 34,
+            "members": [
+
+            ]
+          },
+          "operator": {
+            "gid": 37,
+            "members": [
+
+            ]
+          },
+          "list": {
+            "gid": 38,
+            "members": [
+
+            ]
+          },
+          "irc": {
+            "gid": 39,
+            "members": [
+
+            ]
+          },
+          "src": {
+            "gid": 40,
+            "members": [
+
+            ]
+          },
+          "gnats": {
+            "gid": 41,
+            "members": [
+
+            ]
+          },
+          "shadow": {
+            "gid": 42,
+            "members": [
+
+            ]
+          },
+          "utmp": {
+            "gid": 43,
+            "members": [
+
+            ]
+          },
+          "video": {
+            "gid": 44,
+            "members": [
+              "ubuntu"
+            ]
+          },
+          "sasl": {
+            "gid": 45,
+            "members": [
+
+            ]
+          },
+          "plugdev": {
+            "gid": 46,
+            "members": [
+              "ubuntu"
+            ]
+          },
+          "staff": {
+            "gid": 50,
+            "members": [
+
+            ]
+          },
+          "games": {
+            "gid": 60,
+            "members": [
+
+            ]
+          },
+          "users": {
+            "gid": 100,
+            "members": [
+
+            ]
+          },
+          "nogroup": {
+            "gid": 65534,
+            "members": [
+
+            ]
+          },
+          "libuuid": {
+            "gid": 101,
+            "members": [
+
+            ]
+          },
+          "crontab": {
+            "gid": 102,
+            "members": [
+
+            ]
+          },
+          "syslog": {
+            "gid": 103,
+            "members": [
+
+            ]
+          },
+          "fuse": {
+            "gid": 104,
+            "members": [
+
+            ]
+          },
+          "messagebus": {
+            "gid": 105,
+            "members": [
+
+            ]
+          },
+          "whoopsie": {
+            "gid": 106,
+            "members": [
+
+            ]
+          },
+          "mlocate": {
+            "gid": 107,
+            "members": [
+
+            ]
+          },
+          "ssh": {
+            "gid": 108,
+            "members": [
+
+            ]
+          },
+          "landscape": {
+            "gid": 109,
+            "members": [
+
+            ]
+          },
+          "netdev": {
+            "gid": 110,
+            "members": [
+              "ubuntu"
+            ]
+          },
+          "admin": {
+            "gid": 111,
+            "members": [
+              "ubuntu"
+            ]
+          },
+          "ubuntu": {
+            "gid": 1000,
+            "members": [
+
+            ]
+          },
+          "utempter": {
+            "gid": 112,
+            "members": [
+
+            ]
+          },
+          "mongodb": {
+            "gid": 113,
+            "members": [
+              "mongodb"
+            ]
+          }
+        }
+      },
+      "current_user": "ubuntu",
+      "lsb": {
+        "id": "Ubuntu",
+        "release": "12.04",
+        "codename": "precise",
+        "description": "Ubuntu 12.04 LTS"
+      },
+      "platform": "ubuntu",
+      "platform_version": "12.04",
+      "platform_family": "debian",
+      "dmi": {
+        "dmidecode_version": "2.11"
+      },
+      "network": {
+        "interfaces": {
+          "lo": {
+            "mtu": "16436",
+            "flags": [
+              "LOOPBACK",
+              "UP",
+              "LOWER_UP"
+            ],
+            "encapsulation": "Loopback",
+            "addresses": {
+              "127.0.0.1": {
+                "family": "inet",
+                "prefixlen": "8",
+                "netmask": "255.0.0.0",
+                "scope": "Node"
+              },
+              "::1": {
+                "family": "inet6",
+                "prefixlen": "128",
+                "scope": "Node"
+              }
+            },
+            "state": "unknown"
+          },
+          "eth0": {
+            "type": "eth",
+            "number": "0",
+            "mtu": "1500",
+            "flags": [
+              "BROADCAST",
+              "MULTICAST",
+              "UP",
+              "LOWER_UP"
+            ],
+            "encapsulation": "Ethernet",
+            "addresses": {
+              "12:31:3B:05:6E:04": {
+                "family": "lladdr"
+              },
+              "10.234.109.238": {
+                "family": "inet",
+                "prefixlen": "24",
+                "netmask": "255.255.255.0",
+                "broadcast": "10.234.109.255",
+                "scope": "Global"
+              },
+              "fe80::1031:3bff:fe05:6e04": {
+                "family": "inet6",
+                "prefixlen": "64",
+                "scope": "Link"
+              }
+            },
+            "state": "up",
+            "arp": {
+              "10.234.109.1": "fe:ff:ff:ff:ff:ff"
+            },
+            "routes": [
+              {
+                "destination": "default",
+                "family": "inet",
+                "via": "10.234.109.1",
+                "metric": "100"
+              },
+              {
+                "destination": "10.234.109.0/24",
+                "family": "inet",
+                "scope": "link",
+                "proto": "kernel",
+                "src": "10.234.109.238"
+              },
+              {
+                "destination": "fe80::/64",
+                "family": "inet6",
+                "metric": "256",
+                "proto": "kernel"
+              }
+            ]
+          }
+        },
+        "default_interface": "eth0",
+        "default_gateway": "10.234.109.1"
+      },
+      "counters": {
+        "network": {
+          "interfaces": {
+            "lo": {
+              "rx": {
+                "bytes": "141243",
+                "packets": "2667",
+                "errors": "0",
+                "drop": "0",
+                "overrun": "0"
+              },
+              "tx": {
+                "bytes": "141243",
+                "packets": "2667",
+                "errors": "0",
+                "drop": "0",
+                "carrier": "0",
+                "collisions": "0"
+              }
+            },
+            "eth0": {
+              "tx": {
+                "queuelen": "1000",
+                "bytes": "17336257",
+                "packets": "183206",
+                "errors": "0",
+                "drop": "0",
+                "carrier": "0",
+                "collisions": "0"
+              },
+              "rx": {
+                "bytes": "709184623",
+                "packets": "531645",
+                "errors": "0",
+                "drop": "0",
+                "overrun": "0"
+              }
+            }
+          }
+        }
+      },
+      "ipaddress": "10.234.109.238",
+      "macaddress": "12:31:3B:05:6E:04",
+      "ohai_time": 1343123848.9203658,
+      "ec2": {
+        "ami_id": "ami-ab9491df",
+        "ami_launch_index": "0",
+        "ami_manifest_path": "(unknown)",
+        "block_device_mapping_ami": "/dev/sda1",
+        "block_device_mapping_ephemeral0": "/dev/sdb",
+        "block_device_mapping_root": "/dev/sda1",
+        "block_device_mapping_swap": "sda3",
+        "hostname": "ip-10-234-109-238.eu-west-1.compute.internal",
+        "instance_id": "i-cde8a685",
+        "instance_type": "m1.small",
+        "kernel_id": "aki-62695816",
+        "local_hostname": "ip-10-234-109-238.eu-west-1.compute.internal",
+        "local_ipv4": "10.234.109.238",
+        "placement_availability_zone": "eu-west-1a",
+        "profile": "default-paravirtual",
+        "public_hostname": "ec2-176-34-236-201.eu-west-1.compute.amazonaws.com",
+        "public_ipv4": "176.34.236.201",
+        "public_keys_0_openssh_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQv1Mc8tkeoiDyGqw7ixMqUcExxU7v1zrn1s2DJp5nsMe7HjPVLA6Vokz3cnM1ayia9Th8GSK8RRGMamXWH+nJCcWyF6AVFMcxhNQ4YW1Gnlwvq0BxD2cjDiTCtNbQ2oQtaq+Wi+8DW9FH29q7seTmG84U3+tARznxiIAgOl4Ke+SxnndKPERsdleRdp8yggYiGQppkheOYrNcaE/dGC+sv6ptqFvpLyG3CiFmILN4l+0etetEtYodtRpes227L/mjHy+DJo/GB56JKaHQtTHvkn5paQheAraJ1VaS4PtP4mPne38kD+ojVpwhpNZoDfn3rhmX8KBS66HfuPEVa1B7 radim-eu\n",
+        "reservation_id": "r-5ffe1917",
+        "security_groups": [
+          "tenxlab_node"
+        ],
+        "userdata": null
+      },
+      "cloud": {
+        "public_ips": [
+          "176.34.236.201"
+        ],
+        "private_ips": [
+          "10.234.109.238"
+        ],
+        "public_ipv4": "176.34.236.201",
+        "public_hostname": "ec2-176-34-236-201.eu-west-1.compute.amazonaws.com",
+        "local_ipv4": "10.234.109.238",
+        "local_hostname": "ip-10-234-109-238.eu-west-1.compute.internal",
+        "provider": "ec2"
+      },
+      "virtualization": {
+        "system": "xen",
+        "role": "guest"
+      },
+      "filesystem": {
+        "/dev/xvda1": {
+          "kb_size": "8362320",
+          "kb_used": "1978296",
+          "kb_available": "5964596",
+          "percent_used": "25%",
+          "mount": "/",
+          "fs_type": "ext4",
+          "mount_options": [
+            "rw"
+          ],
+          "uuid": "d42dc4d0-092b-4bb0-8814-fa9992351620",
+          "label": "cloudimg-rootfs"
+        },
+        "udev": {
+          "kb_size": "838332",
+          "kb_used": "12",
+          "kb_available": "838320",
+          "percent_used": "1%",
+          "mount": "/dev",
+          "fs_type": "devtmpfs",
+          "mount_options": [
+            "rw",
+            "mode=0755"
+          ]
+        },
+        "tmpfs": {
+          "kb_size": "338516",
+          "kb_used": "180",
+          "kb_available": "338336",
+          "percent_used": "1%",
+          "mount": "/run",
+          "fs_type": "tmpfs",
+          "mount_options": [
+            "rw",
+            "noexec",
+            "nosuid",
+            "size=10%",
+            "mode=0755"
+          ]
+        },
+        "none": {
+          "kb_size": "846288",
+          "kb_used": "0",
+          "kb_available": "846288",
+          "percent_used": "0%",
+          "mount": "/run/shm",
+          "fs_type": "tmpfs",
+          "mount_options": [
+            "rw",
+            "nosuid",
+            "nodev"
+          ]
+        },
+        "/dev/xvdb": {
+          "kb_size": "153899044",
+          "kb_used": "192068",
+          "kb_available": "145889352",
+          "percent_used": "1%",
+          "mount": "/mnt",
+          "fs_type": "ext3",
+          "mount_options": [
+            "rw",
+            "_netdev"
+          ],
+          "uuid": "497cdc4c-a9fe-418a-b74c-03bc55e749a1"
+        },
+        "proc": {
+          "mount": "/proc",
+          "fs_type": "proc",
+          "mount_options": [
+            "rw",
+            "noexec",
+            "nosuid",
+            "nodev"
+          ]
+        },
+        "sysfs": {
+          "mount": "/sys",
+          "fs_type": "sysfs",
+          "mount_options": [
+            "rw",
+            "noexec",
+            "nosuid",
+            "nodev"
+          ]
+        },
+        "devpts": {
+          "mount": "/dev/pts",
+          "fs_type": "devpts",
+          "mount_options": [
+            "rw",
+            "noexec",
+            "nosuid",
+            "gid=5",
+            "mode=0620"
+          ]
+        },
+        "/dev/xvda3": {
+          "fs_type": "swap",
+          "uuid": "0fd2b6d0-4eb4-438b-b883-e1e6611e493d"
+        },
+        "rootfs": {
+          "mount": "/",
+          "fs_type": "rootfs",
+          "mount_options": [
+            "rw"
+          ]
+        },
+        "/dev/disk/by-label/cloudimg-rootfs": {
+          "mount": "/",
+          "fs_type": "ext4",
+          "mount_options": [
+            "rw",
+            "relatime",
+            "user_xattr",
+            "acl",
+            "barrier=1",
+            "data=ordered"
+          ]
+        }
+      },
+      "uptime_seconds": 393741,
+      "uptime": "4 days 13 hours 22 minutes 21 seconds",
+      "idletime_seconds": 776675,
+      "idletime": "8 days 23 hours 44 minutes 35 seconds",
+      "cpu": {
+        "0": {
+          "vendor_id": "GenuineIntel",
+          "family": "6",
+          "model": "26",
+          "model_name": "Intel(R) Xeon(R) CPU           E5507  @ 2.27GHz",
+          "stepping": "5",
+          "mhz": "2266.746",
+          "cache_size": "4096 KB",
+          "physical_id": "0",
+          "core_id": "0",
+          "cores": "1",
+          "flags": [
+            "fpu",
+            "de",
+            "tsc",
+            "msr",
+            "pae",
+            "cx8",
+            "sep",
+            "cmov",
+            "pat",
+            "clflush",
+            "mmx",
+            "fxsr",
+            "sse",
+            "sse2",
+            "ss",
+            "ht",
+            "syscall",
+            "nx",
+            "lm",
+            "constant_tsc",
+            "up",
+            "rep_good",
+            "nopl",
+            "nonstop_tsc",
+            "aperfmperf",
+            "pni",
+            "ssse3",
+            "cx16",
+            "sse4_1",
+            "sse4_2",
+            "popcnt",
+            "hypervisor",
+            "lahf_lm",
+            "dts"
+          ]
+        },
+        "total": 1,
+        "real": 1
+      },
+      "block_device": {
+        "ram0": {
+          "size": "131072",
+          "removable": "0"
+        },
+        "ram1": {
+          "size": "131072",
+          "removable": "0"
+        },
+        "ram2": {
+          "size": "131072",
+          "removable": "0"
+        },
+        "ram3": {
+          "size": "131072",
+          "removable": "0"
+        },
+        "ram4": {
+          "size": "131072",
+          "removable": "0"
+        },
+        "ram5": {
+          "size": "131072",
+          "removable": "0"
+        },
+        "ram6": {
+          "size": "131072",
+          "removable": "0"
+        },
+        "ram7": {
+          "size": "131072",
+          "removable": "0"
+        },
+        "ram8": {
+          "size": "131072",
+          "removable": "0"
+        },
+        "ram9": {
+          "size": "131072",
+          "removable": "0"
+        },
+        "ram10": {
+          "size": "131072",
+          "removable": "0"
+        },
+        "ram11": {
+          "size": "131072",
+          "removable": "0"
+        },
+        "ram12": {
+          "size": "131072",
+          "removable": "0"
+        },
+        "ram13": {
+          "size": "131072",
+          "removable": "0"
+        },
+        "ram14": {
+          "size": "131072",
+          "removable": "0"
+        },
+        "ram15": {
+          "size": "131072",
+          "removable": "0"
+        },
+        "loop0": {
+          "size": "0",
+          "removable": "0"
+        },
+        "loop1": {
+          "size": "0",
+          "removable": "0"
+        },
+        "loop2": {
+          "size": "0",
+          "removable": "0"
+        },
+        "loop3": {
+          "size": "0",
+          "removable": "0"
+        },
+        "loop4": {
+          "size": "0",
+          "removable": "0"
+        },
+        "loop5": {
+          "size": "0",
+          "removable": "0"
+        },
+        "loop6": {
+          "size": "0",
+          "removable": "0"
+        },
+        "loop7": {
+          "size": "0",
+          "removable": "0"
+        },
+        "xvda1": {
+          "size": "16777216",
+          "removable": "0"
+        },
+        "xvdb": {
+          "size": "312705024",
+          "removable": "0"
+        },
+        "xvda3": {
+          "size": "1835008",
+          "removable": "0"
+        }
+      },
+      "memory": {
+        "swap": {
+          "cached": "2264kB",
+          "total": "917500kB",
+          "free": "904732kB"
+        },
+        "total": "1692580kB",
+        "free": "142280kB",
+        "buffers": "176552kB",
+        "cached": "651176kB",
+        "active": "779384kB",
+        "inactive": "590452kB",
+        "dirty": "88kB",
+        "writeback": "0kB",
+        "anon_pages": "540288kB",
+        "mapped": "37120kB",
+        "slab": "144040kB",
+        "slab_reclaimable": "132240kB",
+        "slab_unreclaim": "11800kB",
+        "page_tables": "7024kB",
+        "nfs_unstable": "0kB",
+        "bounce": "0kB",
+        "commit_limit": "1763788kB",
+        "committed_as": "940012kB",
+        "vmalloc_total": "34359738367kB",
+        "vmalloc_used": "11272kB",
+        "vmalloc_chunk": "34359724940kB"
+      },
+      "recipes": [
+        "apt",
+        "git",
+        "monit",
+        "10xlab-compile"
+      ],
+      "roles": [
+        "compile",
+        "base"
+      ]
+    },
+    "normal": {
+      "tags": [
+
+      ],
+      "depends": "python",
+      "nginx": {
+        "source": {
+          "prefix": "/opt/nginx-1.0.14",
+          "conf_path": "/etc/nginx/nginx.conf",
+          "default_configure_flags": [
+            "--prefix=/opt/nginx-1.0.14",
+            "--conf-path=/etc/nginx/nginx.conf"
+          ]
+        }
+      },
+      "runit": {
+        "sv_bin": "/usr/bin/sv",
+        "chpst_bin": "/usr/bin/chpst",
+        "service_dir": "/etc/service",
+        "sv_dir": "/etc/sv"
+      }
+    },
+    "chef_type": "node",
+    "default": {
+      "microcloud": {
+        "environment": "development",
+        "endpoint": null
+      },
+      "10xeng-node": {
+        "token": null,
+        "id": null,
+        "toolchain": {
+          "version": "0.0.9"
+        }
+      },
+      "10xeng-vm": {
+        "packages": [
+          "ssh",
+          "vim",
+          "git",
+          "curl",
+          "lxc",
+          "ruby1.9.3",
+          "build-essential"
+        ]
+      },
+      "gateone": {
+        "dependencies": [
+          "python-support"
+        ],
+        "packages": [
+          "python-tornado_2.2-1_all.deb"
+        ],
+        "auth": null,
+        "users_dir": "/opt/gateone/users",
+        "commit": "324ca08"
+      },
+      "lxc": {
+        "location": "/var/lib/lxc",
+        "arch": "i386",
+        "cache": "/var/cache/lxc",
+        "release": "precise",
+        "templates": [
+          "ubuntu"
+        ]
+      },
+      "lxc-template": {
+        "ubuntu": {
+          "components": [
+            "main",
+            "universe"
+          ],
+          "packages": [
+            "dialog",
+            "apt",
+            "apt-utils",
+            "iproute",
+            "inetutils-ping",
+            "vim",
+            "isc-dhcp-client",
+            "isc-dhcp-common",
+            "ssh",
+            "lsb-release",
+            "gnupg",
+            "netbase",
+            "ubuntu-keyring",
+            "git",
+            "curl",
+            "lxc",
+            "ruby1.9.3",
+            "build-essential",
+            "vim"
+          ]
+        }
+      },
+      "monit": {
+        "interval": 120,
+        "start_delay": 240,
+        "mail": {
+          "server": "localhost",
+          "from": "monit@ip-10-234-109-238.eu-west-1.compute.internal",
+          "to": "ops@example.com",
+          "subject": "monit alert -- $SERVICE $EVENT"
+        },
+        "web": {
+          "enabled": false,
+          "bind_to": "localhost",
+          "port": 2812,
+          "allow": "localhost"
+        }
+      },
+      "nginx": {
+        "geoip": {
+          "path": "/srv/geoip",
+          "enable_city": true,
+          "country_dat_url": "http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz",
+          "country_dat_checksum": "a8c1ffeea5edae7e89150f83029a71bb",
+          "city_dat_url": "http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz",
+          "city_dat_checksum": "1075c5dcd106d937c29879330713b8e5",
+          "lib_version": "1.4.8",
+          "lib_url": "http://geolite.maxmind.com/download/geoip/api/c/GeoIP-1.4.8.tar.gz",
+          "lib_checksum": "05b7300435336231b556df5ab36f326d"
+        },
+        "upload_progress": {
+          "url": "https://github.com/masterzen/nginx-upload-progress-module/tarball/v0.8.4",
+          "checksum": "9a6acb984d81f5d7e04214d63ae94273"
+        },
+        "version": "1.0.14",
+        "dir": "/etc/nginx",
+        "log_dir": "/var/log/nginx",
+        "binary": "/usr/sbin/nginx",
+        "user": "www-data",
+        "init_style": "runit",
+        "pid": "/var/run/nginx.pid",
+        "gzip": "on",
+        "gzip_http_version": "1.0",
+        "gzip_comp_level": "2",
+        "gzip_proxied": "any",
+        "gzip_types": [
+          "text/plain",
+          "text/html",
+          "text/css",
+          "application/x-javascript",
+          "text/xml",
+          "application/xml",
+          "application/xml+rss",
+          "text/javascript",
+          "application/javascript",
+          "application/json"
+        ],
+        "keepalive": "on",
+        "keepalive_timeout": 65,
+        "worker_processes": 1,
+        "worker_connections": 1024,
+        "server_names_hash_bucket_size": 64,
+        "disable_access_log": false,
+        "install_method": "package",
+        "configure_flags": [
+
+        ],
+        "source": {
+          "url": "http://nginx.org/download/nginx-1.0.14.tar.gz",
+          "modules": [
+            "http_ssl_module",
+            "http_gzip_static_module"
+          ]
+        }
+      },
+      "nodejs": {
+        "repository": "http://ppa.launchpad.net/chris-lea/node.js/ubuntu",
+        "keyserver": "keyserver.ubuntu.com",
+        "key": "C7917B12"
+      },
+      "npm": {
+        "packages": [
+          "coffee-script"
+        ]
+      },
+      "python": {
+        "distribute_install_py_version": "",
+        "install_method": "package",
+        "url": "http://www.python.org/ftp/python",
+        "version": "2.7.1",
+        "checksum": "80e387bcf57eae8ce26726753584fd63e060ec11682d1145af921e85fd612292",
+        "prefix_dir": "/usr/local",
+        "configure_options": [
+          "--prefix=/usr/local"
+        ]
+      },
+      "authorization": {
+        "sudo": {
+          "groups": [
+
+          ],
+          "users": [
+
+          ],
+          "passwordless": false,
+          "include_sudoers_d": false
+        }
+      }
+    },
+    "override": {
+      "monit": {
+        "start_delay": 15,
+        "interval": 30,
+        "web": {
+          "enabled": true
+        }
+      }
+    },
+    "run_list": [
+      "role[compile]"
+    ]
+  },
+  "success": true,
+  "start_time": "2012-07-24 09:57:29 +0000",
+  "end_time": "2012-07-24 09:57:40 +0000",
+  "elapsed_time": 10.759203043,
+  "all_resources": [
+    {
+      "json_class": "Chef::Resource::Execute",
+      "instance_vars": {
+        "name": "apt-get-update",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": null,
+        "allowed_actions": [
+          "nothing",
+          "run"
+        ],
+        "action": "run",
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+        },
+        "ignore_failure": true,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/apt/recipes/default.rb:22:in `from_file'",
+        "resource_name": "execute",
+        "command": "apt-get update",
+        "backup": 5,
+        "creates": null,
+        "cwd": null,
+        "environment": null,
+        "group": null,
+        "path": null,
+        "returns": 0,
+        "timeout": null,
+        "user": null,
+        "umask": null,
+        "cookbook_name": "apt",
+        "recipe_name": "default",
+        "enclosing_provider": null
+      }
+    },
+    {
+      "json_class": "Chef::Resource::Execute",
+      "instance_vars": {
+        "name": "apt-get update",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": null,
+        "allowed_actions": [
+          "nothing",
+          "run"
+        ],
+        "action": [
+          "nothing"
+        ],
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+        },
+        "ignore_failure": true,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/apt/recipes/default.rb:29:in `from_file'",
+        "resource_name": "execute",
+        "command": "apt-get update",
+        "backup": 5,
+        "creates": null,
+        "cwd": null,
+        "environment": null,
+        "group": null,
+        "path": null,
+        "returns": 0,
+        "timeout": null,
+        "user": null,
+        "umask": null,
+        "cookbook_name": "apt",
+        "recipe_name": "default",
+        "enclosing_provider": null
+      }
+    },
+    {
+      "json_class": "Chef::Resource::Package",
+      "instance_vars": {
+        "name": "update-notifier-common",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": null,
+        "allowed_actions": [
+          "nothing",
+          "install",
+          "upgrade",
+          "remove",
+          "purge",
+          "reconfig"
+        ],
+        "action": "install",
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+          "#<struct Chef::Resource::Notification resource=<execute[apt-get-update] @name: \"apt-get-update\" @noop: nil @before: nil @params: {} @provider: nil @allowed_actions: [:nothing, :run] @action: \"run\" @updated: false @updated_by_last_action: false @supports: {} @ignore_failure: true @retries: 0 @retry_delay: 2 @immediate_notifications: [] @delayed_notifications: [] @source_line: \"/var/chef/cookbooks/apt/recipes/default.rb:22:in `from_file'\" @resource_name: :execute @command: \"apt-get update\" @backup: 5 @creates: nil @cwd: nil @environment: nil @group: nil @path: nil @returns: 0 @timeout: nil @user: nil @umask: nil @cookbook_name: :apt @recipe_name: \"default\" @enclosing_provider: nil>, action=:run, notifying_resource=<package[update-notifier-common] @name: \"update-notifier-common\" @noop: nil @before: nil @params: {} @provider: nil @allowed_actions: [:nothing, :install, :upgrade, :remove, :purge, :reconfig] @action: :install @updated: false @updated_by_last_action: false @supports: {} @ignore_failure: false @retries: 0 @retry_delay: 2 @immediate_notifications: [#<struct Chef::Resource::Notification:...>] @delayed_notifications: [] @source_line: \"/var/chef/cookbooks/apt/recipes/default.rb:36:in `from_file'\" @resource_name: :package @package_name: \"update-notifier-common\" @version: nil @candidate_version: nil @response_file: nil @source: nil @options: nil @cookbook_name: :apt @recipe_name: \"default\" @enclosing_provider: nil>>"
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/apt/recipes/default.rb:36:in `from_file'",
+        "resource_name": "package",
+        "package_name": "update-notifier-common",
+        "version": null,
+        "candidate_version": null,
+        "response_file": null,
+        "source": null,
+        "options": null,
+        "cookbook_name": "apt",
+        "recipe_name": "default",
+        "enclosing_provider": null
+      }
+    },
+    {
+      "json_class": "Chef::Resource::Execute",
+      "instance_vars": {
+        "name": "apt-get-update-periodic",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": null,
+        "allowed_actions": [
+          "nothing",
+          "run"
+        ],
+        "action": "run",
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+        },
+        "ignore_failure": true,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/apt/recipes/default.rb:40:in `from_file'",
+        "resource_name": "execute",
+        "command": "apt-get update",
+        "backup": 5,
+        "creates": null,
+        "cwd": null,
+        "environment": null,
+        "group": null,
+        "path": null,
+        "returns": 0,
+        "timeout": null,
+        "user": null,
+        "umask": null,
+        "cookbook_name": "apt",
+        "recipe_name": "default",
+        "enclosing_provider": null
+      }
+    },
+    {
+      "json_class": "Chef::Resource::Directory",
+      "instance_vars": {
+        "name": "/var/cache/local",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": "Chef::Provider::Directory",
+        "allowed_actions": [
+          "nothing",
+          "create",
+          "delete"
+        ],
+        "action": [
+          "create"
+        ],
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/apt/recipes/default.rb:50:in `block in from_file'",
+        "resource_name": "directory",
+        "path": "/var/cache/local",
+        "recursive": false,
+        "cookbook_name": "apt",
+        "recipe_name": "default",
+        "enclosing_provider": null,
+        "owner": "root",
+        "group": "root",
+        "mode": 420
+      }
+    },
+    {
+      "json_class": "Chef::Resource::Directory",
+      "instance_vars": {
+        "name": "/var/cache/local/preseeding",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": "Chef::Provider::Directory",
+        "allowed_actions": [
+          "nothing",
+          "create",
+          "delete"
+        ],
+        "action": [
+          "create"
+        ],
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/apt/recipes/default.rb:50:in `block in from_file'",
+        "resource_name": "directory",
+        "path": "/var/cache/local/preseeding",
+        "recursive": false,
+        "cookbook_name": "apt",
+        "recipe_name": "default",
+        "enclosing_provider": null,
+        "owner": "root",
+        "group": "root",
+        "mode": 420
+      }
+    },
+    {
+      "json_class": "Chef::Resource::Package",
+      "instance_vars": {
+        "name": "git-core",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": null,
+        "allowed_actions": [
+          "nothing",
+          "install",
+          "upgrade",
+          "remove",
+          "purge",
+          "reconfig"
+        ],
+        "action": "install",
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/git/recipes/default.rb:21:in `from_file'",
+        "resource_name": "package",
+        "package_name": "git-core",
+        "version": null,
+        "candidate_version": null,
+        "response_file": null,
+        "source": null,
+        "options": null,
+        "cookbook_name": "git",
+        "recipe_name": "default",
+        "enclosing_provider": null
+      }
+    },
+    {
+      "json_class": "Chef::Resource::Package",
+      "instance_vars": {
+        "name": "monit",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": null,
+        "allowed_actions": [
+          "nothing",
+          "install",
+          "upgrade",
+          "remove",
+          "purge",
+          "reconfig"
+        ],
+        "action": "install",
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/monit/recipes/default.rb:20:in `from_file'",
+        "resource_name": "package",
+        "package_name": "monit",
+        "version": null,
+        "candidate_version": null,
+        "response_file": null,
+        "source": null,
+        "options": null,
+        "cookbook_name": "monit",
+        "recipe_name": "default",
+        "enclosing_provider": null
+      }
+    },
+    {
+      "json_class": "Chef::Resource::Service",
+      "instance_vars": {
+        "name": "monit",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": null,
+        "allowed_actions": [
+          "nothing",
+          "enable",
+          "disable",
+          "start",
+          "stop",
+          "restart",
+          "reload"
+        ],
+        "action": [
+          "enable"
+        ],
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+          "restart": true,
+          "reload": false,
+          "status": false,
+          "start": true,
+          "stop": true
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/monit/recipes/default.rb:21:in `from_file'",
+        "resource_name": "service",
+        "service_name": "monit",
+        "enabled": null,
+        "running": null,
+        "parameters": null,
+        "pattern": "monit",
+        "start_command": null,
+        "stop_command": null,
+        "status_command": null,
+        "restart_command": null,
+        "reload_command": null,
+        "priority": null,
+        "startup_type": "automatic",
+        "cookbook_name": "monit",
+        "recipe_name": "default",
+        "enclosing_provider": null
+      }
+    },
+    {
+      "json_class": "Chef::Resource::CookbookFile",
+      "instance_vars": {
+        "name": "/etc/default/monit",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": "Chef::Provider::CookbookFile",
+        "allowed_actions": [
+          "nothing",
+          "create",
+          "delete",
+          "touch",
+          "create_if_missing"
+        ],
+        "action": "create",
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/monit/recipes/default.rb:26:in `from_file'",
+        "resource_name": "cookbook_file",
+        "path": "/etc/default/monit",
+        "backup": 5,
+        "source": "monit",
+        "cookbook": null,
+        "cookbook_name": "monit",
+        "recipe_name": "default",
+        "enclosing_provider": null,
+        "owner": "root",
+        "group": "root",
+        "mode": 420
+      }
+    },
+    {
+      "json_class": "Chef::Resource::Template",
+      "instance_vars": {
+        "name": "/etc/monit/monitrc",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": "Chef::Provider::Template",
+        "allowed_actions": [
+          "nothing",
+          "create",
+          "delete",
+          "touch",
+          "create_if_missing"
+        ],
+        "action": "create",
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+          "#<struct Chef::Resource::Notification resource=<service[monit] @name: \"monit\" @noop: nil @before: nil @params: {} @provider: nil @allowed_actions: [:nothing, :enable, :disable, :start, :stop, :restart, :reload] @action: [:enable] @updated: false @updated_by_last_action: false @supports: {:restart=>true, :reload=>false, :status=>false, :start=>true, :stop=>true} @ignore_failure: false @retries: 0 @retry_delay: 2 @immediate_notifications: [] @delayed_notifications: [] @source_line: \"/var/chef/cookbooks/monit/recipes/default.rb:21:in `from_file'\" @resource_name: :service @service_name: \"monit\" @enabled: nil @running: nil @parameters: nil @pattern: \"monit\" @start_command: nil @stop_command: nil @status_command: nil @restart_command: nil @reload_command: nil @priority: nil @startup_type: :automatic @cookbook_name: :monit @recipe_name: \"default\" @enclosing_provider: nil>, action=:restart, notifying_resource=<template[/etc/monit/monitrc] @name: \"/etc/monit/monitrc\" @noop: nil @before: nil @params: {} @provider: Chef::Provider::Template @allowed_actions: [:nothing, :create, :delete, :touch, :create_if_missing] @action: \"create\" @updated: false @updated_by_last_action: false @supports: {} @ignore_failure: false @retries: 0 @retry_delay: 2 @immediate_notifications: [] @delayed_notifications: [#<struct Chef::Resource::Notification:...>] @source_line: \"/var/chef/cookbooks/monit/recipes/default.rb:32:in `from_file'\" @resource_name: :template @path: \"/etc/monit/monitrc\" @backup: 5 @source: \"monitrc.erb\" @cookbook: nil @local: false @variables: {} @cookbook_name: :monit @recipe_name: \"default\" @enclosing_provider: nil @owner: \"root\" @group: \"root\" @mode: 384 @checksum: \"022188df694ea9817ef9b176cd3134c9f45fbd99ca6457dea35ead719e86ff45\">>"
+        ],
+        "source_line": "/var/chef/cookbooks/monit/recipes/default.rb:32:in `from_file'",
+        "resource_name": "template",
+        "path": "/etc/monit/monitrc",
+        "backup": 5,
+        "source": "monitrc.erb",
+        "cookbook": null,
+        "local": false,
+        "variables": {
+        },
+        "cookbook_name": "monit",
+        "recipe_name": "default",
+        "enclosing_provider": null,
+        "owner": "root",
+        "group": "root",
+        "mode": 384,
+        "checksum": "022188df694ea9817ef9b176cd3134c9f45fbd99ca6457dea35ead719e86ff45"
+      }
+    },
+    {
+      "json_class": "Chef::Resource::Directory",
+      "instance_vars": {
+        "name": "/etc/monit/conf.d",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": "Chef::Provider::Directory",
+        "allowed_actions": [
+          "nothing",
+          "create",
+          "delete"
+        ],
+        "action": "create",
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/monit/recipes/default.rb:40:in `from_file'",
+        "resource_name": "directory",
+        "path": "/etc/monit/conf.d",
+        "recursive": false,
+        "cookbook_name": "monit",
+        "recipe_name": "default",
+        "enclosing_provider": null,
+        "owner": "root",
+        "group": "root",
+        "mode": 493
+      }
+    },
+    {
+      "json_class": "Chef::Resource::User",
+      "instance_vars": {
+        "name": "compile",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": null,
+        "allowed_actions": [
+          "nothing",
+          "create",
+          "remove",
+          "modify",
+          "manage",
+          "lock",
+          "unlock"
+        ],
+        "action": "create",
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+          "manage_home": true
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/10xlab-compile/recipes/default.rb:4:in `from_file'",
+        "resource_name": "user",
+        "username": "compile",
+        "comment": "10xLabs compile service",
+        "uid": 1667,
+        "gid": 100,
+        "home": "/home/compile",
+        "shell": "/bin/sh",
+        "password": "$1$n1NZCRfR$9nERbvjfw0EXRe4PrmBAi0",
+        "system": false,
+        "manage_home": false,
+        "non_unique": false,
+        "cookbook_name": "10xlab-compile",
+        "recipe_name": "default",
+        "enclosing_provider": null
+      }
+    },
+    {
+      "json_class": "Chef::Resource::Directory",
+      "instance_vars": {
+        "name": "/home/compile/.ssh",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": "Chef::Provider::Directory",
+        "allowed_actions": [
+          "nothing",
+          "create",
+          "delete"
+        ],
+        "action": [
+          "create"
+        ],
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/10xlab-compile/recipes/default.rb:14:in `from_file'",
+        "resource_name": "directory",
+        "path": "/home/compile/.ssh",
+        "recursive": false,
+        "cookbook_name": "10xlab-compile",
+        "recipe_name": "default",
+        "enclosing_provider": null,
+        "owner": "compile",
+        "group": "users",
+        "mode": 448
+      }
+    },
+    {
+      "json_class": "Chef::Resource::CookbookFile",
+      "instance_vars": {
+        "name": "/home/compile/.ssh/authorized_keys",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": "Chef::Provider::CookbookFile",
+        "allowed_actions": [
+          "nothing",
+          "create",
+          "delete",
+          "touch",
+          "create_if_missing"
+        ],
+        "action": "create",
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/10xlab-compile/recipes/default.rb:21:in `from_file'",
+        "resource_name": "cookbook_file",
+        "path": "/home/compile/.ssh/authorized_keys",
+        "backup": 5,
+        "source": "authorized_keys",
+        "cookbook": null,
+        "cookbook_name": "10xlab-compile",
+        "recipe_name": "default",
+        "enclosing_provider": null,
+        "owner": "compile",
+        "group": "users",
+        "mode": 384
+      }
+    },
+    {
+      "json_class": "Chef::Resource::CookbookFile",
+      "instance_vars": {
+        "name": "/home/compile/.ssh/id_rsa",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": "Chef::Provider::CookbookFile",
+        "allowed_actions": [
+          "nothing",
+          "create",
+          "delete",
+          "touch",
+          "create_if_missing"
+        ],
+        "action": "create",
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/10xlab-compile/recipes/default.rb:28:in `from_file'",
+        "resource_name": "cookbook_file",
+        "path": "/home/compile/.ssh/id_rsa",
+        "backup": 5,
+        "source": "mchammer-dev",
+        "cookbook": null,
+        "cookbook_name": "10xlab-compile",
+        "recipe_name": "default",
+        "enclosing_provider": null,
+        "owner": "compile",
+        "group": "users",
+        "mode": 384
+      }
+    },
+    {
+      "json_class": "Chef::Resource::CookbookFile",
+      "instance_vars": {
+        "name": "/home/compile/wrap-ssh4git.sh",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": "Chef::Provider::CookbookFile",
+        "allowed_actions": [
+          "nothing",
+          "create",
+          "delete",
+          "touch",
+          "create_if_missing"
+        ],
+        "action": "create",
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/10xlab-compile/recipes/default.rb:37:in `from_file'",
+        "resource_name": "cookbook_file",
+        "path": "/home/compile/wrap-ssh4git.sh",
+        "backup": 5,
+        "source": "wrap-ssh4git.sh",
+        "cookbook": null,
+        "cookbook_name": "10xlab-compile",
+        "recipe_name": "default",
+        "enclosing_provider": null,
+        "owner": "compile",
+        "group": null,
+        "mode": 493
+      }
+    },
+    {
+      "json_class": "Chef::Resource::Git",
+      "instance_vars": {
+        "name": "/home/compile/deploy",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": "Chef::Provider::Git",
+        "allowed_actions": [
+          "nothing",
+          "checkout",
+          "export",
+          "sync",
+          "diff",
+          "log"
+        ],
+        "action": [
+          "sync"
+        ],
+        "updated": false,
+        "updated_by_last_action": false,
+        "supports": {
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/10xlab-compile/recipes/default.rb:45:in `from_file'",
+        "destination": "/home/compile/deploy",
+        "resource_name": "git",
+        "enable_submodules": false,
+        "revision": "labs",
+        "remote": "origin",
+        "ssh_wrapper": "/home/microcloud/wrap-ssh4git.sh",
+        "depth": null,
+        "additional_remotes": {
+        },
+        "cookbook_name": "10xlab-compile",
+        "recipe_name": "default",
+        "enclosing_provider": null,
+        "repository": "git@github.com:10xEngineer/microcloud.10xEngineer.git",
+        "user": null,
+        "group": null
+      }
+    },
+    {
+      "json_class": "Chef::Resource::Script",
+      "instance_vars": {
+        "name": "bundle install",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": null,
+        "allowed_actions": [
+          "nothing",
+          "run"
+        ],
+        "action": "run",
+        "updated": true,
+        "updated_by_last_action": true,
+        "supports": {
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/10xlab-compile/recipes/default.rb:53:in `from_file'",
+        "resource_name": "script",
+        "command": "\"bash\"  \"/tmp/chef-script20120724-8473-1ncfea9\"",
+        "backup": 5,
+        "creates": null,
+        "cwd": "/home/compile/deploy/compilation",
+        "environment": null,
+        "group": null,
+        "path": null,
+        "returns": 0,
+        "timeout": null,
+        "user": "root",
+        "umask": null,
+        "code": "  bundle install\n",
+        "interpreter": "bash",
+        "flags": null,
+        "cookbook_name": "10xlab-compile",
+        "recipe_name": "default",
+        "enclosing_provider": null
+      }
+    }
+  ],
+  "updated_resources": [
+    {
+      "json_class": "Chef::Resource::Script",
+      "instance_vars": {
+        "name": "bundle install",
+        "noop": null,
+        "before": null,
+        "params": {
+        },
+        "provider": null,
+        "allowed_actions": [
+          "nothing",
+          "run"
+        ],
+        "action": "run",
+        "updated": true,
+        "updated_by_last_action": true,
+        "supports": {
+        },
+        "ignore_failure": false,
+        "retries": 0,
+        "retry_delay": 2,
+        "immediate_notifications": [
+
+        ],
+        "delayed_notifications": [
+
+        ],
+        "source_line": "/var/chef/cookbooks/10xlab-compile/recipes/default.rb:53:in `from_file'",
+        "resource_name": "script",
+        "command": "\"bash\"  \"/tmp/chef-script20120724-8473-1ncfea9\"",
+        "backup": 5,
+        "creates": null,
+        "cwd": "/home/compile/deploy/compilation",
+        "environment": null,
+        "group": null,
+        "path": null,
+        "returns": 0,
+        "timeout": null,
+        "user": "root",
+        "umask": null,
+        "code": "  bundle install\n",
+        "interpreter": "bash",
+        "flags": null,
+        "cookbook_name": "10xlab-compile",
+        "recipe_name": "default",
+        "enclosing_provider": null
+      }
+    }
+  ],
+  "exception": null,
+  "backtrace": null
+}
