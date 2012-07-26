@@ -10,9 +10,6 @@ DefinitionBase = require "./definition_base"
 # new definition version is > than the existing one
 
 module.exports = class BasicDefinition extends DefinitionBase
-	constructor: (lab, definition) ->
-		super(lab, definition)
-
 	validate: ->
 		current = @lab.current_definition
 
