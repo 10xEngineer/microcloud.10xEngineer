@@ -10,13 +10,17 @@ class Backend
 		# FIXME register worker
 
 	createJob: (job) ->
+		# TODO add optional callback
 		@jobs[job.id] = job
 
 		job
 
+	removeJob: (job_id) ->
+		# TODO add optional callback
+		delete @jobs[job_id]
+
 	staleJobs: (cb) ->
 		for job_id, job of @jobs
-			console.log "checking #{job_id}"
 			if job.expired()
 				cb(job)
 

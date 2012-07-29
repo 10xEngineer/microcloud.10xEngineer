@@ -76,8 +76,10 @@ class WorkflowRunner
 
 	run_ext: ->
 		# find expired jobs
-		@backend.staleJobs (job) ->
+		@backend.staleJobs (job) =>
 			console.log "job=#{job.id} expired"
+
+			@backend.removeJob(job.id)
 
 		console.log '---'
 		# FIXME setup workflow worker
