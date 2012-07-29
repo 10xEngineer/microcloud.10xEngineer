@@ -14,6 +14,12 @@ class Backend
 
 		job
 
+	staleJobs: (cb) ->
+		for job_id, job of @jobs
+			console.log "checking #{job_id}"
+			if job.expired()
+				cb(job)
+
 	generate_id: ->
 		uuid.v4()
 

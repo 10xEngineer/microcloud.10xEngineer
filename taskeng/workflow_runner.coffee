@@ -13,17 +13,17 @@ class Job
 		@state = "created"
 		@timeout = 10000
 
+		@created_at = new Date().getTime()
 		@.touch()
 
 	expired: ->
-		if @updated_at + @timeout > new Date().getTime()
+		if (@updated_at + @timeout) > new Date().getTime()
 			return false
 		else
 			return true
 
 	touch: ->
-		@update_at = new Date().getTime()
-		@created_at = @updated_at unless @created_at
+		@updated_at = new Date().getTime()
 
 class WorkflowRunner
 	constructor: (@backend) ->
@@ -54,6 +54,10 @@ class WorkflowRunner
 		setInterval @backend.register, @keep_alive
 
 	run_ext: ->
+		# find expired jobs
+		@backend.staleJobs (job) ->
+			console.log "job=#{job.id} expired"
+
 		console.log '---'
 		# FIXME setup workflow worker
 
