@@ -1,11 +1,21 @@
 log = require("log4js").getLogger()
-redis = require "redis"
-client = redis.createClient()
+uuid = require "node-uuid"
 
+# TODO Backend should be abstract base class
 class Backend
 	constructor: (@id) ->
+		@jobs = {}
 
 	register: ->
-		client.set "taskeng:runners:#{@id}", new Date().toISOString()
+		# FIXME register worker
+
+	createJob: (job) ->
+		@jobs[job.id] = job
+
+		job
+
+	generate_id: ->
+		uuid.v4()
+
 
 module.exports = Backend
