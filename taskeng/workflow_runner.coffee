@@ -43,6 +43,13 @@ class Job extends Base
 
 	next_helper: (err, data, add_step = null) =>
 		console.log '-- JOB: next_helper called from task'
+		console.log err
+
+		if err
+			console.log '-JOB: next_helper err triggered'
+
+			on_error = @workflow_def.on_error
+			return on_error BrokerHelper, @.data, @.on_error_helper if on_error
 
 		# TODO add to the beginning of the list?
 		if add_step?
@@ -50,6 +57,20 @@ class Job extends Base
 
 		@active_task_cb()
 
+		@runner.updateJob(this)
+
+	on_error_helper: (err, data, add_step = null) =>
+		if err
+			console.log '-JOB: on_error failed'
+
+		console.log '-JOB: on_error next helper triggered'
+
+		if add_step
+			@.steps.push(add_step)
+		else
+			@.steps = []
+
+		@active_task_cb()
 		@runner.updateJob(this)
 
 	start: ->
@@ -76,12 +97,12 @@ class WorkflowRunner
 	constructor: (@backend) ->
 		@interval = 2500
 		@keep_alive = 1000
-		@concurrency = 5
+		@concurrency = 10
 		@workflows = {}
 		@id = "#{os.hostname()}:#{process.pid}"
 
 		@queue = async.queue(@.runJob, @concurrency)
-		
+
 		@task_count = 0
 
 		log.info "Initialized workflow runner #{@id}"
@@ -140,7 +161,8 @@ class WorkflowRunner
 				# TODO bus/BrokerHelper should be configurable
 				next_step BrokerHelper, job.data, @.build_helper(job, cb)
 			else
-				console.log "-- job: #{job_id} finished"
+				run_time = new Date().getTime() - job.created_at
+				console.log "-- job: #{job_id} finished in #{run_time} ms"
 				# finish the task
 
 				@.removeJob(job_id)
