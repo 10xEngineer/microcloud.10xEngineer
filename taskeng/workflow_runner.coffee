@@ -26,6 +26,7 @@ class Job extends Base
 		@workflow_def = workflow()
 		@steps = @workflow_def.flow
 		@timeout = @workflow_def.timeout || 30000
+		@scheduled = null
 
 		@active_task_cb = null
 		@active_step = null
@@ -47,7 +48,6 @@ class Job extends Base
 
 	next_helper: (err, data, add_step = null) =>
 		console.log '-- JOB: next_helper called from task'
-		console.log err
 
 		if err
 			console.log '-JOB: next_helper err triggered'
@@ -103,6 +103,16 @@ class Job extends Base
 		else
 			return true
 
+	available: ->
+		return 0 unless @scheduled?
+
+		diff = @scheduled - new Date().getTime()
+		if diff <= 0
+			@scheduled = null
+			return 0
+
+		return diff
+
 	touch: ->
 		@updated_at = new Date().getTime()
 
@@ -131,6 +141,7 @@ class WorkflowRunner
 		workflow = @workflows[data.workflow]
 
 		job = new Job(@backend.generate_id(), workflow, data)
+		job.scheduled = new Date().getTime() + 5000
 		job.runner = this
 
 		@.updateJob(job)
@@ -173,6 +184,18 @@ class WorkflowRunner
 				return cb()
 
 			log.debug "processing job=#{job_id}"
+
+			if job.available() > 0
+				# job is not yet scheduled for execution
+
+				setTimeout () =>
+					cb()
+					@.updateJob(job)
+				, job.available()
+
+				return
+
+				
 
 			# TODO what to do if active_task_cb is already assigned?
 
