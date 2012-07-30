@@ -67,16 +67,25 @@ just_ping = (bus, data, next) ->
 xxx_notify = (bus, data, next) ->
 	next null, data
 
-simpleWorkflow = (bus, data, next) ->
-	actions = [ec2_create, pool_allocate, just_code, custom_flow, xxx_notify]
+on_error = (bus, data, next, err) ->
+	console.log '-- it failed'
 
-	# TODO before/after callback
-	# TODO service helper
-	# TODO callback to wait for answer / 
-	# TODO run ec2::create
-	# TODO run pool::allocate
-	# TODO if pool::alocate faild
+	recover = false
+	if recover
+		next null, data, custom_flow
 
+	next null, data
 
 
-module.exports = simpleWorkflow
+# TODO service helper
+# TODO shared logic
+# TODO how to override timeout
+class SimpleWorkflow
+	constructor: (bus, data, next) ->
+		{
+			flow: [ec2_create, pool_allocate, just_code, custom_flow, xxx_notify]
+			on_error: on_error
+			timeout: 30000
+		}
+
+module.exports = SimpleWorkflow
