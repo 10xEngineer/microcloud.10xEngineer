@@ -15,24 +15,7 @@
 
 #module.exports = SimpleWorkflow
 
-#
-# TODO job step 'next' is job logic callback, not the next step/task
-#
-
 # sample use of broker service
-ec2_create = (bus, data, next) ->
-	options = 
-		provider: data.provider
-
-	req = bus.dispatch 'ec2', 'create', options
-	req.on 'data', (message) ->
-		data.server =
-			id: message.server.id
-
-		next null, data
-	req.on 'error', (message) ->
-		next message.reason
-
 dummy_ping = (bus, data, next) ->
 	req = bus.dispatch 'dummy', 'ping', {}
 	req.on 'data', (message) ->
@@ -76,10 +59,6 @@ just_ping = (bus, data, next) ->
 
 	next null, data
 
-# get over with it
-xxx_notify = (bus, data, next) ->
-	next null, data
-
 on_error = (bus, data, next, err) ->
 	console.log '-- it failed'
 
@@ -90,13 +69,11 @@ on_error = (bus, data, next, err) ->
 	next null, data
 
 
-# TODO service helper
 # TODO shared logic
 # TODO how to override timeout
 class SimpleWorkflow
 	constructor: () ->
 		return {
-			#flow: [ec2_create, pool_allocate, just_code, custom_flow, xxx_notify]
 			flow: [just_code, dummy_ping, custom_flow]
 			on_error: on_error
 			timeout: 30000

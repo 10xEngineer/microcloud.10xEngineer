@@ -43,9 +43,6 @@ class Job extends Base
 
 	next_helper: (err, data, add_step = null) =>
 		console.log '-- JOB: next_helper called from task'
-		#console.log err
-		#console.log data
-		#console.log add_step
 
 		# TODO add to the beginning of the list?
 		if add_step?
