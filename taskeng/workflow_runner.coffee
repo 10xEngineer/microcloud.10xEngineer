@@ -56,11 +56,14 @@ class Job extends Base
 				max_retries = Math.round(@active_step.max_retries)
 
 				if @retries < max_retries
-					@retries++	
+					@retries++
 					console.log "-JOB: retrying current step (#{@retries})"
 
-					# TODO add delay of 5 seconds or something like this?
-					return @active_step.step BrokerHelper, @.data, @.next_helper
+					@steps = [@active_step].concat(@steps)
+					# TODO make delay configurable/or well defined constant
+					@scheduled = new Date().getTime() + 5000
+
+					return @runner.updateJob(this, true)
 
 			on_error = @workflow_def.on_error
 			return on_error BrokerHelper, @.data, @.on_error_helper if on_error
@@ -162,7 +165,6 @@ class WorkflowRunner
 		if clear
 			job.active_task_cb = null
 			job.active_step = null
-			job.retries = 0
 
 		@backend.updateJob(job)
 		@queue.push job.id
