@@ -22,10 +22,10 @@ class Job extends Base
 
 	constructor: (@id, workflow, @data) ->
 		@state = "created"
-		@timeout = 10000
 
 		@workflow_def = workflow()
 		@steps = @workflow_def.flow
+		@timeout = @workflow_def.timeout || 30000
 
 		@active_task_cb = null
 		@runner = null
@@ -65,6 +65,8 @@ class Job extends Base
 	touch: ->
 		@updated_at = new Date().getTime()
 
+		return @
+
 step_helper = (err, data, new_step = nil) ->
 	console.log '-- step_help'
 
@@ -78,13 +80,7 @@ class WorkflowRunner
 		@id = "#{os.hostname()}:#{process.pid}"
 
 		@queue = async.queue(@.runJob, @concurrency)
-		@queue.satured = () ->
-			console.log "** queue satured"
-		@queue.drain = () ->
-			console.log "** queue drained"
-		@queue.empty = () ->
-			console.log "** queue empty"
-
+		
 		@task_count = 0
 
 		log.info "Initialized workflow runner #{@id}"

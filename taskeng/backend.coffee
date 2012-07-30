@@ -13,7 +13,7 @@ class Backend
 		# TODO add optional callback
 		@jobs[job.id] = job
 
-		job
+		job.touch()
 
 	getJob: (job_id, next) ->
 		job = @jobs[job_id]
