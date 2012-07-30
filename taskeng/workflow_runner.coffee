@@ -28,6 +28,10 @@ class Job extends Base
 		@timeout = @workflow_def.timeout || 30000
 
 		@active_task_cb = null
+		@active_step = null
+
+		@retries = 0
+
 		@runner = null
 
 		@created_at = new Date().getTime()
@@ -55,9 +59,14 @@ class Job extends Base
 		if add_step?
 			@.steps.push(add_step)
 
+		# replace data
+		@data = data
+
+		# mark current step as processed (async.queue)
 		@active_task_cb()
 
-		@runner.updateJob(this)
+		# update and re-insert the job
+		@runner.updateJob(this, true)
 
 	on_error_helper: (err, data, add_step = null) =>
 		if err
@@ -128,7 +137,12 @@ class WorkflowRunner
 	removeJob: (job) ->
 		@backend.removeJob(job)
 
-	updateJob: (job) ->
+	updateJob: (job, clear = false) ->
+		if clear
+			job.active_task_cb = null
+			job.active_step = null
+			job.retries = 0
+
 		@backend.updateJob(job)
 		@queue.push job.id
 
@@ -158,8 +172,16 @@ class WorkflowRunner
 			if next_step
 				@task_count++
 
+				if typeof next_step is 'function'
+					next =
+						step: next_step
+				else
+					next = next_step
+
+				job.active_step = next
+
 				# TODO bus/BrokerHelper should be configurable
-				next_step BrokerHelper, job.data, @.build_helper(job, cb)
+				next.step BrokerHelper, job.data, @.build_helper(job, cb)
 			else
 				run_time = new Date().getTime() - job.created_at
 				console.log "-- job: #{job_id} finished in #{run_time} ms"

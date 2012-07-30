@@ -29,8 +29,6 @@
 # * `add_step` - if provided, WorkflowRunner will place provided step to the end of the job's
 #                execution queue
 
-#module.exports = SimpleWorkflow
-
 # sample use of broker service
 dummy_ping = (bus, data, next) ->
 	req = bus.dispatch 'dummy', 'ping', {}
@@ -65,8 +63,13 @@ just_code = (bus, data, next) ->
 
 	next null, data
 
-fail_once = (bus, data, next) ->
-	unless data.protected?
+fail_twice = (bus, data, next) ->
+	if data.protected?
+		data.protected++
+	else
+		data.protected = 1
+
+	unless data.protected > 2
 		return next "failed on first execution", data
 
 	next null, data
@@ -95,8 +98,12 @@ on_error = (bus, data, next, err) ->
 # TODO how to override timeout
 class SimpleWorkflow
 	constructor: () ->
+		step1 =
+			step: fail_twice
+			max_retries: 2
+
 		return {
-			flow: [fail_once, just_code, dummy_ping]
+			flow: [step1, just_code, dummy_ping]
 			on_error: on_error
 			timeout: 30000
 		}
