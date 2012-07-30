@@ -1,17 +1,33 @@
 #
-# sample worfklow
-# ec2::create -> pool::allocate -> xxx::notify
+# Sample Workflow
 #
-#class SimpleWorkflow
-#	constructor: ->
-#		# some workflow specific data
-#		#@chain = ["ec2::create", "pool::allocate", "xxx::notify", ""]
+# Worfklow is defined as named function returning hash with following structure
+# {
+#			flow: [task1, task2, task3]
+#			on_error: on_error_fce
+#			timeout: 30000
+#		}
 #
-#	@demo: ->
-#		console.log '--demo'
+# * `flow` represents preset array of functions to perform
+# * `on_error` is a callback to be executed in case job flow can't be restored (ie. 
+#    pernament error)
+# * `timeout` maximum time for workflow to run
 #
-#	on_error: ->
-#		# executed on any error (fail by default, or change workflow)
+# Workflow step
+#
+# `step_name = (bus, data, next) ->`
+#
+# * `bus` is a helper providing TaskEngine-enabled implementation of the most used integrations
+# * `data` job data
+# * `next` callback
+#
+# `next(err, data, add_step = null)`
+# 
+# * `err` - indicates the step failed (it can be retried; if it fails pernamently it does
+#           trigger workflow's `on_error` callback)
+# * `data` - updated job data, will replace original
+# * `add_step` - if provided, WorkflowRunner will place provided step to the end of the job's
+#                execution queue
 
 #module.exports = SimpleWorkflow
 
@@ -49,6 +65,12 @@ just_code = (bus, data, next) ->
 
 	next null, data
 
+fail_once = (bus, data, next) ->
+	unless data.protected?
+		return next "failed on first execution", data
+
+	next null, data
+
 # demostrate how to adjust job flow on runtime
 custom_flow = (bus, data, next) ->
 	console.log '-- STEP: custom flow'
@@ -74,7 +96,7 @@ on_error = (bus, data, next, err) ->
 class SimpleWorkflow
 	constructor: () ->
 		return {
-			flow: [just_code, dummy_ping, custom_flow]
+			flow: [fail_once, just_code, dummy_ping]
 			on_error: on_error
 			timeout: 30000
 		}

@@ -57,7 +57,8 @@ class Job extends Base
 		console.log @
 
 	expired: ->
-		if (@updated_at + @timeout) > new Date().getTime()
+		# total workflow run time is limited by @timeout
+		if (@created_at + @timeout) > new Date().getTime()
 			return false
 		else
 			return true
