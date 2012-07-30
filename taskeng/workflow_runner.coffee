@@ -136,12 +136,12 @@ class WorkflowRunner
 
 		log.info "Initialized workflow runner #{@id}"
 
-	createJob: (data) ->
+	createJob: (data, scheduled = null) ->
 		# FIXME accepts job data as they are (add validation)
 		workflow = @workflows[data.workflow]
 
 		job = new Job(@backend.generate_id(), workflow, data)
-		job.scheduled = new Date().getTime() + 5000
+		job.scheduled = scheduled
 		job.runner = this
 
 		@.updateJob(job)
