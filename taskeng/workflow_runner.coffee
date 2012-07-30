@@ -47,6 +47,10 @@ class Job extends Base
 		#console.log data
 		#console.log add_step
 
+		# TODO add to the beginning of the list?
+		if add_step?
+			@.steps.push(add_step)
+
 		@active_task_cb()
 
 		@runner.updateJob(this)

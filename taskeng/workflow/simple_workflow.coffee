@@ -97,7 +97,7 @@ class SimpleWorkflow
 	constructor: () ->
 		return {
 			#flow: [ec2_create, pool_allocate, just_code, custom_flow, xxx_notify]
-			flow: [just_code, dummy_ping]
+			flow: [just_code, dummy_ping, custom_flow]
 			on_error: on_error
 			timeout: 30000
 		}
