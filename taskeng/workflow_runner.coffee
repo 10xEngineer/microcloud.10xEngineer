@@ -1,28 +1,48 @@
 os = require "os"
 log = require("log4js").getLogger()
 async = require "async"
+_ = require "underscore"
 Base = require "../server/labs/base"
 EventEmitter = require('events').EventEmitter
 
-worker = (task, cb) ->
-	console.log '-- job received'
-	console.log task
+worker = (task, job_helper) ->
+	console.log "-- job received #{task}"
 
-	# TODO getJob
-	
+	job_helper()
+
 class Job extends Base
 	@include EventEmitter
 
-	constructor: (@id, @data) ->
+	constructor: (@id, workflow, @data) ->
 		@state = "created"
 		@timeout = 10000
+
+		@workflow_def = workflow()
+		@steps = @workflow_def.flow
+
+		@active_task_cb = null
+		@runner = null
 
 		@created_at = new Date().getTime()
 		@.touch()
 
 		EventEmitter.call @
 
-		@.on 'start', @.start
+		# TODO review - part of initial event originated processing
+		#@.on 'start', @.start
+
+	nextStep: ->
+		return @steps.shift()
+
+	next_helper: (err, data, add_step = null) =>
+		console.log '-- JOB: next_helper called from task'
+		#console.log err
+		#console.log data
+		#console.log add_step
+
+		@active_task_cb()
+
+		@runner.updateJob(this)
 
 	start: ->
 		console.log '--- start accepted'
@@ -37,23 +57,38 @@ class Job extends Base
 	touch: ->
 		@updated_at = new Date().getTime()
 
+step_helper = (err, data, new_step = nil) ->
+	console.log '-- step_help'
+
+
 class WorkflowRunner
 	constructor: (@backend) ->
 		@interval = 2500
 		@keep_alive = 1000
-		@concurrency = 10
+		@concurrency = 5
+		@workflows = {}
 		@id = "#{os.hostname()}:#{process.pid}"
 
-		@queue = async.queue(worker, @concurrency)
+		@queue = async.queue(@.runJob, @concurrency)
+		@queue.satured = () ->
+			console.log "** queue satured"
+		@queue.drain = () ->
+			console.log "** queue drained"
+		@queue.empty = () ->
+			console.log "** queue empty"
+
+		@task_count = 0
 
 		log.info "Initialized workflow runner #{@id}"
 
 	createJob: (data) ->
-		# TODO accepts job data as they are (add validation)
+		# FIXME accepts job data as they are (add validation)
+		workflow = @workflows[data.workflow]
 
-		job = new Job(@backend.generate_id(), data)
+		job = new Job(@backend.generate_id(), workflow, data)
+		job.runner = this
 
-		@backend.createJob(job)
+		@.updateJob(job)
 		log.debug "job=#{job.id} accepted"
 
 		# TODO move to queue worker
@@ -64,11 +99,49 @@ class WorkflowRunner
 		# TODO replace with instance
 		job.id
 
+	removeJob: (job) ->
+		@backend.removeJob(job)
+
+	updateJob: (job) ->
+		@backend.updateJob(job)
+		@queue.push job.id
+
+	build_helper: (job, queue_cb) ->
+		# TODO queue callback is used to indicate the job in progress
+		#      works fine for single node, but needs re-thinking for cluster
+		#      wide deployment
+		# TODO workflow runner should instrument re-insertion to the async.queue
+		job.queue_cb = queue_cb
+		job.next_helper
+
+	runJob: (job_id, cb) =>
+		# find next task
+		# re-queue the job 
+		@backend.getJob job_id, (err, job) =>
+			if err
+				log.error "invalid job=#{job_id} reason=#{err}"
+				return cb()
+
+			log.debug "processing job=#{job_id}"
+
+			# TODO what to do if active_task_cb is already assigned?
+
+			next_step = job.nextStep()
+			job.active_task_cb = cb
+
+			if next_step
+				# TODO replace null with 'bus' (shared logic)
+				@task_count++
+				next_step null, job.data, @.build_helper(job, cb)
+			else
+				console.log "-- job: #{job_id} finished"
+				# finish the task
+
+				@.removeJob(job_id)
+				cb()
+
 	run: ->
 		@.setUpdateInterval(@.run_ext, @interval)
-		#setUpdateInterval(@backedng)
-		#setInterval @.run_ext, @interval
-		#setInterval @backend.register, @keep_alive
 
 	setUpdateInterval: (fce, timeout) ->
 		callback = fce.bind(this)
@@ -81,8 +154,10 @@ class WorkflowRunner
 
 			@backend.removeJob(job.id)
 
-		console.log '---'
-		# FIXME setup workflow worker
+		console.log "--- jobs count: #{_.keys(@backend.jobs).length} / queue size: #{@queue.length()} / tasks executed : #{@task_count}"
 
+	register: (workflow_klass) ->
+		# TODO validate
+		@workflows[workflow_klass.name] = workflow_klass
 
 module.exports = WorkflowRunner

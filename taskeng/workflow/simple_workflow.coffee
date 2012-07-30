@@ -56,6 +56,7 @@ just_code = (bus, data, next) ->
 
 # demostrate how to adjust job flow on runtime
 custom_flow = (bus, data, next) ->
+	console.log '-- STEP: custom flow'
 	next null, data, just_ping
 
 just_ping = (bus, data, next) ->
@@ -81,9 +82,10 @@ on_error = (bus, data, next, err) ->
 # TODO shared logic
 # TODO how to override timeout
 class SimpleWorkflow
-	constructor: (bus, data, next) ->
-		{
-			flow: [ec2_create, pool_allocate, just_code, custom_flow, xxx_notify]
+	constructor: () ->
+		return {
+			#flow: [ec2_create, pool_allocate, just_code, custom_flow, xxx_notify]
+			flow: [just_code, just_code]
 			on_error: on_error
 			timeout: 30000
 		}

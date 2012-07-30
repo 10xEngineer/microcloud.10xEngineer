@@ -9,11 +9,20 @@ class Backend
 	register: ->
 		# FIXME register worker
 
-	createJob: (job) ->
+	updateJob: (job) ->
 		# TODO add optional callback
 		@jobs[job.id] = job
 
 		job
+
+	getJob: (job_id, next) ->
+		job = @jobs[job_id]
+
+		if job
+			next null, job
+		else
+			next "No job found."
+
 
 	removeJob: (job_id) ->
 		# TODO add optional callback

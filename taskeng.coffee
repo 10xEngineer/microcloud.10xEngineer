@@ -4,9 +4,14 @@ restify = require "restify"
 WorkflowRunner = require "./taskeng/workflow_runner"
 Backend = require "./taskeng/backend"
 
+# service connector
+
 # backend
 backend = new Backend("#{os.hostname()}/#{process.pid}")
 runner = new WorkflowRunner(backend)
+
+# TODO load workfloads
+runner.register require("./taskeng/workflow/simple_workflow")
 
 # initial 0mq is only way how to submit job (using REQ only as it confirm only
 # if the job has been accepted or not)
@@ -18,7 +23,7 @@ socket.bind(url)
 socket.on 'message', (data) ->
 	# FIXME process real data
 	_data = 
-		worfklow: "SimpleWorkflow"
+		workflow: "SimpleWorkflow"
 		timeout: 30000
 
 	job_id = runner.createJob(_data)
