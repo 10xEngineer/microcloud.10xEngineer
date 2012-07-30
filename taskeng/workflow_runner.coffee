@@ -2,6 +2,7 @@ os = require "os"
 log = require("log4js").getLogger()
 async = require "async"
 _ = require "underscore"
+broker = require "../server/broker"
 Base = require "../server/labs/base"
 EventEmitter = require('events').EventEmitter
 
@@ -9,6 +10,12 @@ worker = (task, job_helper) ->
 	console.log "-- job received #{task}"
 
 	job_helper()
+
+class BrokerHelper
+	constructor: () ->
+
+	@dispatch: (service, method, options) ->
+		return broker.dispatch service, method, options
 
 class Job extends Base
 	@include EventEmitter
@@ -130,9 +137,10 @@ class WorkflowRunner
 			job.active_task_cb = cb
 
 			if next_step
-				# TODO replace null with 'bus' (shared logic)
 				@task_count++
-				next_step null, job.data, @.build_helper(job, cb)
+
+				# TODO bus/BrokerHelper should be configurable
+				next_step BrokerHelper, job.data, @.build_helper(job, cb)
 			else
 				console.log "-- job: #{job_id} finished"
 				# finish the task

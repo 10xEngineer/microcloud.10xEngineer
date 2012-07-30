@@ -33,6 +33,18 @@ ec2_create = (bus, data, next) ->
 	req.on 'error', (message) ->
 		next message.reason
 
+dummy_ping = (bus, data, next) ->
+	req = bus.dispatch 'dummy', 'ping', {}
+	req.on 'data', (message) ->
+		console.log '-- broker response'
+
+		next null, data
+	req.on 'error', (message) ->
+		console.log '-- broker failed'
+
+		next message.reason
+
+
 # sample integration with microcloud
 pool_allocate = (bus, data, next) ->
 	url = "/pools/#{data.pool_name}/nodes"
@@ -85,7 +97,7 @@ class SimpleWorkflow
 	constructor: () ->
 		return {
 			#flow: [ec2_create, pool_allocate, just_code, custom_flow, xxx_notify]
-			flow: [just_code, just_code]
+			flow: [just_code, dummy_ping]
 			on_error: on_error
 			timeout: 30000
 		}
