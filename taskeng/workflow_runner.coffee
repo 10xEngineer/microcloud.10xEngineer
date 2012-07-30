@@ -52,6 +52,16 @@ class Job extends Base
 		if err
 			console.log '-JOB: next_helper err triggered'
 
+			if @active_step.max_retries?
+				max_retries = Math.round(@active_step.max_retries)
+
+				if @retries < max_retries
+					@retries++	
+					console.log "-JOB: retrying current step (#{@retries})"
+
+					# TODO add delay of 5 seconds or something like this?
+					return @active_step.step BrokerHelper, @.data, @.next_helper
+
 			on_error = @workflow_def.on_error
 			return on_error BrokerHelper, @.data, @.on_error_helper if on_error
 
