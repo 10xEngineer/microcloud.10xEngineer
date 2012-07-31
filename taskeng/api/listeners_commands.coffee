@@ -1,15 +1,12 @@
 log = require("log4js").getLogger()
 
 module.exports.create_event = (runner, req, res, next) ->
-	log.info "event received."
-
 	try
 		data = JSON.parse req.body if req.body
 	catch error
 		return res.send 406, 
 			reason: "Invalid request data: #{error}"
 
-	# FIXME implement
 	runner.processEvent req.params.id, data, (err) ->
 		if err
 			res.send {}

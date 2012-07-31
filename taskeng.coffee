@@ -1,6 +1,8 @@
 #
 # TaskEngine proof-of-concept
 #
+# WARNING: it's proof-of-concept. it's considerably fragile and yet-to-be-finished.
+#
 # Additional topics
 #
 # TODO review the task handling logic and add callbacks where appopriate
