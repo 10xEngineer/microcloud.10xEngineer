@@ -28,6 +28,13 @@
 # * `data` - updated job data, will replace original
 # * `add_step` - if provided, WorkflowRunner will place provided step to the end of the job's
 #                execution queue
+#
+# Job is the instance of workflow
+#
+# * `@scheduled` to start execution after given timestamp (is resetted every-time scheduled 
+#                is activated).
+
+
 
 # sample use of broker service
 dummy_ping = (bus, data, next) ->
@@ -92,7 +99,6 @@ on_error = (bus, data, next, err) ->
 		next null, data, custom_flow
 
 	next null, data
-
 
 # TODO shared logic
 # TODO how to override timeout
