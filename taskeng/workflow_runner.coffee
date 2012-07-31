@@ -146,7 +146,7 @@ class WorkflowRunner
 		options = data.options || {}
 
 		job = new Job(@backend.generate_id(), workflow, data)
-		
+
 		job.scheduled = options.scheduled
 		job.timeout = options.timeout
 		job.runner = this

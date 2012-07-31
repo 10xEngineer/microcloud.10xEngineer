@@ -1,3 +1,20 @@
+#
+# TaskEngine proof-of-concept
+#
+# Additional topics
+#
+# TODO review the task handling logic and add callbacks where appopriate
+# TODO backend as abstract definition with redis backend implementation
+# TODO allow multiple job runners
+#      * each runner registers and periodically updates 'last_seen_at' in redis
+#      * all jobs are assigned to particular runner (to avoid race conditions)
+#      * master process periodically checks all runners, if it exceeds timeout, 
+#        reclaim the jobs
+#      * maintain stats on individual runners
+# TODO multi-tenancy
+#      * maintain per-tenant stats (inserted jobs, processed tasks)
+#      * sandbox individual job step executions (node's vm)
+
 zmq = require "zmq"
 os = require "os"
 restify = require "restify"
