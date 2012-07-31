@@ -5,6 +5,8 @@
 #
 # TODO review the task handling logic and add callbacks where appopriate
 # TODO backend as abstract definition with redis backend implementation
+# TODO accept jobs over HTTP api
+#      * limited (can only re-use predefined steps/tasks)
 # TODO allow multiple job runners
 #      * each runner registers and periodically updates 'last_seen_at' in redis
 #      * all jobs are assigned to particular runner (to avoid race conditions)
@@ -62,5 +64,5 @@ runner.run()
 
 # task engine HTTP API
 api = require "./taskeng/api/server"
-api.createServer()
+api.createServer(runner)
 

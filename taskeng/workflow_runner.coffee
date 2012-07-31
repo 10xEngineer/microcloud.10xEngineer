@@ -194,6 +194,25 @@ class WorkflowRunner
 		if insert
 			@queue.push job.id
 
+	processEvent: (job_id, data, cb) ->
+		@backend.getListener job_id, (err, listener) =>
+			if err
+				return cb(err)
+
+			# TODO refactor; ugly, but it's necessary to always retrieve latest
+			#      job definition
+			@backend.getJob job_id, (err, job) =>
+				if err
+					return cb(err)
+
+				@backend.removeListener(job_id)
+				cb(null)
+
+				job.steps = [listener.callback].concat(job.steps)
+				job.data.event = data
+				
+				@.updateJob(job)
+
 	build_helper: (job, queue_cb) ->
 		# TODO queue callback is used to indicate the job in progress
 		#      works fine for single node, but needs re-thinking for cluster

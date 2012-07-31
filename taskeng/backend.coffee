@@ -41,6 +41,14 @@ class Backend
 	removeListener: (id) ->
 		delete @listeners[id]
 
+	getListener: (id, next) ->
+		listener = @listeners[id]
+
+		if listener
+			next null, listener
+		else
+			next "No listener found."
+
 	staleListeners: (cb) ->
 		for job_id, listener of @listeners
 			if (listener.created_at + listener.timeout < new Date().getTime())

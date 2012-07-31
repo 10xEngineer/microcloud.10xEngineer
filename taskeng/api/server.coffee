@@ -2,10 +2,12 @@ restify = require "restify"
 log = require("log4js").getLogger()
 routes = require "./routes"
 
-module.exports.createServer = () ->
+module.exports.createServer = (runner) ->
 	server = restify.createServer
 		name: "api.tasks.10xlabs.net"
 		version: "0.1.0"
+
+	server.runner = runner
 
 	server.use restify.acceptParser(server.acceptable)
 	server.use restify.dateParser()

@@ -98,8 +98,8 @@ just_ping = (bus, data, next) ->
 wait_for_something = (bus, data, next) ->
 	console.log "-- STEP: waiting for some external magic to happen"
 
-	# blocking - ie. stop execution until certain condition is met / or expired / or whole job expired
-	# non-blocking - place listener and continue 
+	# do some logic and pass job _id
+	# TODO where's job ID?
 
 	next null, data, 
 		type: "listener"
@@ -114,6 +114,8 @@ something_expired = (bus, data, next) ->
 
 got_something = (bus, data, next) ->
 	console.log '-HURRAY: got something'
+	console.log data.event
+	
 	next null, data
 
 on_error = (bus, data, next, err) ->
@@ -134,7 +136,7 @@ class SimpleWorkflow
 			max_retries: 2
 
 		return {
-			flow: [step1, just_code, dummy_ping, wait_for_something]
+			flow: [step1, just_code, wait_for_something, dummy_ping]
 			on_error: on_error
 			timeout: 120000
 		}
