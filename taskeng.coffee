@@ -18,6 +18,12 @@
 # TODO multi-tenancy
 #      * maintain per-tenant stats (inserted jobs, processed tasks)
 #      * sandbox individual job step executions (node's vm)
+# TODO misc task improvements
+#      * task expiry (follow retries configuration convention)
+# TODO cancel job
+# TODO sub jobs
+#      * allow multiple listeners
+#      * fanout mode (launch all - wait for them to finish)
 
 zmq = require "zmq"
 os = require "os"
