@@ -34,6 +34,10 @@
 # * `@scheduled` to start execution after given timestamp (is resetted every-time scheduled 
 #                is activated).
 
+# helpers
+# 0mq - runs within task engine core (provides timeouts, throttling, etc.)
+# 
+
 
 # sample use of broker service
 dummy_ping = (bus, data, next) ->

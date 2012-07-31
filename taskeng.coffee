@@ -54,7 +54,13 @@ socket.on 'message', (data) ->
 
 	socket.send JSON.stringify(reply)
 
+# TODO use SIGUSR1 & SIGUSR2 for internal diagnostics
 process.on 'SIGUSR1', () ->
 	console.log 'got SIGUSR1'
 
 runner.run()
+
+# task engine HTTP API
+api = require "./taskeng/api/server"
+api.createServer()
+
