@@ -59,6 +59,8 @@ class WorkflowRunner
 		@backend.addListener(id, listener)
 
 	updateJob: (job, clear = false, insert = true) ->
+		job.data.id = job.id
+		
 		if clear
 			job.active_task_cb = null
 			job.active_step = null

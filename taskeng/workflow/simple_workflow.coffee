@@ -99,7 +99,7 @@ wait_for_something = (bus, data, next) ->
 	console.log "-- STEP: waiting for some external magic to happen"
 
 	# do some logic and pass job _id
-	# TODO where's job ID?
+	# job id is `data.id`
 
 	next null, data, 
 		type: "listener"
@@ -115,7 +115,7 @@ something_expired = (bus, data, next) ->
 got_something = (bus, data, next) ->
 	console.log '-HURRAY: got something'
 	console.log data.event
-	
+
 	next null, data
 
 on_error = (bus, data, next, err) ->
