@@ -203,11 +203,11 @@ module.exports.release_version = (req, res, next) ->
 		else
 			processor = new processor_type(lab, definition)
 			processor.on "accepted", () ->
-					res.send 202,
-						message: "Request to release version '#{definition.version}' successfully accepted."
+				res.send 202,
+					message: "Request to release version '#{definition.version}' successfully accepted."
 			processor.on "refused", (message) ->
-					res.send 406, 
-						reason: message
+				res.send 406, 
+				reason: message
 
 			processor.release(metadata)
 

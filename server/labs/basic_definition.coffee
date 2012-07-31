@@ -3,6 +3,8 @@ module.exports = ->
 mongoose = require "mongoose"
 Definition = mongoose.model "Definition"
 compare_versions = require('./versioning').compare_versions
+config = require('../config')
+broker = require("../broker")
 
 DefinitionBase = require "./definition_base"
 
@@ -48,6 +50,20 @@ module.exports = class BasicDefinition extends DefinitionBase
 				this.emit 'refused', "Target lab definition is already deployed."
 		
 		@lab.fire 'lock'
-		# FIXME initiate release workflow
 
-		this.emit 'accepted', "Lab definition #{direction} requested"
+		job_data = 
+			workflow: "BalanceLabWorkflow"
+			data:
+				lab:
+					name: @lab.name
+					token: @lab.token
+				definition: @definition
+				migration: direction
+
+		# FIXME initiate release workflow
+		req = broker.raw_dispatch job_data, config.get('taskeng')
+		req.on 'data', (message) =>
+			this.emit 'accepted', "Lab definition #{direction} requested"
+
+		req.on 'error', (message) =>
+			this.emit 'refused', "Lab definition #{direction} refused: unable to request migration (#{message})"
