@@ -68,9 +68,25 @@ class Job extends Base
 			on_error = @workflow_def.on_error
 			return on_error BrokerHelper, @.data, @.on_error_helper if on_error
 
+		re_insert = true
+
 		# TODO add to the beginning of the list?
 		if add_step?
-			@.steps.push(add_step)
+			if typeof add_step is 'function'
+				@.steps.push(add_step)
+			else if typeof add_step is 'object'
+				# FIXME validate listener object structure
+				#      timeout, callback & on_expiry are mandatory
+				log.debug "listener registered for job=#{@id}"
+
+				# object won't get re-inserted to processing queue
+				re_insert = false
+
+				@runner.addListener @id, add_step
+
+				# TODO once notification arrives add callback as next step, otherwise 
+				#      on_expiry (if null, trigger error) and re-insert to processing
+				#      queue
 
 		# replace data
 		@data = data
@@ -79,7 +95,7 @@ class Job extends Base
 		@active_task_cb()
 
 		# update and re-insert the job
-		@runner.updateJob(this, true)
+		@runner.updateJob(this, true, re_insert)
 
 	on_error_helper: (err, data, add_step = null) =>
 		if err
@@ -115,6 +131,11 @@ class Job extends Base
 			return 0
 
 		return diff
+
+	addStep: (step) ->
+		@steps = [step].concat(@steps)
+
+		@runner.updateJob(this)
 
 	touch: ->
 		@updated_at = new Date().getTime()
@@ -154,24 +175,24 @@ class WorkflowRunner
 		@.updateJob(job)
 		log.debug "job=#{job.id} accepted"
 
-		# TODO move to queue worker
-		#job.emit 'start'
-
-		# TODO kick off the job
-
-		# TODO replace with instance
+		# TODO replace with instance?
 		job.id
 
 	removeJob: (job) ->
 		@backend.removeJob(job)
 
-	updateJob: (job, clear = false) ->
+	addListener: (id, listener) ->
+		@backend.addListener(id, listener)
+
+	updateJob: (job, clear = false, insert = true) ->
 		if clear
 			job.active_task_cb = null
 			job.active_step = null
 
 		@backend.updateJob(job)
-		@queue.push job.id
+
+		if insert
+			@queue.push job.id
 
 	build_helper: (job, queue_cb) ->
 		# TODO queue callback is used to indicate the job in progress
@@ -201,9 +222,7 @@ class WorkflowRunner
 
 				return
 
-				
-
-			# TODO what to do if active_task_cb is already assigned?
+			# TODO what to do if active_task_cb is already assigned? 
 
 			next_step = job.nextStep()
 			job.active_task_cb = cb
@@ -243,7 +262,19 @@ class WorkflowRunner
 
 			@backend.removeJob(job.id)
 
-		console.log "--- jobs count: #{_.keys(@backend.jobs).length} / queue size: #{@queue.length()} / tasks executed : #{@task_count}"
+		@backend.staleListeners (listener) =>
+			console.log "listener=#{listener.id} expired"
+
+			on_expiry = listener.on_expiry
+			# get job
+			# add on_expiry as next step
+
+			@backend.getJob listener.id, (err, job) =>
+				job.addStep(on_expiry)
+
+				@backend.removeListener(listener.id)
+
+		console.log "--- jobs: #{_.keys(@backend.jobs).length} / queue: #{@queue.length()} / tasks: #{@task_count}"
 
 	register: (workflow_klass) ->
 		# TODO validate

@@ -94,6 +94,28 @@ just_ping = (bus, data, next) ->
 
 	next null, data
 
+# registered callback listener and postpone the execution (expiry timeout not affected though)
+wait_for_something = (bus, data, next) ->
+	console.log "-- STEP: waiting for some external magic to happen"
+
+	# blocking - ie. stop execution until certain condition is met / or expired / or whole job expired
+	# non-blocking - place listener and continue 
+
+	next null, data, 
+		type: "listener"
+		timeout: 30000
+		callback: got_something
+		on_expiry: something_expired
+
+something_expired = (bus, data, next) ->
+	console.log '--DOH: listener expired'
+
+	next null, data
+
+got_something = (bus, data, next) ->
+	console.log '-HURRAY: got something'
+	next null, data
+
 on_error = (bus, data, next, err) ->
 	console.log '-- it failed'
 
@@ -112,9 +134,9 @@ class SimpleWorkflow
 			max_retries: 2
 
 		return {
-			flow: [step1, just_code, dummy_ping]
+			flow: [step1, just_code, dummy_ping, wait_for_something]
 			on_error: on_error
-			timeout: 30000
+			timeout: 120000
 		}
 
 module.exports = SimpleWorkflow
