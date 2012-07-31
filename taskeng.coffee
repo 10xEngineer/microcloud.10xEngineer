@@ -24,13 +24,16 @@ socket.on 'message', (data) ->
 	# FIXME process real data
 	_data = 
 		workflow: "SimpleWorkflow"
-		timeout: 30000
+		options:
+			scheduled: new Date().getTime() + 5000
+			timeout: 60000
+		data: {}
 
-	job_id = runner.createJob(_data)
+	job = runner.createJob(_data)
 
 	reply = 
 		status: "ok"
-		job_id: job_id
+		job_id: job.id
 
 	socket.send JSON.stringify(reply)
 

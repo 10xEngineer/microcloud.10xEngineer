@@ -35,7 +35,6 @@
 #                is activated).
 
 
-
 # sample use of broker service
 dummy_ping = (bus, data, next) ->
 	req = bus.dispatch 'dummy', 'ping', {}
