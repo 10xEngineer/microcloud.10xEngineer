@@ -2,6 +2,7 @@ mongoose= require 'mongoose'
 Pool    = mongoose.model 'Pool'
 Vm      = mongoose.model 'Vm'
 Hostnode= mongoose.model 'Hostnode'
+Lab     = mongoose.model 'Lab'
 broker  = require("../broker")
 config  = require '../config'
 
@@ -68,6 +69,7 @@ module.exports =
       res.send 200
   allocate  : (req, res, next) ->
     dataReq = JSON.parse req.body
+    # TODO validate if lab & vms are present
     if _.isUndefined(dataReq.vms) or _.isEmpty dataReq.vms then return res.send []
     
     # Steps of Async.auto
@@ -79,22 +81,30 @@ module.exports =
           code: 404
         else 
           next null, doc
-          
+
+    getLab = (next) ->
+      Lab.findOne name: dataReq.lab, (err, lab) ->
+        unless lab then next
+          msg: "No lab with name '#{dataReq.lab}'."
+          code: 500
+        else
+          next null, lab
+
     # Check all available Hostnodes for current pool
-    availableHostnodes = ['findPool', (next, results) -> 
+    availableHostnodes = ['getLab', (next, results) -> 
       Hostnode.find pool: results.findPool._id, next
     ]
       
     # Check parallely all available prepared VM, which are in that pool
-    availableVMs = ['findPool', (next, results) ->
+    availableVMs = ['getLab', (next, results) ->
       iterator = (vm, cb) ->
         query = 
           state: 'prepared'
           pool: results.findPool._id
-        Vm.findAndModify query, [], $set: state: 'locked', {}, cb
+        Vm.findAndModify query, [], {$set: {state: 'locked', lab: results.getLab._id, vm_name: vm.vm_name}}, {}, cb
       async.map dataReq.vms, iterator, next
       ]
-      
+
     prepare = ['availableHostnodes', 'availableVMs', (next, results) ->
       # Compare available found VMs with requested VMs
       avms = _.without results.availableVMs, undefined
@@ -162,6 +172,7 @@ module.exports =
   	
     async.auto
       findPool: findPool
+      getLab: getLab
       availableHostnodes: availableHostnodes
       availableVMs: availableVMs
       prepare: prepare
