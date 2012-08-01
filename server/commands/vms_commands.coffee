@@ -39,7 +39,7 @@ module.exports.create = (req, res, next) ->
     options = {}
   # FIXME check for hostnode in 'new' state (not yet ready)
   # TODO support for multiple VM provisioning (?count=N)
-  Hostnode.findOne {server_id: req.params.node_id}, (err,hostnode) ->
+  Hostnode.findOne({server_id: req.params.node_id}).populate("pool").exec (err,hostnode) ->
     unless hostnode
       res.send 404, "failed: specified hostnode not found"
     else

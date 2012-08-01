@@ -10,9 +10,9 @@ Hostnode = new Schema
   server_id : {type: String, unique: true}
   hostname: String
   provider: String
+  pool: {type:ObjectId, ref: 'Pool'}
   type: String
   token: String
-  _pools: [ObjectId]
 
 Hostnode.plugin timestamps
 Hostnode.plugin state_machine, 'new'

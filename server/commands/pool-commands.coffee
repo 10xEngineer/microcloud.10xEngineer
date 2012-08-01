@@ -50,14 +50,14 @@ module.exports =
         unless hostnode then return helper.handleErr res, 
           msg: "No such hostnode with server_id '#{server_id}' found"
           code: 404
-        hostnode._pools.push pool
+        hostnode.pool = pool
         hostnode.save (err) ->
           res.send 200
   removeserver : (req, res, next) ->
     query = 
       server_id: server_id = req.params.server_id
     update = 
-      $pull: _pools: name: req.params.pool
+      $set: pool: null
     Hostnode.update query, update, (err, hostnode) ->
       console.log hostnode
       if err
@@ -82,7 +82,7 @@ module.exports =
           
     # Check all available Hostnodes for current pool
     availableHostnodes = ['findPool', (next, results) -> 
-      Hostnode.find _pools: results.findPool._id, next
+      Hostnode.find pool: results.findPool._id, next
     ]
       
     # Check parallely all available prepared VM, which are in that pool
