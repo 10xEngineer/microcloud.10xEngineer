@@ -58,12 +58,12 @@ pool_allocate = (bus, data, next) ->
 	data =
 		server_id: data.server.id
 
-	req = bus.post url, data
-	req.on 'data', (response) ->
-		next null, data
+	req = bus.post url, data, (err, req, res, obj) ->
+		if err
+			next res
 
-	req.on 'error', (response) ->
-		next response.reason
+		next null, data
+		
 
 # sample code only step
 just_code = (bus, data, next) ->

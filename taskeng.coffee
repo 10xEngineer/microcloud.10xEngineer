@@ -69,6 +69,7 @@ socket.on 'message', (data) ->
 					run_list : ["recipe[ruby]", "recipe[ntpdate::client]"]
 		lab:
 			name: "labxxx"
+			pool: "xx-test"
 			operational: 
 				vms: []
 
