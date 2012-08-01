@@ -121,11 +121,7 @@ module.exports =
         # This is the iterator which goes through hostnodes in the pool
         # and call request for a new VM on them
         iterator = (node, forEachNext) ->
-          forEachNext.failCounter ?= 0
           opt = {node, forEachNext}
-          if forEachNext.failCounter > 3 then forEachNext
-            msg: "Problem while creating a new VM on node #{node._id}"
-            code: 500 
           countToPrepare--
           req = http.request
             port    : config.get('server:port')
@@ -143,12 +139,7 @@ module.exports =
           {node, forEachNext} = opt
           vm = JSON.parse data
           avms.push vm
-          fn = 
-            if countToPrepare is 0 
-              -> forEachNext()
-            else
-              forEachNext.failCounter++
-              iterator
+          forEachNext()
           # TODO
           # Immediatelly lock the VM                  
         nodes = results.availableHostnodes[0...countToPrepare]
