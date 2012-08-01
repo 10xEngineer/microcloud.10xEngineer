@@ -4,6 +4,7 @@ Schema = mongoose.Schema
 timestamps = require "../utility/timestamp_plugin"
 state_machine = require "../utility/state_plugin"
 http = require "http"
+ObjectId = mongoose.Schema.ObjectId
 
 Hostnode = new Schema
   server_id : {type: String, unique: true}
@@ -11,7 +12,7 @@ Hostnode = new Schema
   provider: String
   type: String
   token: String
-  _pools: [require('./pool').schema]
+  _pools: [ObjectId]
 
 Hostnode.plugin timestamps
 Hostnode.plugin state_machine, 'new'
