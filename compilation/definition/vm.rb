@@ -3,6 +3,8 @@ require 'definition/mixins/transform'
 class Vm
   include TenxLabs::Mixin::ObjectTransform
 
+  attr_accessor :name
+
   def initialize(name, &block)
     @name = name
     @file = nil
