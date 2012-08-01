@@ -42,10 +42,16 @@ allocate_vms = (bus, data,next) ->
 	# TODO pass pool name
 	# FIXME allocation is performed in series (sub-jobs for the rescue)
 
+	pool = data.lab.pool
+
 	data = 
+		lab: data.lab.name
 		vms: data.launch_vms
-	bus.post "/pools/#{data.lab.pool}/allocate", data, (err, req, res, obj) ->
-		console.log '--- after allocate'
+
+	url = "/pools/#{pool}/allocate"
+
+	console.log url 
+	bus.post url, data, (err, req, res, obj) ->
 		if err
 			return next res
 
