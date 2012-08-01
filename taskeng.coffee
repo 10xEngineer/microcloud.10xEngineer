@@ -39,6 +39,7 @@ runner = new WorkflowRunner(backend)
 
 # TODO load workfloads
 runner.register require("./taskeng/workflow/simple_workflow")
+runner.register require("./taskeng/workflow/lab_workflow")
 
 # initial 0mq is only way how to submit job (using REQ only as it confirm only
 # if the job has been accepted or not)
@@ -50,11 +51,26 @@ socket.bind(url)
 socket.on 'message', (data) ->
 	# FIXME process real data
 	_data = 
-		workflow: "SimpleWorkflow"
+		workflow: "BalanceLabWorkflow"
 		options:
 			scheduled: new Date().getTime() + 5000
-			timeout: 60000
-		data: {}
+			timeout: 120000
+		definition:
+			version: "0.0.12"
+			revision: "0a5bc35b3acbe115ce68efde9acab7aa0d4d8dd2"
+			maintainer: "Radim Marek X1"
+			maintainer_email: "radim@10xengineer.me"
+			handler: "TenxLabs::ChefHandler"
+			vms:
+				webserv:
+					name : "webserv"
+					base_image: "ubuntu_precise32"
+					hostname : "webserv.local"
+					run_list : ["recipe[ruby]", "recipe[ntpdate::client]"]
+		lab:
+			name: "labxxx"
+			operational: 
+				vms: []
 
 	job = runner.createJob(_data)
 
@@ -66,7 +82,11 @@ socket.on 'message', (data) ->
 
 # TODO use SIGUSR1 & SIGUSR2 for internal diagnostics
 process.on 'SIGUSR1', () ->
+	# FIXME dump statistics
 	console.log 'got SIGUSR1'
+
+process.on 'SIGUSR2', () ->
+	console.log 'got SIGUSR2'
 
 runner.run()
 

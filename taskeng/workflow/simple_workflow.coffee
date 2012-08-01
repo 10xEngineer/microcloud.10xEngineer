@@ -128,7 +128,6 @@ on_error = (bus, data, next, err) ->
 	next null, data
 
 # TODO shared logic
-# TODO how to override timeout
 class SimpleWorkflow
 	constructor: () ->
 		step1 =
