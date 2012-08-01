@@ -40,7 +40,9 @@ socket = context.socket ZMQ::REQ
 request = {
   :service => :git_adm,
   :action => :create_repo,
-  :options => {}
+  :options => {
+    :name => "labxxx"
+  }
 }
 
 #request = {
@@ -61,20 +63,16 @@ message = Yajl::Encoder.encode(request)
 
 # local unix domain used for connection
 # should be configurable (as it might change once we got further deployment details)
-socket.connect "ipc:///tmp/mc.broker"
+socket.connect "ipc:///tmp/taskeng"
+#"ipc:///tmp/mc.broker"
 
-# send message
-socket.send_string message
-#, ZMQ::NOBLOCK
+1.times do 
+  # send message
+  socket.send_string message
+  puts "-> #{message}" 
 
-#if poller.poll(10*1000)
-#  raise "Send timeout (broker not available)"
-#end
+  # wait for response (blocking in this case)
+  socket.recv_string(reply = '')
 
-
-puts "-> #{message}" 
-
-# wait for response (blocking in this case)
-socket.recv_string(reply = '')
-
-puts "<- #{reply}"
+  puts "<- #{reply}"
+end
