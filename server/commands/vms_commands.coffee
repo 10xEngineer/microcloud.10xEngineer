@@ -45,7 +45,7 @@ module.exports.create = (req, res, next) ->
     else
       data = {
         server: hostnode.hostname
-        options: options
+        pool: options.pool
       }
       # TODO
       # options.pool not recognized
