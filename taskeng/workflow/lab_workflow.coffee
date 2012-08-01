@@ -38,10 +38,32 @@ verify_vms = (bus, data, next) ->
 
 	next null, data
 
+allocate_vms = (bus, data,next) ->
+	# TODO pass pool name
+	# FIXME allocation is performed in series (sub-jobs for the rescue)
+
+	data = 
+		vms: data.launch_vms
+	bus.post "/pools/#{data.lab.pool}/allocate", data, (err, req, res, obj) ->
+		console.log '--- after allocate'
+		if err
+			return next res
+
+		delete data.launch_vms
+
+		return next null, data
+
+ping = (bus, data, next) ->
+	bus.get '/ping', (err, req, res, obj) ->
+		if err
+			return next res
+
+		next null, obj
+
 class BalanceLabWorkflow
 	constructor: () ->
 		return {
-			flow: [verify_vms]
+			flow: [verify_vms, allocate_vms]
 			on_error: on_error
 			timeout: 300000
 		}
