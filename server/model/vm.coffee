@@ -63,10 +63,10 @@ Vm.statics.paths = ->
   "locked":
     allocate: (vm) ->
       # FIXME continue how to get lab instance
-      vm.lab.vms.push(vm.id);
-      vm.lab.save (err) ->
-        if err
-          log.error("Unable to add vm to lab=#{lab.token}")
+      #vm.lab.vms.push(vm.id);
+      #vm.lab.save (err) ->
+      #  if err
+      #    log.error("Unable to add vm to lab=#{lab.token}")
 
       return "allocated"
 
