@@ -1,7 +1,7 @@
 # TODO implement individual commands as objects/messages for better representation/validation
 
 zmq = require 'zmq'
-config = require('../server/config')
+config = require('./config')
 EventEmitter = require('events').EventEmitter
 
 class ServiceClient
@@ -14,13 +14,13 @@ class ServiceClient
 
 module.exports.service_client = ServiceClient
 
-module.exports.dispatch = (service, action, data = {}, broker = config.get('broker')) ->
+module.exports.dispatch = (service, action, data = {}) ->
 	request = 
 		"service": service
 		"action": action
 		"options": data
 
-	raw_dispatch(request, broker)
+	raw_dispatch(request, config.get('broker'))
 
 raw_dispatch = (data, broker) ->
 	client = new ServiceClient(broker)
