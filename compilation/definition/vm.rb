@@ -36,7 +36,7 @@ class Vm
     {
       :__type__ => self.class.to_s.underscore,
       :name => @name,
-      :base_image => @base_image,
+      :vm_type => @base_image,
       :hostname => @hostname,
       :run_list => @run_list
     }
