@@ -58,7 +58,7 @@ class WorkflowRunner
 		job = new Job(@backend.generate_id(), workflow, data)
 
 		job.scheduled = options.scheduled
-		job.timeout = options.timeout
+		job.timeout = options.timeout || workflow().timeout
 		job.runner = this
 
 		@.updateJob(job)
