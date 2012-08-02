@@ -40,7 +40,7 @@ def ssh_exec(user, hostname, command, options = {:port => 22})
     end
     ssh.loop
 
-    raise stderr_data if exit_code != 0
+    raise stdout_data if exit_code != 0
 
     output = stdout_data
   end

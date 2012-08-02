@@ -39,7 +39,10 @@ class LxcService < Provider
     rescue Net::SSH::AuthenticationFailed => e
       response :fail, {:reason => "Hostnode authentication failed"}
     rescue Exception => e
-      response :fail, "10xeng-vm: #{json_message(e.message)}"
+      error = json_message(e.message)
+      error[:source] = "10xeng-vm"
+
+      response :fail, error
     end
   end
 
@@ -76,7 +79,10 @@ class LxcService < Provider
     rescue Net::SSH::AuthenticationFailed => e
       response :fail, {:reason => "Hostnode authentication failed"}
     rescue Exception => e
-      response :fail, "10xeng-vm: #{json_message(e.message)}"
+      error = json_message(e.message)
+      error[:source] = "10xeng-vm"
+
+      response :fail, error
     end
   end
 
@@ -93,7 +99,10 @@ class LxcService < Provider
     rescue Net::SSH::AuthenticationFailed => e
       response :fail, {:reason => "Hostnode authentication failed"}
     rescue Exception => e
-      response :fail, "10xeng-vm: #{json_message(e.message)}"
+      error = json_message(e.message)
+      error[:source] = "10xeng-vm"
+
+      response :fail, error
     end
   end
 
@@ -110,7 +119,10 @@ class LxcService < Provider
     rescue Net::SSH::AuthenticationFailed => e
       response :fail, {:reason => "Hostnode authentication failed"}
     rescue Exception => e
-      response :fail, "10xeng-vm: #{json_message(e.message)}"
+      error = json_message(e.message)
+      error[:source] = "10xeng-vm"
+
+      response :fail, error      
     end
   end
 
@@ -127,7 +139,10 @@ class LxcService < Provider
     rescue Net::SSH::AuthenticationFailed => e
       response :fail, {:reason => "Hostnode authentication failed"}
     rescue Exception => e
-      response :fail, "10xeng-vm: #{jjson_message(e.message)}"
+      error = json_message(e.message)
+      error[:source] = "10xeng-vm"
+
+      response :fail, error
     end
   end
 
