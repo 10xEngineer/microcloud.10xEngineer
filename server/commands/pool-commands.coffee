@@ -168,7 +168,6 @@ module.exports =
       prepare: prepare
       allocate: allocate
     , (err, results) -> 
-        console.log err
         if err
           helper.handleErr res, err
         else

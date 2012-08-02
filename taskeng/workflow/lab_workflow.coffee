@@ -59,6 +59,9 @@ allocate_vms = (bus, data,next) ->
 
 		return next null, data
 
+# TODO wait for everything to become operational
+# 
+
 ping = (bus, data, next) ->
 	bus.get '/ping', (err, req, res, obj) ->
 		if err

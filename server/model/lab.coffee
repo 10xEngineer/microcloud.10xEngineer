@@ -50,9 +50,41 @@ LabSchema.statics.paths = ->
 			"pending"
 
 	"pending":
+		vm_allocated: (lab, active_vms) =>
+			# TODO make re-usable (vm_running, vm_allocated)
+			# FIXME this should be handled by lab workflow
+			#vm_count = lab.definition.vms.length
+
+			#if vm_count == active_vms.length
+			# TODO doesn't really make sense
+			return "pending"
+			#else
+			#	return "pending"
+
 		confirm: (lab) ->
 			log.debug "lab=#{lab.name} state=confirmed"
-
 			"created"
+
+
+#
+# VM integration
+#
+LabSchema.addListener 'vmStateChange', (lab, vm, prev_state) ->
+	action = "vm_#{vm.state}"
+
+	vm_state = "available"
+	switch vm.state
+		when "allocated", "running" then vm_state = vm.state
+	# TODO how to handle failing
+
+	Vm
+	.find({lab: lab._id})
+	.where('state').equals(vm_state)
+	.exec (err, vms) ->
+		lab.fire(action, vms)
+	  
+	log.debug "lab=#{lab.name} event=vmStateChange vm=#{vm.uuid} (#{prev_state} -> #{vm.state})"
+
+
 
 module.exports.register = mongoose.model 'Lab', LabSchema
