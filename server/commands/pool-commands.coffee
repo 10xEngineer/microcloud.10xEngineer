@@ -60,7 +60,6 @@ module.exports =
     update = 
       $set: pool: null
     Hostnode.update query, update, (err, hostnode) ->
-      console.log hostnode
       if err
         return helper.handleErr res, err
       unless hostnode then return helper.handleErr res, 
@@ -101,6 +100,7 @@ module.exports =
         query = 
           state: 'prepared'
           pool: results.findPool._id
+
         Vm.findAndModify query, [], {$set: {state: 'locked', lab: results.getLab._id, vm_name: vm.vm_name}}, {}, cb
       async.map dataReq.vms, iterator, next
       ]
@@ -139,9 +139,8 @@ module.exports =
           {node, forEachNext} = opt
           vm = JSON.parse data
           avms.push vm
-          forEachNext()
-          # TODO
-          # Immediatelly lock the VM                  
+
+          Vm.findAndModify {uuid: vm.uuid}, [], {$set: {state: 'locked', lab: results.getLab._id, vm_name: vm.vm_name}}, {}, forEachNext
         nodes = results.availableHostnodes[0...countToPrepare]
         async.forEach nodes, iterator, (err) ->
           next err, avms
