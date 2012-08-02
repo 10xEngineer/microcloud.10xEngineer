@@ -60,19 +60,16 @@ class Job extends Base
 			if typeof add_step is 'function'
 				@.steps.push(add_step)
 			else if typeof add_step is 'object'
-				# FIXME validate listener object structure
-				#      timeout, callback & on_expiry are mandatory
-				log.debug "listener registered for job=#{@id}"
+				if add_step.type is 'listener'
+					# FIXME validate listener object structure
+					#      timeout, callback & on_expiry are mandatory
+					log.debug "listener registered for job=#{@id}"
 
-				# object won't get re-inserted to processing queue
-				re_insert = false
+					# object won't get re-inserted to processing queue
+					re_insert = false
 
-				@runner.addListener @id, add_step
-
-				# TODO once notification arrives add callback as next step, otherwise 
-				#      on_expiry (if null, trigger error) and re-insert to processing
-				#      queue
-
+					@runner.addListener @id, add_step
+					
 		# replace data
 		@data = data
 
