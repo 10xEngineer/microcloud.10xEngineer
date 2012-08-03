@@ -12,18 +12,18 @@ worker = (task, job_helper) ->
 	job_helper()
 
 class BrokerHelper
-	constructor: () ->
+	constructor: (@runner) ->
 
-	@dispatch: (service, method, options) ->
+	dispatch: (service, method, options) ->
 		return broker.dispatch service, method, options
 
-	@get: (url, cb) ->
+	get: (url, cb) ->
 		@client().get(url, cb)
 
-	@post: (url, data, cb) ->
+	post: (url, data, cb) ->
 		@client().post(url, data, cb)
 
-	@client: ->
+	client: ->
 		client = restify.createJsonClient 
 			url: "http://localhost:8080"
 			version: "*"
@@ -46,6 +46,8 @@ class WorkflowRunner
 		@queue = async.queue(@.runJob, @concurrency)
 
 		@task_count = 0
+
+		@helper = new BrokerHelper @
 
 		log.info "Initialized workflow runner #{@id}"
 
@@ -108,7 +110,7 @@ class WorkflowRunner
 				job.steps = [listener.callback].concat(job.steps)
 				job.data.event = data
 
-				@.updateJob(job)				
+				@.updateJob(job)
 
 
 	build_helper: (job, queue_cb) ->
@@ -155,8 +157,7 @@ class WorkflowRunner
 
 				job.active_step = next
 
-				# TODO bus/BrokerHelper should be configurable
-				next.step BrokerHelper, job.data, @.build_helper(job, cb)
+				next.step @helper, job.data, @.build_helper(job, cb)
 			else
 				run_time = new Date().getTime() - job.created_at
 				console.log "-- job: #{job_id} finished in #{run_time} ms"
