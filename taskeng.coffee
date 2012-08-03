@@ -39,6 +39,7 @@ runner = new WorkflowRunner(backend)
 
 # TODO load workfloads
 runner.register require("./taskeng/workflow/simple_workflow")
+runner.register require("./taskeng/workflow/simple2_workflow")
 runner.register require("./taskeng/workflow/lab_workflow")
 
 # initial 0mq is only way how to submit job (using REQ only as it confirm only
@@ -50,7 +51,7 @@ socket.bind(url)
 
 socket.on 'message', (data) ->
 	# FIXME process real data
-	_data = 
+	_data1 = 
 		workflow: "BalanceLabWorkflow"
 		options:
 			scheduled: new Date().getTime() + 5000
@@ -72,6 +73,9 @@ socket.on 'message', (data) ->
 			pool: "xx-test"
 			operational: 
 				vms: []
+
+	_data =
+		workflow: "SimpleWorkflow"
 
 	job = runner.createJob(_data)
 

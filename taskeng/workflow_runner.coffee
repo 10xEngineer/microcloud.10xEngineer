@@ -23,6 +23,9 @@ class BrokerHelper
 	post: (url, data, cb) ->
 		@client().post(url, data, cb)
 
+	createSubJob: (parent_id, data) ->
+		@runner.createJob data, parent_id
+
 	client: ->
 		client = restify.createJsonClient 
 			url: "http://localhost:8080"
@@ -51,13 +54,13 @@ class WorkflowRunner
 
 		log.info "Initialized workflow runner #{@id}"
 
-	createJob: (data) ->
+	createJob: (data, parent_id = null) ->
 		# FIXME accepts job data as they are (add validation)
 
 		workflow = @workflows[data.workflow]
 		options = data.options || {}
 
-		job = new Job(@backend.generate_id(), workflow, data)
+		job = new Job(@backend.generate_id(), workflow, data, parent_id)
 
 		job.scheduled = options.scheduled
 		job.timeout = options.timeout || workflow().timeout
@@ -105,7 +108,7 @@ class WorkflowRunner
 					return unless job.active_children.length == 0
 
 				@backend.removeListener(job_id)
-				cb(null)
+				cb(null) if cb
 
 				job.steps = [listener.callback].concat(job.steps)
 				job.data.event = data
@@ -164,9 +167,10 @@ class WorkflowRunner
 				# finish the task
 
 				# FIXME how to propagate results back to parent
-				# job has parent, trigger job re-evaluation if other child haven't done so
-				if job.parent_id? and not job.queued
+				# FIXME job has parent, trigger job re-evaluation if other child haven't done so
+				if job.parent_id? 
 					console.log '-SUB-JOB trigger parent evaluation'
+					console.log cb
 
 					# TODO how to remove child from parent?
 
