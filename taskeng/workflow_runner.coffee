@@ -69,7 +69,6 @@ class WorkflowRunner
 		if parent_id?
 			@.updateParentJob parent_id, (err, parent_job, next) ->
 				if err
-					# TODO what to do with error
 					log.error "unable to update parent job=#{parent_id} reason=#{err}"
 					return
 
@@ -98,11 +97,6 @@ class WorkflowRunner
 	updateJob: (job, clear = false, insert = true) ->
 		job.data.id = job.id
 		
-		if insert
-			job.queued = true
-		else
-			job.queued = false
-
 		if clear
 			job.active_task_cb = null
 			job.active_step = null
@@ -137,7 +131,6 @@ class WorkflowRunner
 		# TODO queue callback is used to indicate the job in progress
 		#      works fine for single node, but needs re-thinking for cluster
 		#      wide deployment
-		# TODO workflow runner should instrument re-insertion to the async.queue
 		job.queue_cb = queue_cb
 		job.next_helper
 
@@ -161,7 +154,8 @@ class WorkflowRunner
 
 				return
 
-			# TODO what to do if active_task_cb is already assigned? 
+			if job.active_task_cb?
+				log.warn "job=#{job_id} already has active step assigned; overriding"
 
 			next_step = job.nextStep()
 			job.active_task_cb = cb
@@ -184,11 +178,9 @@ class WorkflowRunner
 				# finish the task
 
 				# FIXME how to propagate results back to parent
-				# FIXME job has parent, trigger job re-evaluation if other child haven't done so
 				if job.parent_id? 
 					log.debug "sub job=#{job.id} notifies parent"
 
-					# TODO how to remove child from parent?
 					@.updateParentJob job.parent_id, (err, parent_job, next) ->
 						if err							
 							log.error "unable to retrieve parent job=#{job.parent_id} reason=#{err}"

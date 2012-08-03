@@ -6,6 +6,7 @@ class Job extends Base
 	@include EventEmitter
 
 	constructor: (@id, workflow, @data, @parent_id = null) ->
+	DEFAULT_RETRY_TIMEOUT = 5000
 		@state = "created"
 
 		@workflow_def = workflow()
@@ -16,9 +17,6 @@ class Job extends Base
 		# active running task/step
 		@active_task_cb = null
 		@active_step = null
-
-		# indicate whater the job is already queued or not (prevents double submissions)
-		@queued = false
 
 		@subjobs = []
 
@@ -31,26 +29,21 @@ class Job extends Base
 
 		EventEmitter.call @
 
-		# TODO review - part of initial event originated processing
-		#@.on 'start', @.start
-
 	nextStep: ->
 		return @steps.shift()
 
 	next_helper: (err, data, add_step = null) =>
 		if err
-			console.log '-JOB: next_helper err triggered'
+			log.debug 'error handler triggered for job=@id'
 
 			if @active_step.max_retries?
 				max_retries = Math.round(@active_step.max_retries)
 
 				if @retries < max_retries
 					@retries++
-					console.log "-JOB: retrying current step (#{@retries})"
 
 					@steps = [@active_step].concat(@steps)
-					# TODO make delay configurable/or well defined constant
-					@scheduled = new Date().getTime() + 5000
+					@scheduled = new Date().getTime() + DEFAULT_RETRY_TIMEOUT
 
 					return @runner.updateJob(this, true)
 
@@ -96,10 +89,6 @@ class Job extends Base
 		@active_task_cb()
 		@runner.updateJob(this)
 
-	start: ->
-		console.log '--- start accepted'
-		console.log @
-
 	expired: ->
 		# total workflow run time is limited by @timeout
 		if (@created_at + @timeout) > new Date().getTime()
@@ -108,12 +97,14 @@ class Job extends Base
 			return true
 
 	addChild: (child_job) ->
-		# TODO add child as part of workflow helper
 		@subjobs.push(child_job.id)
 
 	removeChild: (child_job, cb) ->
 		index = @subjobs.indexOf(child_job.id)
-		@subjobs.splice(index, 1) if index >= 0 
+		if index >= 0
+			@subjobs.splice(index, 1) 
+		else
+			log.debug "unable to remove job=#{child_job.id} from subjobs"
 
 	available: ->
 		return 0 unless @scheduled?
