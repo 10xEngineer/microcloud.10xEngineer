@@ -186,6 +186,11 @@ class WorkflowRunner
 							log.error "unable to retrieve parent job=#{job.parent_id} reason=#{err}"
 							return
 
+						wf_name = job.workflow.name
+
+						parent_job.data[wf_name] = [] unless parent_job.data[wf_name]
+						parent_job.data[wf_name].push(job.data)
+
 						parent_job.removeChild(job)
 						next parent_job
 

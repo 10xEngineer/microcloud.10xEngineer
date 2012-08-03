@@ -33,7 +33,35 @@
 #
 # * `@scheduled` to start execution after given timestamp (is resetted every-time scheduled 
 #                is activated).
-
+#
+# Sub Jobs are used for gateway/converge kind of logic. Step responsible for gateway logic fires 
+# all necessary tasks using `helper.createSubJob data.id, jobData` same as with create job and 
+# registers next step as object with type `converge`.
+#
+# Only after all child jobs finish/or expire the job can continue. Job data of all sub-jobs are 
+# stored under the job data.NameOfTheSubJobsWorkflow array. It's jobs responsible to process it, 
+# or remove it.
+#
+# Example:
+#
+# { workflow: 'SimpleWorkflow',
+#  id: '94e34b5f-28f8-4d37-af92-58ad46f4e3f3',
+#   protected: 3,
+#   SecondSimpleWorkflow: 
+#   [ { workflow: 'SecondSimpleWorkflow',
+#        options: [Object],
+#        say: 'hi!',
+#        id: 'eb47a13e-c80a-4f65-8da2-85d9d06816ab' },
+#      { workflow: 'SecondSimpleWorkflow',
+#        options: [Object],
+#        say: 'hi!',
+#        id: 'f807bed7-248a-4249-93ed-71c8d1f3d21a' },
+#      { workflow: 'SecondSimpleWorkflow',
+#        options: [Object],
+#        say: 'hi!',
+#        id: '6fa2f4c6-83ab-4d1b-9596-20b03227b96a' } ],
+#   event: [Function] }
+#
 # helpers
 # 0mq - runs within task engine core (provides timeouts, throttling, etc.)
 # 
@@ -70,6 +98,9 @@ just_code = (helper, data, next) ->
 	if data.verbose == true
 		console.log '-- just_code output'
 		data.verbose = false
+
+	console.log '--- current job data'
+	console.log data
 
 	next null, data
 
@@ -163,8 +194,7 @@ class SimpleWorkflow
 		# wait_for_something
 
 		return {
-			# step1
-			flow: [just_code, dummy_ping, converge_example]
+			flow: [step1, dummy_ping, converge_example, just_code]
 			on_error: on_error
 			timeout: 120000
 		}

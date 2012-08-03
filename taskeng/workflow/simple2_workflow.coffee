@@ -3,6 +3,7 @@
 #
 
 a_step = (helper, data, next) ->
+	data.say = "hi!"
 	next null, data
 
 on_error = (helper, data, next, err) ->

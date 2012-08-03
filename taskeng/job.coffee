@@ -5,11 +5,12 @@ log = require("log4js").getLogger()
 class Job extends Base
 	@include EventEmitter
 
-	constructor: (@id, workflow, @data, @parent_id = null) ->
 	DEFAULT_RETRY_TIMEOUT = 5000
+
+	constructor: (@id, @workflow, @data, @parent_id = null) ->
 		@state = "created"
 
-		@workflow_def = workflow()
+		@workflow_def = @workflow()
 		@steps = @workflow_def.flow
 		@timeout = @workflow_def.timeout || 30000
 		@scheduled = null
