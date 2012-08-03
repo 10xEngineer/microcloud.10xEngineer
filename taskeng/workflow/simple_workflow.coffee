@@ -110,13 +110,15 @@ wait_for_something = (bus, data, next) ->
 converge_example = (bus, data, next) ->
 	# FIXME trigger subjobs
 
-	jobData = 
-		workflow: "SecondSimpleWorkflow"
-		options:
-			scheduled: new Date().getTime() + 5000
-		say: "hello"
 
-	bus.createSubJob data.id, jobData 
+	for num in [1..3] 
+		jobData = 
+			workflow: "SecondSimpleWorkflow"
+			options:
+				scheduled: new Date().getTime() + 3000*num
+			say: "hello"
+
+		bus.createSubJob data.id, jobData 
 
 	console.log '-- waiting for all sub-jobs to finish'
 

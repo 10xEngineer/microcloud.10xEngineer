@@ -38,8 +38,6 @@ class Job extends Base
 		return @steps.shift()
 
 	next_helper: (err, data, add_step = null) =>
-		console.log '-- JOB: next_helper called from task'
-
 		if err
 			console.log '-JOB: next_helper err triggered'
 
@@ -114,12 +112,8 @@ class Job extends Base
 		@subjobs.push(child_job.id)
 
 	removeChild: (child_job, cb) ->
-		# TODO CONTINUE
-
-	active_children: () ->
-		# FIXME implement sub-job looking
-
-		return []
+		index = @subjobs.indexOf(child_job.id)
+		@subjobs.splice(index, 1) if index >= 0 
 
 	available: ->
 		return 0 unless @scheduled?

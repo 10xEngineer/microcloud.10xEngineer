@@ -3,8 +3,6 @@
 #
 
 a_step = (bus, data, next) ->
-	console.log "-SECOND step1"
-
 	next null, data
 
 on_error = (bus, data, next, err) ->

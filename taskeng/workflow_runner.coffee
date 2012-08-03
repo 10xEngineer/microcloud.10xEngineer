@@ -66,6 +66,16 @@ class WorkflowRunner
 		job.timeout = options.timeout || workflow().timeout
 		job.runner = this
 
+		if parent_id?
+			@.updateParentJob parent_id, (err, parent_job, next) ->
+				if err
+					# TODO what to do with error
+					log.error "unable to update parent job=#{parent_id} reason=#{err}"
+					return
+
+				parent_job.addChild(job)
+				next parent_job
+
 		@.updateJob(job)
 		log.debug "job=#{job.id} accepted"
 
@@ -77,6 +87,13 @@ class WorkflowRunner
 
 	addListener: (id, listener) ->
 		@backend.addListener(id, listener)
+
+	updateParentJob: (job_id, callback) ->
+		@backend.getJob job_id, (err, job) =>
+			save = (updated_job) =>
+				@.updateJob(updated_job, false, false)
+
+			callback err, job, save
 
 	updateJob: (job, clear = false, insert = true) ->
 		job.data.id = job.id
@@ -105,7 +122,7 @@ class WorkflowRunner
 					return cb(err)
 
 				if listener.type is 'converge'
-					return unless job.active_children.length == 0
+					return unless job.subjobs.length == 0
 
 				@backend.removeListener(job_id)
 				cb(null) if cb
@@ -163,16 +180,22 @@ class WorkflowRunner
 				next.step @helper, job.data, @.build_helper(job, cb)
 			else
 				run_time = new Date().getTime() - job.created_at
-				console.log "-- job: #{job_id} finished in #{run_time} ms"
+				log.debug "job=#{job_id} finished in time=#{run_time} ms"
 				# finish the task
 
 				# FIXME how to propagate results back to parent
 				# FIXME job has parent, trigger job re-evaluation if other child haven't done so
 				if job.parent_id? 
-					console.log '-SUB-JOB trigger parent evaluation'
-					console.log cb
+					log.debug "sub job=#{job.id} notifies parent"
 
 					# TODO how to remove child from parent?
+					@.updateParentJob job.parent_id, (err, parent_job, next) ->
+						if err							
+							log.error "unable to retrieve parent job=#{job.parent_id} reason=#{err}"
+							return
+
+						parent_job.removeChild(job)
+						next parent_job
 
 					@.processEvent job.parent_id, job.data, (err) ->
 						log.error "job=#{job.parent_id} child-to-parent notification failed; reason=#{err}"
