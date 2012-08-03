@@ -7,7 +7,7 @@ module.exports.create_event = (runner, req, res, next) ->
 		return res.send 406, 
 			reason: "Invalid request data: #{error}"
 
-	runner.processEvent req.params.id, data, (err) ->
+	runner.processEvent req.params.id, null, data, (err) ->
 		if err
 			res.send {}
 		else

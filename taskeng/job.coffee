@@ -5,7 +5,7 @@ log = require("log4js").getLogger()
 class Job extends Base
 	@include EventEmitter
 
-	constructor: (@id, workflow, @data, @parent = null) ->
+	constructor: (@id, workflow, @data, @parent_id = null) ->
 		@state = "created"
 
 		@workflow_def = workflow()
@@ -19,6 +19,8 @@ class Job extends Base
 
 		# indicate whater the job is already queued or not (prevents double submissions)
 		@queued = false
+
+		@subjobs = []
 
 		@retries = 0
 
@@ -106,6 +108,18 @@ class Job extends Base
 			return false
 		else
 			return true
+
+	addChild: (child_job) ->
+		# TODO add child as part of workflow helper
+		@subjobs.push(child_job.id)
+
+	removeChild: (child_job, cb) ->
+		# TODO CONTINUE
+
+	active_children: () ->
+		# FIXME implement sub-job looking
+
+		return []
 
 	available: ->
 		return 0 unless @scheduled?

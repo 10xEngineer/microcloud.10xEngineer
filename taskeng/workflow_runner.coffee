@@ -76,6 +76,11 @@ class WorkflowRunner
 	updateJob: (job, clear = false, insert = true) ->
 		job.data.id = job.id
 		
+		if insert
+			job.queued = true
+		else
+			job.queued = false
+
 		if clear
 			job.active_task_cb = null
 			job.active_step = null
@@ -85,16 +90,17 @@ class WorkflowRunner
 		if insert
 			@queue.push job.id
 
-	processEvent: (job_id, data, cb) ->
+	processEvent: (job_id, parent, data, cb) ->
 		@backend.getListener job_id, (err, listener) =>
 			if err
 				return cb(err)
 
-			# TODO refactor; ugly, but it's necessary to always retrieve latest
-			#      job definition
 			@backend.getJob job_id, (err, job) =>
 				if err
 					return cb(err)
+
+				if listener.type is 'converge'
+					return unless job.active_children.length == 0
 
 				@backend.removeListener(job_id)
 				cb(null)
@@ -102,7 +108,8 @@ class WorkflowRunner
 				job.steps = [listener.callback].concat(job.steps)
 				job.data.event = data
 
-				@.updateJob(job)
+				@.updateJob(job)				
+
 
 	build_helper: (job, queue_cb) ->
 		# TODO queue callback is used to indicate the job in progress
@@ -154,6 +161,16 @@ class WorkflowRunner
 				run_time = new Date().getTime() - job.created_at
 				console.log "-- job: #{job_id} finished in #{run_time} ms"
 				# finish the task
+
+				# FIXME how to propagate results back to parent
+				# job has parent, trigger job re-evaluation if other child haven't done so
+				if job.parent_id? and not job.queued
+					console.log '-SUB-JOB trigger parent evaluation'
+
+					# TODO how to remove child from parent?
+
+					@.processEvent job.parent_id, job.data, (err) ->
+						log.error "job=#{job.parent_id} child-to-parent notification failed; reason=#{err}"
 
 				@.removeJob(job_id)
 				cb()
