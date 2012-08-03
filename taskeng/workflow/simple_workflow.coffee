@@ -107,8 +107,24 @@ wait_for_something = (bus, data, next) ->
 		callback: got_something
 		on_expiry: something_expired
 
+converge_example = (bus, data, next) ->
+	# FIXME trigger subjobs
+
+	console.log '-- waiting for all sub-jobs to finish'
+
+	next null, data,
+		type: "converge",
+		timeout: 60000
+		callback: it_converged
+		on_expiry: something_expired
+
+it_converged = (bus, data, next) ->
+	console.log '-IT CONVERGED!'
+
+	next null, data
+
 something_expired = (bus, data, next) ->
-	console.log '--DOH: listener expired'
+	console.log '--DOH: a listener expired'
 
 	next null, data
 
@@ -134,8 +150,10 @@ class SimpleWorkflow
 			step: fail_twice
 			max_retries: 2
 
+		# wait_for_something
+
 		return {
-			flow: [step1, just_code, wait_for_something, dummy_ping]
+			flow: [step1, just_code, dummy_ping, converge_example]
 			on_error: on_error
 			timeout: 120000
 		}

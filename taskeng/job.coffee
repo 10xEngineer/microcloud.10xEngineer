@@ -5,7 +5,7 @@ log = require("log4js").getLogger()
 class Job extends Base
 	@include EventEmitter
 
-	constructor: (@id, workflow, @data) ->
+	constructor: (@id, workflow, @data, @parent = null) ->
 		@state = "created"
 
 		@workflow_def = workflow()
@@ -13,8 +13,12 @@ class Job extends Base
 		@timeout = @workflow_def.timeout || 30000
 		@scheduled = null
 
+		# active running task/step
 		@active_task_cb = null
 		@active_step = null
+
+		# indicate whater the job is already queued or not (prevents double submissions)
+		@queued = false
 
 		@retries = 0
 
@@ -60,16 +64,15 @@ class Job extends Base
 			if typeof add_step is 'function'
 				@.steps.push(add_step)
 			else if typeof add_step is 'object'
-				if add_step.type is 'listener'
-					# FIXME validate listener object structure
-					#      timeout, callback & on_expiry are mandatory
-					log.debug "listener registered for job=#{@id}"
+				# FIXME validate listener object structure
+				#      type, timeout, callback & on_expiry are mandatory
+				log.debug "listener type=#{add_step.type} registered for job=#{@id}"
 
-					# object won't get re-inserted to processing queue
-					re_insert = false
+				# object won't get re-inserted to processing queue
+				re_insert = false
 
-					@runner.addListener @id, add_step
-					
+				@runner.addListener @id, add_step
+
 		# replace data
 		@data = data
 
