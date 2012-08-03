@@ -15,9 +15,9 @@
 #
 # Workflow step
 #
-# `step_name = (bus, data, next) ->`
+# `step_name = (helper, data, next) ->`
 #
-# * `bus` is a helper providing TaskEngine-enabled implementation of the most used integrations
+# * `helper` is a helper providing TaskEngine-enabled implementation of the most used integrations
 # * `data` job data
 # * `next` callback
 #
@@ -40,8 +40,8 @@
 
 
 # sample use of broker service
-dummy_ping = (bus, data, next) ->
-	req = bus.dispatch 'dummy', 'ping', {}
+dummy_ping = (helper, data, next) ->
+	req = helper.dispatch 'dummy', 'ping', {}
 	req.on 'data', (message) ->
 		console.log '-- broker response'
 
@@ -53,12 +53,12 @@ dummy_ping = (bus, data, next) ->
 
 
 # sample integration with microcloud
-pool_allocate = (bus, data, next) ->
+pool_allocate = (helper, data, next) ->
 	url = "/pools/#{data.pool_name}/nodes"
 	data =
 		server_id: data.server.id
 
-	req = bus.post url, data, (err, req, res, obj) ->
+	req = helper.post url, data, (err, req, res, obj) ->
 		if err
 			next res
 
@@ -66,14 +66,14 @@ pool_allocate = (bus, data, next) ->
 		
 
 # sample code only step
-just_code = (bus, data, next) ->
+just_code = (helper, data, next) ->
 	if data.verbose == true
 		console.log '-- just_code output'
 		data.verbose = false
 
 	next null, data
 
-fail_twice = (bus, data, next) ->
+fail_twice = (helper, data, next) ->
 	if data.protected?
 		data.protected++
 	else
@@ -85,17 +85,17 @@ fail_twice = (bus, data, next) ->
 	next null, data
 
 # demostrate how to adjust job flow on runtime
-custom_flow = (bus, data, next) ->
+custom_flow = (helper, data, next) ->
 	console.log '-- STEP: custom flow'
 	next null, data, just_ping
 
-just_ping = (bus, data, next) ->
+just_ping = (helper, data, next) ->
 	console.log '-- ping (not part of original flow)'
 
 	next null, data
 
 # registered callback listener and postpone the execution (expiry timeout not affected though)
-wait_for_something = (bus, data, next) ->
+wait_for_something = (helper, data, next) ->
 	console.log "-- STEP: waiting for some external magic to happen"
 
 	# do some logic and pass job _id
@@ -107,7 +107,7 @@ wait_for_something = (bus, data, next) ->
 		callback: got_something
 		on_expiry: something_expired
 
-converge_example = (bus, data, next) ->
+converge_example = (helper, data, next) ->
 	# FIXME trigger subjobs
 
 
@@ -118,7 +118,7 @@ converge_example = (bus, data, next) ->
 				scheduled: new Date().getTime() + 3000*num
 			say: "hello"
 
-		bus.createSubJob data.id, jobData 
+		helper.createSubJob data.id, jobData 
 
 	console.log '-- waiting for all sub-jobs to finish'
 
@@ -128,23 +128,23 @@ converge_example = (bus, data, next) ->
 		callback: it_converged
 		on_expiry: something_expired
 
-it_converged = (bus, data, next) ->
+it_converged = (helper, data, next) ->
 	console.log '-IT CONVERGED!'
 
 	next null, data
 
-something_expired = (bus, data, next) ->
+something_expired = (helper, data, next) ->
 	console.log '--DOH: a listener expired'
 
 	next null, data
 
-got_something = (bus, data, next) ->
+got_something = (helper, data, next) ->
 	console.log '-HURRAY: got something'
 	console.log data.event
 
 	next null, data
 
-on_error = (bus, data, next, err) ->
+on_error = (helper, data, next, err) ->
 	console.log '-- it failed'
 
 	recover = false

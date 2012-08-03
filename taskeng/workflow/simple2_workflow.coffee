@@ -2,10 +2,10 @@
 # SecondSimpleWorkflow - used to test sub-jobs
 #
 
-a_step = (bus, data, next) ->
+a_step = (helper, data, next) ->
 	next null, data
 
-on_error = (bus, data, next, err) ->
+on_error = (helper, data, next, err) ->
 	console.log '---ON ERROR simple2'
 	console.log err
 
