@@ -77,7 +77,7 @@ socket.on 'message', (data) ->
 	_data =
 		workflow: "SimpleWorkflow"
 
-	job = runner.createJob(_data)
+	job = runner.createJob(_data1)
 
 	reply = 
 		status: "ok"

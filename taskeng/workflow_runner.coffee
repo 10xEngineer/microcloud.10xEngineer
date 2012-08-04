@@ -5,17 +5,6 @@ _ = require "underscore"
 Job = require "./job"
 BrokerHelper = require "./helper"
 
-worker = (task, job_helper) ->
-	console.log "-- job received #{task}"
-
-	job_helper()
-
-
-
-step_helper = (err, data, new_step = nil) ->
-	console.log '-- step_help'
-
-
 class WorkflowRunner
 	constructor: (@backend) ->
 		@interval = 2500
@@ -33,7 +22,7 @@ class WorkflowRunner
 		log.info "Initialized workflow runner #{@id}"
 
 	createJob: (data, parent_id = null) ->
-		# FIXME accepts job data as they are (add validation)
+		# FIXME it accepts job data as they are (add validation)
 
 		workflow = @workflows[data.workflow]
 		options = data.options || {}
@@ -203,7 +192,7 @@ class WorkflowRunner
 
 				@backend.removeListener(listener.id)
 
-		console.log "--- jobs: #{_.keys(@backend.jobs).length} / queue: #{@queue.length()} / tasks: #{@task_count}"
+		log.debug "stats: jobs=#{_.keys(@backend.jobs).length} queue=#{@queue.length()} listeners=#{_.keys(@backend.listeners).length} tasks=#{@task_count}"
 
 	register: (workflow_klass) ->
 		# TODO validate

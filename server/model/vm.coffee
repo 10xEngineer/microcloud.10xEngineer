@@ -102,7 +102,6 @@ Vm.methods.start = (data) ->
 
 Vm.addListener 'afterTransition', (vm, prev_state) ->
   # FIXME-events start/stop event notification
-  console.log "---- VM after transition: #{vm.state}"
 
   # notify associated lab
   if vm.lab && mongoose.model("Lab")
