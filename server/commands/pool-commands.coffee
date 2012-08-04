@@ -128,7 +128,14 @@ module.exports =
             path    : "/vms/#{node.server_id}"
             method  : 'POST'
             headers : 'Content-Type': 'application/json'
-          , (res) -> createVmRequest res, opt
+          , (res) -> 
+            if res.statusCode is 200
+              return createVmRequest res, opt
+            
+            # FIXME get reason from http response
+            next 
+              code: 500
+              msg: "Pool allocate: unable to prepare VM"
           req.end JSON.stringify {pool: results.findPool._id}  
         createVmRequest = (res, opt) ->
           unless res.statusCode is 200 then countToPrepare++
@@ -156,6 +163,7 @@ module.exports =
         req.on 'data', (message) ->  	        
           if message.status is 'ok' 
             return _next() 
+          # FIXME legacy broker integration
           _next new Error message.options.reason
       async.forEach avms, iterator, next
     ]

@@ -35,7 +35,7 @@ class Job extends Base
 
 	next_helper: (err, data, add_step = null) =>
 		if err
-			log.debug 'error handler triggered for job=@id'
+			log.debug "error handler triggered for job=#{@id}"
 
 			if @active_step.max_retries?
 				max_retries = Math.round(@active_step.max_retries)

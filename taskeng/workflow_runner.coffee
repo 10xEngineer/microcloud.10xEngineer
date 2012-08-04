@@ -177,7 +177,6 @@ class WorkflowRunner
 				log.debug "job=#{job_id} finished in time=#{run_time} ms"
 				# finish the task
 
-				# FIXME how to propagate results back to parent
 				if job.parent_id? 
 					log.debug "sub job=#{job.id} notifies parent"
 
