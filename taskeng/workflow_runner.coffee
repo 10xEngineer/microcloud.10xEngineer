@@ -2,36 +2,14 @@ os = require "os"
 log = require("log4js").getLogger()
 async = require "async"
 _ = require "underscore"
-restify = require "restify"
-broker = require "../server/broker"
 Job = require "./job"
+BrokerHelper = require "./helper"
 
 worker = (task, job_helper) ->
 	console.log "-- job received #{task}"
 
 	job_helper()
 
-class BrokerHelper
-	constructor: (@runner) ->
-
-	dispatch: (service, method, options) ->
-		return broker.dispatch service, method, options
-
-	get: (url, cb) ->
-		@client().get(url, cb)
-
-	post: (url, data, cb) ->
-		@client().post(url, data, cb)
-
-	createSubJob: (parent_id, data) ->
-		@runner.createJob data, parent_id
-
-	client: ->
-		client = restify.createJsonClient 
-			url: "http://localhost:8080"
-			version: "*"
-
-		return client
 
 
 step_helper = (err, data, new_step = nil) ->

@@ -1,6 +1,7 @@
 Base = require "../server/labs/base"
 EventEmitter = require('events').EventEmitter
 log = require("log4js").getLogger()
+BrokerHelper = require "./helper"
 
 class Job extends Base
 	@include EventEmitter
