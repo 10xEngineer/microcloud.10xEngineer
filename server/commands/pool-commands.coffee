@@ -123,6 +123,9 @@ module.exports =
         iterator = (node, forEachNext) ->
           opt = {node, forEachNext}
           countToPrepare--
+
+          # FIXME timeouts on node.js request side
+
           req = http.request
             port    : config.get('server:port')
             path    : "/vms/#{node.server_id}"

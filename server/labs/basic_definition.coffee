@@ -63,7 +63,13 @@ module.exports = class BasicDefinition extends DefinitionBase
 		# FIXME initiate release workflow
 		req = broker.raw_dispatch job_data, config.get('taskeng')
 		req.on 'data', (message) =>
-			this.emit 'accepted', "Lab definition #{direction} requested"
+			# once lab request is accepted switch to the new definition
+			@lab.current_definition = @definition
+			@lab.save (err) =>
+				if err 
+					this.emit "refused", "Unable to confirm current definition; lab incosistent: #{err}"
+				else
+					this.emit 'accepted', "Lab definition #{direction} requested"
 
 		req.on 'error', (message) =>
 			this.emit 'refused', "Lab definition #{direction} refused: unable to request migration (#{message})"

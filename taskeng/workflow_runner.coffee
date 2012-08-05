@@ -184,8 +184,6 @@ class WorkflowRunner
 			console.log "listener=#{listener.id} expired"
 
 			on_expiry = listener.on_expiry
-			# get job
-			# add on_expiry as next step
 
 			@backend.getJob listener.id, (err, job) =>
 				job.addStep(on_expiry)
