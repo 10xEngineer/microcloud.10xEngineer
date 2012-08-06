@@ -10,7 +10,6 @@ mongoose.connect('mongodb://'+config.get('mongodb:host')+'/'+config.get('mongodb
 # TODO shared logic to load all models
 Hostnode = require("./server/model/hostnode").register
 Provider = require("./server/model/provider").register
-LabDefinition = require("./server/model/lab_definition").register
 
 
 # shared logic
