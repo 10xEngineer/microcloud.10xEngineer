@@ -5,3 +5,4 @@ ec2: bin/service.sh ec2
 loop: bin/service.sh loop
 brightbox: bin/service.sh brightbox
 git_adm: bin/service.sh git_adm
+lxc: bin/service.sh lxc
