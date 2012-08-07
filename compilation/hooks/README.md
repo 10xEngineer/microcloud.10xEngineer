@@ -1,5 +1,10 @@
 # Gitolite hooks
 
+For ruby add .bundle/config 
+
+		---                                                                             
+		BUNDLE_PATH: vendor/bundle
+
 * add `LOCAL_CODE` to ~/.gitolite.rc pointing to location with compilation directory (for example `/home/tenx/compilation)
 * add `~/.ssh/compile` private key
 
