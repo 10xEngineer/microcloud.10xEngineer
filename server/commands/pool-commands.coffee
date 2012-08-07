@@ -111,12 +111,12 @@ module.exports.allocate = (req, res, next) ->
     helper.checkPresenceOf ["lab", "vm"], next
 
   findPool = ['checkParams', (next) ->
-    Pool.findOne name: poolName = req.params.pool, (err, doc) ->
-      unless doc then next
+    Pool.findOne name: poolName = req.params.pool, (err, pool) ->
+      unless pool then next
         msg: "pool='#{poolName}' not found"
         code: 404
       else 
-        next null, doc
+        next null, pool
   ]
 
   getLab = ['findPool', (next) ->
@@ -128,16 +128,41 @@ module.exports.allocate = (req, res, next) ->
         next null, lab
   ]
 
+  getVM = ['getLab', (next, results) -> 
+    # TODO pluggable strategy how to select appropriate hostnode
+    # https://trello.com/card/pool-allocation-strategies/50067c2712a969ae032917f4/34
+    vm = data.vm
+
+    query = 
+      state: 'prepared'
+      pool: results.findPool._id
+
+    Vm.findAndModify query, [], {$set: {state: 'locked', lab: results.getLab._id, vm_name: vm.name}}, {}, (err, vm) ->
+      unless vm then next
+        msg: "No prepared VM available (#{err})"
+        code: 406
+      else
+        next null, vm
+  ]
+
   async.auto
     checkParams: checkParams
     findPool: findPool
     getLab: getLab
+    getVM: getVM
   , (err, results) ->
     if err
       helper.handleErr res, err
     else
-      # FIXME print out VM
-      res.send 200, {}
+      vm = 
+        uuid: results.getVM.uuid
+        meta: results.getVM.meta
+        server:
+          server_id: results.getVM.server.server_id
+        state: results.getVM.state
+        vm_type: results.getVM.vm_type
+
+      res.send 200, vm
 
 module.exports.deallocate = (req, res, next) ->
   res.send 500, "pool::deallocate NOT IMPLEMENTED"
