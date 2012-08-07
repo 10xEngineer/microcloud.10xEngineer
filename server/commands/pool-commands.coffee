@@ -13,182 +13,131 @@ log     = require('log4js').getLogger()
 
 helper  = require './helper'
 
-module.exports = 
-  create  : (req, res, next) ->
-    data = JSON.parse req.body
-    helper.load data
-    async.waterfall [
-      (next) -> helper.checkPresenceOf ["name", "environment", "vm_type"], next
-    , (next) ->
-        pool = new Pool data
-        pool.save (err) ->
-          if err
-            next 
-              msg : "Unable to save pool: #{err.message}"
-              code: 500
-          else next null, pool
-      ]
-    , (err, pool) ->
-      if err 
-        helper.errResponse err
-      else 
-        log.info "Pool '#{pool.name}' saved"
-        res.send pool
-    
-  destroy : (req, res, next) ->
-    res.send "pool_destroy NOT IMPLEMENTED"
-  addserver : (req, res, next) ->
-    data = JSON.parse req.body
-    Pool.findOne name: poolName = req.params.pool, (err, pool) ->
-  	  if err
-  	    return helper.handleErr res, err
-      unless pool then return helper.handleErr res, 
-        msg: "No such Pool with name '#{poolName}' found"
-        code: 404
-      Hostnode.findOne server_id: server_id = data.server_id, (err, hostnode) ->
+module.exports.create = (req, res, next) ->
+  data = JSON.parse req.body
+  helper.load data
+
+  async.waterfall [
+    (next) -> helper.checkPresenceOf ["name", "environment", "vm_type"], next
+   ,(next) ->
+      pool = new Pool(data)
+      pool.save (err) ->
         if err
-          return helper.handleErr res, err
-        unless hostnode then return helper.handleErr res, 
-          msg: "No such hostnode with server_id '#{server_id}' found"
-          code: 404
-        hostnode.pool = pool
-        hostnode.save (err) ->
-          res.send 200
-  removeserver : (req, res, next) ->
-    query = 
-      server_id: server_id = req.params.server_id
-    update = 
-      $set: pool: null
-    Hostnode.update query, update, (err, hostnode) ->
+          next 
+            msg : "Unable to save pool: #{err.message}"
+            code: 500
+        else next null, pool
+  ], (err, pool) ->
+    if err
+      return helper.handleErr res, err
+
+    log.info "pool=#{pool.name} saved"
+    res.send pool
+
+module.exports.destroy = (req, res, next) ->
+  res.send 500, "pool::destroy NOT IMPLEMENTED"
+
+module.exports.addserver = (req, res, next) ->
+  data = JSON.parse req.body
+  Pool.findOne name: poolName = req.params.pool, (err, pool) ->
+    if err
+      return helper.handleErr res, err
+    unless pool then return helper.handleErr res, 
+      msg: "No such Pool with name '#{poolName}' found"
+      code: 404
+    Hostnode.findOne server_id: server_id = data.server_id, (err, hostnode) ->
       if err
         return helper.handleErr res, err
       unless hostnode then return helper.handleErr res, 
         msg: "No such hostnode with server_id '#{server_id}' found"
         code: 404
-      res.send 200
-  allocate  : (req, res, next) ->
-    dataReq = JSON.parse req.body
-    # TODO validate if lab & vms are present
-    if _.isUndefined(dataReq.vms) or _.isEmpty dataReq.vms then return res.send []
-    
-    # Steps of Async.auto
-	  # Firstly look if the pool exists
-    findPool = (next) ->
-    	Pool.findOne name: poolName = req.params.pool, (err, doc) ->
-    	  unless doc then next
-          msg: "No such Pool with name '#{poolName}' found"
-          code: 404
-        else 
-          next null, doc
 
-    getLab = (next) ->
-      Lab.findOne name: dataReq.lab, (err, lab) ->
-        unless lab then next
-          msg: "No lab with name '#{dataReq.lab}'."
-          code: 500
-        else
-          next null, lab
+      if hostnode.pool?
+        return helper.handleErr res, 
+          msg: "Hostnode '#{server_id}' already assigned to a pool."
+          code: 409
 
-    # Check all available Hostnodes for current pool
-    availableHostnodes = ['getLab', (next, results) -> 
-      Hostnode.find pool: results.findPool._id, next
-    ]
-      
-    # Check parallely all available prepared VM, which are in that pool
-    availableVMs = ['getLab', (next, results) ->
-      iterator = (vm, cb) ->
-        query = 
-          state: 'prepared'
-          pool: results.findPool._id
+      hostnode.pool = pool
+      hostnode.save (err) ->
+        log.info "hostnode=#{server_id} added to pool=#{pool.name}"
+        res.send 200
 
-        Vm.findAndModify query, [], {$set: {state: 'locked', lab: results.getLab._id, vm_name: vm.vm_name}}, {}, cb
-      async.map dataReq.vms, iterator, next
-      ]
+module.exports.removeserver = (req, res, next) ->
+  # TODO remove pool from hostnode definition
+  # TODO what to do with allocated VMs?
+  # TODO trigger workflow particulary for this workflow
+  res.send 500, "pool::removeserver NOT IMPLEMENTED"
 
-    prepare = ['availableHostnodes', 'availableVMs', (next, results) ->
-      # Compare available found VMs with requested VMs
-      avms = _.without results.availableVMs, undefined
-      if avms && avms.length is dataReq.vms.length
-        next null, avms
-      # Now if there are not enough VMs, send a request to prepare them      	  
-      else
-        countToPrepare = dataReq.vms.length - avms.length
-        if _.isEmpty results.availableHostnodes then return next
-          msg: "The Pool #{results.findPool.name} needs hostnodes to prepare #{countToPrepare} VMs but doesn't have any."
-          code: 400
-        # We've got hostnodes, pool -> let's ask for new VM
-    
-        # This is the iterator which goes through hostnodes in the pool
-        # and call request for a new VM on them
-        iterator = (node, forEachNext) ->
-          opt = {node, forEachNext}
-          countToPrepare--
-
-          # FIXME timeouts on node.js request side
-
-          req = http.request
-            port    : config.get('server:port')
-            path    : "/vms/#{node.server_id}"
-            method  : 'POST'
-            headers : 'Content-Type': 'application/json'
-          , (res) -> 
-            if res.statusCode is 200
-              return createVmRequest res, opt
-            
-            # FIXME get reason from http response
-            next 
-              code: 500
-              msg: "Pool allocate: unable to prepare VM"
-          req.end JSON.stringify {pool: results.findPool._id}  
-        createVmRequest = (res, opt) ->
-          unless res.statusCode is 200 then countToPrepare++
-          data = ""
-          res.on 'data', (chunk) -> data += chunk
-          res.on 'end', -> finishVmRequest data, opt
-        finishVmRequest = (data, opt) -> 
-          {node, forEachNext} = opt
-          vm = JSON.parse data
-          avms.push vm
-
-          Vm.findAndModify {uuid: vm.uuid}, [], {$set: {state: 'locked', lab: results.getLab._id, vm_name: vm.vm_name}}, {}, forEachNext
-        nodes = results.availableHostnodes[0...countToPrepare]
-        async.forEach nodes, iterator, (err) ->
-          next err, avms
-    ]
-  	
-    allocate = ['prepare', (next, results) ->
-      avms = results.prepare
-      iterator = (avm, _next) ->
-        data = 
-          id: avm.uuid
-          server: avm.server.hostname
-        req = broker.dispatch avm.server.type, 'allocate', data
-        req.on 'data', (message) ->  	        
-          if message.status is 'ok' 
-            return _next() 
-          # FIXME legacy broker integration
-          _next new Error message.options.reason
-      async.forEach avms, iterator, next
-    ]
-  	
-    async.auto
-      findPool: findPool
-      getLab: getLab
-      availableHostnodes: availableHostnodes
-      availableVMs: availableVMs
-      prepare: prepare
-      allocate: allocate
-    , (err, results) -> 
+module.exports.get = (req, res, next) ->
+  async.waterfall [
+     (next) ->
+      Pool.findOne name: req.params.pool, (err, pool) ->
         if err
-          helper.handleErr res, err
-        else
-          res.send 200
-  	
-  deallocate: (req, res, next) ->
-    query =
-      server: req.params.server
-      container: req.params.container
-    # TODO ask broker to deallocate
-    res.send "pool_deallocate NOT IMPLEMENTED"
-  get: (req, res, next) ->
-    res.send "pool_get NOT IMPLEMENTED"
+          return next 
+            msg : "Unable to get pool: #{err.message}"
+            code: 500
+
+        unless pool
+          return next 
+            msg : "pool=#{req.params.pool} not found."
+            code: 404
+
+        pool.getStatistics(next)
+    ], (err, pool, nodes) ->
+      if err
+        return helper.handleErr res, err
+
+      total = 0
+      for node in nodes
+        total = node.count
+
+      pool_data =
+        name: pool.name
+        environment: pool.environment
+        vm_type: pool.vm_type
+        total: total
+        statistics: nodes
+
+      res.send pool_data
+
+module.exports.allocate = (req, res, next) ->
+  # TODO get VMs (lock), or fail
+  # TODO dispatch allocate
+
+  data = JSON.parse req.body
+  helper.load data
+
+  checkParams = (next) ->
+    helper.checkPresenceOf ["lab", "vm"], next
+
+  findPool = ['checkParams', (next) ->
+    Pool.findOne name: poolName = req.params.pool, (err, doc) ->
+      unless doc then next
+        msg: "pool='#{poolName}' not found"
+        code: 404
+      else 
+        next null, doc
+  ]
+
+  getLab = ['findPool', (next) ->
+    Lab.findOne name: data.lab, (err, lab) ->
+      unless lab then next
+        msg: "No lab with name '#{data.lab}'."
+        code: 500
+      else
+        next null, lab
+  ]
+
+  async.auto
+    checkParams: checkParams
+    findPool: findPool
+    getLab: getLab
+  , (err, results) ->
+    if err
+      helper.handleErr res, err
+    else
+      # FIXME print out VM
+      res.send 200, {}
+
+module.exports.deallocate = (req, res, next) ->
+  res.send 500, "pool::deallocate NOT IMPLEMENTED"
