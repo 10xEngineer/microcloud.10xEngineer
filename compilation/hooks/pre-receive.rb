@@ -26,7 +26,7 @@ begin
     io = IO.popen('hostname')
     host_raw = io.readlines.first.strip
 
-    repo_prefix = "#{ENV['USER']}@#{host_raw.first}"
+    repo_prefix = "#{ENV['USER']}@#{host_raw}"
   end
 
   # TODO pre-receive hook is not getting references when using clone from remote repository
