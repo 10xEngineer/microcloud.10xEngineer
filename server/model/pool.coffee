@@ -8,23 +8,12 @@ uniqueness    = require "../utility/uniquenessPlugin"
 stateMachine  = require "../utility/state_plugin"
 
 Pool = new Schema
-  name: String
+  name: {type: String, unique: true}
   environment: String
   vm_type: String
   # TODO owner
 
 Pool.plugin timestamps
-Pool.plugin uniqueness
-Pool.plugin stateMachine, 'new'
-
-Pool.statics.paths = ->
-  'new':
-    startup: (node, data) -> 'running'
-  'running':
-    confirm: (node, data) -> 
-    shutdown: (node, data) -> 'down'
-  'down':
-    shutdown: ->
 
 module.exports.schema = Pool
 module.exports.register = mongoose.model 'Pool', Pool
