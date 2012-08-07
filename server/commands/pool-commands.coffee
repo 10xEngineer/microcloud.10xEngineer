@@ -88,14 +88,17 @@ module.exports.get = (req, res, next) ->
         return helper.handleErr res, err
 
       total = 0
+      available = 0
       for node in nodes
-        total = node.count
+        available += node.count if node.state is 'prepared'
+        total += node.count
 
       pool_data =
         name: pool.name
         environment: pool.environment
         vm_type: pool.vm_type
         total: total
+        available: available
         statistics: nodes
 
       res.send pool_data

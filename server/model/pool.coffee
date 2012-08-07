@@ -23,7 +23,7 @@ Pool.methods.getStatistics = (next) ->
 
 	finalize = (out) ->
 
-	Vm.collection.group {server:1}, {pool: this._id}, {count: 0}, reduce, finalize, (err, res) =>
+	Vm.collection.group {server:1, state: 2}, {pool: this._id}, {count: 0}, reduce, finalize, (err, res) =>
 		next null, this, res
 
 module.exports.schema = Pool
