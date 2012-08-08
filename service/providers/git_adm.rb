@@ -178,6 +178,8 @@ private
     git = Grit::Git.new(GITOLITE_ADMIN_TMP)
 
     # get the gitolite admin repository
+    # FIXME more than a directory exists check (inconsistent repository will stop any further
+    #       operations)
     unless File.exists? GITOLITE_ADMIN_TMP
       options = {
         :quiet => false,
