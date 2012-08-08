@@ -1,3 +1,24 @@
+#
+# Workflow Runner Backend
+#
+# Provides storage/basic logic for workflow runner. Current implementation is in-memory 
+# only. 
+#
+# Acts as registry for
+# 
+# * jobs - hash of all jobs handled by current workflow runner
+# * listeners - hash of all listeners registered within current worflow runner
+#
+# TODO workflow runner periodically registers itself (keep-alive). Master instance (TODO) 
+# re-assignes jobs to other runner if particular one stops pinging.
+# TODO job persistency - all job attributes (flow, data) needs to be updated after each
+# individual step to allow almost seamless failover
+# TODO each workflow runner acts as a notification subscriber, evaluating notifications 
+# with active registrations (another registry next to jobs and listeners). Notification part 
+# should be part of workflow runner, but moved out later (number of notifications is going to 
+# be significantly higher compared to number of processed job steps).
+#
+
 log = require("log4js").getLogger()
 uuid = require "node-uuid"
 
