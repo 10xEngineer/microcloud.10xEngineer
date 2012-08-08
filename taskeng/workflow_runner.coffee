@@ -43,7 +43,7 @@ class WorkflowRunner
 				next parent_job
 
 		@.updateJob(job)
-		log.debug "job=#{job.id} accepted"
+		log.debug "job=#{job.id} with workflow=#{job.workflow.name} accepted"
 
 		# TODO replace with instance?
 		job.id
