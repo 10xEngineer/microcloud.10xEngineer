@@ -60,6 +60,10 @@ Vm.statics.paths = ->
     destroy: (vm) ->
       return "destroyed"
 
+  "pending":
+    lock: (vm) ->
+      "locked"
+
   "locked":
     allocate: (vm) ->
       # FIXME continue how to get lab instance
@@ -102,6 +106,9 @@ Vm.methods.start = (data) ->
 
 Vm.addListener 'afterTransition', (vm, prev_state) ->
   # FIXME-events start/stop event notification
+
+  # TODO vm notification should go to hostnode as well (update stats/resources/
+  #      trigger deprovisioning)
 
   # notify associated lab
   if vm.lab && mongoose.model("Lab")

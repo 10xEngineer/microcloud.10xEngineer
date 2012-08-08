@@ -45,9 +45,8 @@ LabSchema.plugin(state_machine, 'created')
 #
 LabSchema.statics.paths = ->
 	"created":
-		lock: (lab) ->
-			log.debug "lab=#{lab.name} state=pending"
-			"pending"
+		vm_locked: (lab, vms) ->
+			log.debug "lab=#{lab.name} received vm_locked"
 
 	"pending":
 		vm_allocated: (lab, active_vms) =>

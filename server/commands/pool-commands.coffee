@@ -147,11 +147,12 @@ module.exports.allocate = (req, res, next) ->
       state: 'prepared'
       pool: results.findPool._id
 
-    Vm.findAndModify query, [], {$set: {state: 'locked', lab: results.getLab._id, vm_name: vm.name}}, {}, (err, vm) ->
+    Vm.findAndModify query, [], {$set: {state: 'pending', lab: results.getLab._id, vm_name: vm.name}}, {}, (err, vm) ->
       unless vm then next
         msg: "No prepared VM available (#{err})"
         code: 406
       else
+        vm.fire 'lock'
         next null, vm
   ]
 
