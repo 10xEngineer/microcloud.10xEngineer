@@ -37,13 +37,13 @@ module.exports = exports = stateMachinePlugin = (schema, init_with) ->
     if new_state = action this, data
       # publish notification
       resource = this.constructor.modelName.toLowerCase()
-      id = this.uuid || this._id
+      uuid = this.uuid || this._id
       notification =
         event: event
 
       notification[resource] = data
 
-      client.publish "#{resource}:#{id}", JSON.stringify(notification)
+      client.publish "#{resource}:#{uuid}", JSON.stringify(notification)
 
       unless paths.hasOwnProperty new_state
         return callback new Error "Unable to change state; '#{this.state}' -> '#{new_state}' not valid transition"
