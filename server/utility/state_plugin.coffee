@@ -2,6 +2,10 @@ emitter = require('events').EventEmitter
 _       = require 'underscore'
 log     = require('log4js').getLogger()
 
+# FIXME use internal redis client
+redis   = require "redis"
+client  = redis.createClient()
+
 module.exports = exports = stateMachinePlugin = (schema, init_with) ->
   schema.add
     state: {type: String, default: init_with}
@@ -31,6 +35,16 @@ module.exports = exports = stateMachinePlugin = (schema, init_with) ->
     schema.emit 'beforeTransition', this, event
     
     if new_state = action this, data
+      # publish notification
+      resource = this.constructor.modelName.toLowerCase()
+      id = this.uuid || this._id
+      notification =
+        event: event
+
+      notification[resource] = data
+
+      client.publish "#{resource}:#{id}", JSON.stringify(notification)
+
       unless paths.hasOwnProperty new_state
         return callback new Error "Unable to change state; '#{this.state}' -> '#{new_state}' not valid transition"
 
