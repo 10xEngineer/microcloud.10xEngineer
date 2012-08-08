@@ -164,6 +164,11 @@ module.exports.allocate = (req, res, next) ->
       server: vm.server.hostname
 
     req = broker.dispatch vm.server.type, 'allocate', data
+    req.on 'data', (message) ->
+      next null
+
+    req.on 'error', (message) ->
+      next message.reason
   ]
 
   async.auto
@@ -171,6 +176,7 @@ module.exports.allocate = (req, res, next) ->
     findPool: findPool
     getLab: getLab
     getVM: getVM
+    allocateVM: allocateVM
   , (err, results) ->
     if err
       helper.handleErr res, err
