@@ -107,17 +107,15 @@ Vm.methods.start = (data) ->
 Vm.addListener 'afterTransition', (vm, prev_state) ->
   # FIXME-events start/stop event notification
 
-  # TODO vm notification should go to hostnode as well (update stats/resources/
-  #      trigger deprovisioning)
-
+  # notify hostnode
+  if vm.server && mongoose.model("Hostnode")
+    vm.server.schema.emit('vmStateChange', vm.server, vm, prev_state)
+    
   # notify associated lab
   if vm.lab && mongoose.model("Lab")
-    # TODO reload lab as the original object doesn't have vm.lab.definition populated
-    lab = mongoose.model("Lab")
-            .findOne({token: vm.lab.token})
-            .populate('definition')
-            .exec (err, lab) =>
-               mongoose.model("Lab").schema.emit('vmStateChange', lab, vm, prev_state)
+    # TODO reload lab as the original object doesn't have vm.lab.definition populated or
+    #      make sure the target lab is handling the definition retrieval
+    vm.lab.schema.emit('vmStateChange', vm.lab, vm, prev_state)
    
   log.info "vm=#{vm.uuid} changed state from=#{prev_state} to=#{vm.state}"
 

@@ -69,6 +69,9 @@ Hostnode.addListener 'afterTransition', (node, prev_state) ->
   
   log.info "node=#{node.server_id} changed state from=#{prev_state} to=#{node.state}"
 
+Hostnode.addListener 'vmStateChange', (node, vm, prev_state) ->
+  log.debug "node=#{node.server_id} event=vmStateChange vm=#{vm.uuid} (#{prev_state} -> #{vm.state})"
+
 
 module.exports.register = mongoose.model 'Hostnode', Hostnode
 
