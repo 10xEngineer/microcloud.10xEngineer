@@ -136,6 +136,13 @@ module.exports.allocate = (req, res, next) ->
     # https://trello.com/card/pool-allocation-strategies/50067c2712a969ae032917f4/34
     vm = data.vm
 
+    # TODO 'prepared' VMs as currently designed are relevant only for LXCs/10xEngineer 
+    #      deployment. Provisioning strategy needs to take this into account, or we
+    #      need to come up with pre-provisioning strategy for private deployment.
+    #
+    #      VM 'locked' status for non-LXC deployments effectively allocates resources
+    #      so they can't be taken by another request
+
     query = 
       state: 'prepared'
       pool: results.findPool._id
@@ -146,6 +153,16 @@ module.exports.allocate = (req, res, next) ->
         code: 406
       else
         next null, vm
+  ]
+
+  allocateVM = ['getVM', (next, results) ->
+    vm = results.getVM
+
+    data = 
+      id: vm.uuid
+      server: vm.server.hostname
+
+    req = broker.dispatch vm.server.type, 'allocate', data
   ]
 
   async.auto
