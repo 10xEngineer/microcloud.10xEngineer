@@ -34,7 +34,8 @@ module.exports.registerRoutes = (server) ->
 	# VMs
 	#
 	# TODO ambiguous definition server_id vs vm_id
-	server.get '/vms/:node_id', commands.vms.index
+	server.get '/nodes/:node_id/vms', commands.vms.index
+	server.get '/vms/:vm', commands.vms.get
 	server.post '/vms/:node_id', commands.vms.create
 	server.post '/vms/:vm/notify', commands.vms.updates
 	server.del '/vms/:vm', commands.vms.destroy

@@ -12,8 +12,25 @@ Hostnode = mongoose.model('Hostnode')
 #
 
 module.exports.index = (req, res, next) ->
-  # TODO implement
-  res.send {}
+  Hostnode.findOne({server_id: req.params.node_id}).exec (err,hostnode) ->
+    if hostnode
+      Vm
+        .find({server: hostnode})
+        .fields({"uuid": 1, "state": 1})
+        .exec (err, vms) ->
+          res.send vms
+    else
+      res.send 404, "No hostnode=#{req.params.node_id} found"
+
+module.exports.get = (req, res, next) ->
+  # TODO use decorators
+  #      https://trello.com/card/api-objects-decorators/50067c2712a969ae032917f4/39
+  Vm
+    .findOne({uuid: req.params.vm})
+    .exec (err, vm) ->  
+      if vm
+        res.send vm
+      else res.send 404, err || "VM not found"
 
 module.exports.updates = (req, res, next) ->
   data = JSON.parse req.body
@@ -79,6 +96,9 @@ module.exports.create = (req, res, next) ->
       req.on 'error', (message) ->
           log.error "#{hostnode.hostname}: Unable to prepare VM(#{message.options.reason})"
           res.send 500, "failed: #{message.options.source}: #{message.options.reason}"
+
+module.exports.allocate = (req, res, next) ->
+
 
 module.exports.destroy = (req, res, next) ->
   Vm
