@@ -62,6 +62,23 @@
 #        id: '6fa2f4c6-83ab-4d1b-9596-20b03227b96a' } ],
 #   event: [Function] }
 #
+# Internal/external notifications can be used as events for job flow using listner type 
+# `subscribe`, specifying selector used to match all incoming notification for as long as the 
+# listener is active.
+#
+# Example:
+# 	next null, data,
+#		type: "subscribe",
+#		timeout: 60000
+#		# selector gets evaluated on each notification
+#		selector: (object, message, next) ->
+#			console.log '--- notification evaluation'
+#			# mark notification as accepted
+#			next()
+#		# callback only on those we select (TODO how)
+#		callback: it_got_notification
+#		on_expiry: something_expired
+#
 # helpers
 # 0mq - runs within task engine core (provides timeouts, throttling, etc.)
 # 
@@ -180,8 +197,9 @@ subscribe_to_something = (helper, data, next) ->
 		# selector gets evaluated on each notification
 		selector: (object, message, next) ->
 			console.log '--- notification evaluation'
-			# skip notification
-			next()
+
+			if /^vm:/.test(object)
+				next()
 		# callback only on those we select (TODO how)
 		callback: it_got_notification
 		on_expiry: something_expired
