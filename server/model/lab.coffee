@@ -26,7 +26,7 @@ LabSchema = new mongoose.Schema({
 	token: { type: String, unique: true }
 	repo: String
 
-	current_definition: {type: ObjectId, ref: 'Definition'}
+	current_definition: {type: ObjectId, ref: 'Definition', auto: true}
 
 	operational: {
 		vms: [AllocatedVMSchema]

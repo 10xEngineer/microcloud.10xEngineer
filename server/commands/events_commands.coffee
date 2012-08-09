@@ -54,9 +54,17 @@ module.exports.accept = (req, res, next) ->
 	# TODO allow both internal and custom objects
 	# TODO how to handle custom objects? are there any custom objects?
 	#      will be relevant once we got custom components in place
-	model
-		.findOne({uuid: uuid})
-		.exec (err, doc) ->
+	query = model.findOne({uuid: uuid})
+
+	# get all db-ref 
+	populate = []
+	for attr, val of model.schema.tree
+		if typeof val is 'object' and val.auto and val.ref
+			query = query.populate(attr)
+
+
+	# TODO how to populate query (not know)
+	query.exec (err, doc) ->
 			if doc
 				doc.fire data.event, data[resource]
 

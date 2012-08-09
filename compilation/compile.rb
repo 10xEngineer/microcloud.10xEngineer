@@ -49,7 +49,7 @@ Dir.mktmpdir do |repo_dir|
 
   #repo_dir = "/Users/radim/tmp/labs/source"
 
-  # verify pre-requisuites
+  # verify pre-requisites
   metadata_rb = File.join(repo_dir, "metadata.rb")
   unless File.exists? metadata_rb
     puts "Invalid lab definition: no metadata.rb"
