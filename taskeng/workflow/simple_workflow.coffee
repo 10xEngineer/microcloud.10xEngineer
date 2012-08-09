@@ -91,16 +91,12 @@ pool_allocate = (helper, data, next) ->
 			next res
 
 		next null, data
-		
 
 # sample code only step
 just_code = (helper, data, next) ->
 	if data.verbose == true
 		console.log '-- just_code output'
 		data.verbose = false
-
-	console.log '--- current job data'
-	console.log data
 
 	next null, data
 
@@ -175,6 +171,27 @@ got_something = (helper, data, next) ->
 
 	next null, data
 
+subscribe_to_something = (helper, data, next) ->
+	console.log '--- subscribe to something'
+
+	next null, data,
+		type: "subscribe",
+		timeout: 60000
+		# selector gets evaluated on each notification
+		selector: (object, message, next) ->
+			console.log '--- notification evaluation'
+			# skip notification
+			next()
+		# callback only on those we select (TODO how)
+		callback: it_got_notification
+		on_expiry: something_expired
+
+it_got_notification = (helper, data, next) ->
+	console.log '---HURRAY! notification '
+	console.log data.notification
+
+	next null, data
+
 on_error = (helper, data, next, err) ->
 	console.log '-- it failed'
 
@@ -194,7 +211,8 @@ class SimpleWorkflow
 		# wait_for_something
 
 		return {
-			flow: [step1, dummy_ping, converge_example, just_code]
+			# converge_example
+			flow: [step1, dummy_ping, just_code, subscribe_to_something]
 			on_error: on_error
 			timeout: 120000
 		}

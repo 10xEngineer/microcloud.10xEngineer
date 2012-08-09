@@ -25,6 +25,7 @@
 #      * allow multiple listeners
 #      * fanout mode (launch all - wait for them to finish)
 
+log = require("log4js").getLogger()
 zmq = require "zmq"
 os = require "os"
 restify = require "restify"
@@ -93,7 +94,7 @@ client.on 'psubscribe', (channel, count) ->
 	log.info "subscribed to redis notifications"
 
 client.on 'pmessage', (pattern, channel, message) ->
-	runner.processNotification (channel, message)
+	runner.processNotification channel, message
 
 client.psubscribe "*"
 

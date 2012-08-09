@@ -61,6 +61,7 @@ class Job extends Base
 			else if typeof add_step is 'object'
 				# FIXME validate listener object structure
 				#      type, timeout, callback & on_expiry are mandatory
+				#      + selector for 'subscribe'
 				log.debug "listener type=#{add_step.type} registered for job=#{@id}"
 
 				# object won't get re-inserted to processing queue

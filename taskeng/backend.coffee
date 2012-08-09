@@ -27,6 +27,7 @@ class Backend
 	constructor: (@id) ->
 		@jobs = {}
 		@listeners = {}
+		@subscriptions = {}
 
 	register: ->
 		# FIXME register worker
@@ -59,8 +60,18 @@ class Backend
 		listener.created_at = new Date().getTime()
 		@listeners[id] = listener
 
+		@.addSubscriber(id, listener) if listener.type is 'subscribe'
+
 	removeListener: (id) ->
+		@.removeSubscriber(id) if @listeners[id].type is 'subscribe'
+
 		delete @listeners[id]
+
+	addSubscriber: (id, subscriber) ->
+		@subscriptions[id] = subscriber
+
+	removeSubscriber: (id) ->
+		delete @subscriptions[id]
 
 	getListener: (id, next) ->
 		listener = @listeners[id]

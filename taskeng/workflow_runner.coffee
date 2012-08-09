@@ -49,7 +49,23 @@ class WorkflowRunner
 		job.id
 
 	processNotification: (object, message) ->
-		# FIXME implement 
+		# each notification is validated against each subscriber's selector
+		for job_id, subscriber of @backend.subscriptions
+			subscriber.selector object, message, () =>
+
+				# FIXME refactor to a single function shared with processEvent
+				@backend.getJob job_id, (err, job) =>
+					if err
+						log.error "Unable to notify job=#{job_id} based on notification resource='#{object}'"
+						return
+
+					@backend.removeListener(job_id)
+					job.steps = [subscriber.callback].concat(job.steps)
+					job.data.notification = 
+						object: object
+						message: message
+
+					@.updateJob(job)
 
 	removeJob: (job) ->
 		@backend.removeJob(job)
@@ -193,7 +209,7 @@ class WorkflowRunner
 
 				@backend.removeListener(listener.id)
 
-		log.debug "stats: jobs=#{_.keys(@backend.jobs).length} queue=#{@queue.length()} listeners=#{_.keys(@backend.listeners).length} tasks=#{@task_count}"
+		log.debug "stats: jobs=#{_.keys(@backend.jobs).length} queue=#{@queue.length()} listeners=#{_.keys(@backend.listeners).length} subscribers=#{_.keys(@backend.subscriptions).length} tasks=#{@task_count}"
 
 	register: (workflow_klass) ->
 		# TODO validate
