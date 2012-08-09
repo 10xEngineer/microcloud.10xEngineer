@@ -94,7 +94,7 @@ class Provider
   def notify(resource, resource_id, action, hash)
     body = Yajl::Encoder.encode(hash)
 
-    microcloud.notify(resource, resource_id, action, hash)
+    microcloud.submit_event(resource, resource_id, action, hash)
   end
   
   def self.get(name)

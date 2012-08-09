@@ -5,7 +5,7 @@ gem "yajl-ruby"
 gem "facets"
 gem "microcloud"
 
-gem "foreman"
+gem "foreman", "~> 0.47.0"
 
 # internal service storage
 gem "mongoid", "~> 3.0.0.rc"
