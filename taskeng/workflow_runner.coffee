@@ -48,6 +48,9 @@ class WorkflowRunner
 		# TODO replace with instance?
 		job.id
 
+	processNotification: (object, message) ->
+		# FIXME implement 
+
 	removeJob: (job) ->
 		@backend.removeJob(job)
 

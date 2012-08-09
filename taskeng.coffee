@@ -31,6 +31,9 @@ restify = require "restify"
 WorkflowRunner = require "./taskeng/workflow_runner"
 Backend = require "./taskeng/backend"
 
+redis = require "redis"
+client = redis.createClient()
+
 # service connector
 
 # backend
@@ -77,13 +80,22 @@ socket.on 'message', (data) ->
 	_data =
 		workflow: "SimpleWorkflow"
 
-	job = runner.createJob(_data1)
+	job = runner.createJob(_data)
 
 	reply = 
 		status: "ok"
 		job_id: job.id
 
 	socket.send JSON.stringify(reply)
+
+# redis pubsub integration
+client.on 'psubscribe', (channel, count) ->
+	log.info "subscribed to redis notifications"
+
+client.on 'pmessage', (pattern, channel, message) ->
+	runner.processNotification (channel, message)
+
+client.psubscribe "*"
 
 # TODO use SIGUSR1 & SIGUSR2 for internal diagnostics
 process.on 'SIGUSR1', () ->
