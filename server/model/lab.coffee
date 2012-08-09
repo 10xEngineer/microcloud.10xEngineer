@@ -48,7 +48,14 @@ LabSchema.statics.paths = ->
 		vm_locked: (lab, vms) ->
 			log.debug "lab=#{lab.name} received vm_locked"
 
+			"pending"
+
 	"pending":
+		vm_locked: (lab, vms) ->
+			log.debug "lab=#{lab.name} received vm_locked"
+
+			"pending"
+	
 		vm_allocated: (lab, active_vms) =>
 			# TODO make re-usable (vm_running, vm_allocated)
 			# FIXME this should be handled by lab workflow
