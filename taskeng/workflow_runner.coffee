@@ -48,25 +48,6 @@ class WorkflowRunner
 		# TODO replace with instance?
 		job.id
 
-	processNotification: (object, message) ->
-		# each notification is validated against each subscriber's selector
-		for job_id, subscriber of @backend.subscriptions
-			subscriber.selector object, message, () =>
-
-				# FIXME refactor to a single function shared with processEvent
-				@backend.getJob job_id, (err, job) =>
-					if err
-						log.error "Unable to notify job=#{job_id} based on notification resource='#{object}'"
-						return
-
-					@backend.removeListener(job_id)
-					job.steps = [subscriber.callback].concat(job.steps)
-					job.data.notification = 
-						object: object
-						message: message
-
-					@.updateJob(job)
-
 	removeJob: (job) ->
 		@backend.removeJob(job)
 
@@ -92,26 +73,41 @@ class WorkflowRunner
 		if insert
 			@queue.push job.id
 
+	updateListener: (job_id, listener, type, data, cb = null) ->
+		@backend.getJob job_id, (err, job) =>
+			if err
+				# FIXME cb == null
+				return cb(err)
+
+			if listener.type is 'converge'
+				return unless job.subjobs.length == 0
+
+			@backend.removeListener(job_id)
+			cb(null) if cb
+
+			job.steps = [listener.callback].concat(job.steps)
+			job.data[type] = data
+
+			@.updateJob(job)	
+
 	processEvent: (job_id, parent, data, cb) ->
 		@backend.getListener job_id, (err, listener) =>
 			if err
 				return cb(err)
 
-			@backend.getJob job_id, (err, job) =>
-				if err
-					return cb(err)
+			@.updateListener(job_id, listener, 'event', data)
 
-				if listener.type is 'converge'
-					return unless job.subjobs.length == 0
+	processNotification: (object, message) ->
+		# each notification is validated against each subscriber's selector
+		for job_id, subscriber of @backend.subscriptions
+			subscriber.selector object, message, () =>
 
-				@backend.removeListener(job_id)
-				cb(null) if cb
+				# FIXME refactor to a single function shared with processEvent
+				data = 
+					object: object
+					message: message
 
-				job.steps = [listener.callback].concat(job.steps)
-				job.data.event = data
-
-				@.updateJob(job)
-
+				@.updateListener(job_id, subscriber, 'notification', data)
 
 	build_helper: (job, queue_cb) ->
 		# TODO queue callback is used to indicate the job in progress
