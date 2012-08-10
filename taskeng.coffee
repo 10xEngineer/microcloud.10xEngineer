@@ -75,7 +75,7 @@ socket.on 'message', (data) ->
 					run_list : ["recipe[ruby]", "recipe[ntpdate::client]"]
 		lab:
 			name: "labxxx"
-			pool: "xx-test"
+			pool: "xxxtest"
 			operational: 
 				vms: []
 
@@ -90,18 +90,19 @@ socket.on 'message', (data) ->
 	_data =
 		workflow: "SimpleWorkflow"
 
-	job = runner.createJob _data2, null, (err) ->
+	job = runner.createJob _data1, null, (err, job_id) ->
+		console.log '--- xxx'
 		if err
 			console.log err
-			socket.send JSON.stringify
+			return socket.send JSON.stringify
 				status: "error"
 				reason: err.message
-		else
-			reply = 
-				status: "ok"
-				job_id: job.id
 
-			socket.send JSON.stringify(reply)
+		reply = 
+			status: "ok"
+			job_id: job_id
+
+		socket.send JSON.stringify(reply)
 
 # redis pubsub integration
 client.on 'psubscribe', (channel, count) ->

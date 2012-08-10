@@ -49,7 +49,7 @@ class WorkflowRunner
 		log.debug "job=#{job.id} with workflow=#{job.workflow.name} accepted"
 
 		# TODO replace with instance?
-		job.id
+		cb null, job.id if cb?
 
 	removeJob: (job) ->
 		@backend.removeJob(job)
