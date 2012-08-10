@@ -20,11 +20,28 @@ lock_vm = (helper, data, next) ->
 
     next null, data
 
-allocate_vm = (helper, data, next) ->
-  # TODO how to get provider for VM's hostnode?
+# wait for VM to get allocated (analogy to `knife bootstrap`)
+wait_for_vm = (helper, data, next) ->
 
+  vm_uuid = "vm:#{data.vm.uuid}"
 
+  next null, data,
+    type: 'subscribe'
+    timeout: 60000
+    selector: (object, message, next) ->
+      next() if object is vm_uuid
+    callback: do_something
+    on_expiry: on_expiry_allocate
 
+do_something = (helper, data, next) ->
+  console.log '---- VM allocate finished'
+
+  next null, data
+
+on_expiry_allocate = (helper, data, next) ->
+  console.log '---- VM allocate expired'
+
+  next null, data
 
 on_error = (helper, data, next, err) ->
   # FIXME implement
@@ -34,7 +51,9 @@ on_error = (helper, data, next, err) ->
 class VMAllocateWorkflow
   constructor: () ->
     return {
-      flow: [lock_vm]
+      flow: [lock_vm, wait_for_vm]
       on_error: on_error
-      timeout: 60000
+      timeout: 120000
     }
+
+module.exports = VMAllocateWorkflow
