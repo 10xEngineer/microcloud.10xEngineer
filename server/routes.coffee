@@ -159,7 +159,7 @@ module.exports.registerRoutes = (server) ->
 	server.post '/pools/:pool/nodes', commands.pool.addserver
 	server.del '/pools/:pool/nodes/:server_id', commands.pool.removeserver
 	# add/remove an LXC instance to the ec2 server in the pool
-	server.post '/pools/:pool/allocate', commands.pool.allocate
+	server.post '/pools/:pool/bootstrap', commands.pool.bootstrap
 	server.post '/pool/:server/:container/deallocate', commands.pool.deallocate
 
   #server.get '/server/start/:destination', commands.server.start
