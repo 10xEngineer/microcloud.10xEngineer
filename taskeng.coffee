@@ -91,7 +91,6 @@ socket.on 'message', (data) ->
 		workflow: "SimpleWorkflow"
 
 	job = runner.createJob _data1, null, (err, job_id) ->
-		console.log '--- xxx'
 		if err
 			console.log err
 			return socket.send JSON.stringify

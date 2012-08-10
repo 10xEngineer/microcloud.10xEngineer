@@ -87,6 +87,7 @@ class Job extends Base
 		if add_step
 			@.steps.push(add_step)
 		else
+			log.error "job=#{@.id} terminated on_error"
 			@.steps = []
 
 		@active_task_cb()
