@@ -103,7 +103,7 @@ module.exports.get = (req, res, next) ->
 
       res.send pool_data
 
-module.exports.allocate = (req, res, next) ->
+module.exports.bootstrap = (req, res, next) ->
   # TODO get VMs (lock), or fail
   # TODO dispatch allocate
 

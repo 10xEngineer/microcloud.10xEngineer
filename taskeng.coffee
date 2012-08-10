@@ -83,8 +83,8 @@ socket.on 'message', (data) ->
 		workflow: "VMAllocateWorkflow"
 		lab:
 			name: "labxxx"
+			pool: "xxxtest"			
 		vm:
-			pool: "xxxtest"
 			name: "xxx666"
 
 	_data =

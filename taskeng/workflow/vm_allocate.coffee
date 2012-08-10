@@ -4,15 +4,15 @@
 
 log = require("log4js").getLogger()
 
-lock_vm = (helper, data, next) ->
+bootstrap_vm = (helper, data, next) ->
   pool_name = data.vm.pool || data.lab.pool
 
-  allocate_data = 
+  bootstrap_data = 
     lab: data.lab.name
     vm: 
       vm_name: data.vm.name
 
-  helper.post "/pools/#{pool_name}/allocate", allocate_data, (err, req, res, obj) ->
+  helper.post "/pools/#{pool_name}/bootstrap", bootstrap_data, (err, req, res, obj) ->
     if err
       next obj
       
@@ -34,12 +34,12 @@ wait_for_vm = (helper, data, next) ->
     on_expiry: on_expiry_allocate
 
 do_something = (helper, data, next) ->
-  console.log '---- VM allocate finished'
+  console.log '---- VM bootstrap finished'
 
   next null, data
 
 on_expiry_allocate = (helper, data, next) ->
-  console.log '---- VM allocate expired'
+  console.log '---- VM bootstrap expired'
 
   next null, data
 
@@ -53,7 +53,7 @@ on_error = (helper, data, next, err) ->
 class VMAllocateWorkflow
   constructor: () ->
     return {
-      flow: [lock_vm, wait_for_vm]
+      flow: [bootstrap_vm, wait_for_vm]
       on_error: on_error
       timeout: 120000
     }

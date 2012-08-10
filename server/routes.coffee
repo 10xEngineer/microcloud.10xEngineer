@@ -90,7 +90,6 @@ module.exports.registerRoutes = (server) ->
 	# server.get '/cookbooks/:cookbook/:version', commands.cookbooks.show
 	# 
 
-
 	# 
 	# microcloud events
 	#
