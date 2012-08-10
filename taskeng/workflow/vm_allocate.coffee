@@ -29,7 +29,7 @@ wait_for_vm = (helper, data, next) ->
     type: 'subscribe'
     timeout: 60000
     selector: (object, message, next) ->
-      next() if object is vm_uuid
+      next() if object is vm_uuid and message.event is 'bootstrapped'
     callback: do_something
     on_expiry: on_expiry_allocate
 

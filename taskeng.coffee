@@ -108,7 +108,7 @@ client.on 'psubscribe', (channel, count) ->
 	log.info "subscribed to redis notifications"
 
 client.on 'pmessage', (pattern, channel, message) ->
-	runner.processNotification channel, message
+	runner.processNotification channel, JSON.parse message
 
 client.psubscribe "*"
 
