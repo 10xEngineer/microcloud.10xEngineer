@@ -162,7 +162,9 @@ converge_example = (helper, data, next) ->
 				scheduled: new Date().getTime() + 3000*num
 			say: "hello"
 
-		helper.createSubJob data.id, jobData 
+		helper.createSubJob data.id, jobData, (err) ->
+			if err
+				console.log "--- SUBJOB ERR: #{err}"
 
 	console.log '-- waiting for all sub-jobs to finish'
 

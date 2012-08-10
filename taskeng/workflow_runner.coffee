@@ -21,10 +21,13 @@ class WorkflowRunner
 
 		log.info "Initialized workflow runner #{@id}"
 
-	createJob: (data, parent_id = null) ->
+	createJob: (data, parent_id = null, cb) ->
 		# FIXME it accepts job data as they are (add validation)
 
 		workflow = @workflows[data.workflow]
+		unless workflow?
+			return cb(new Error("Undefined workflow '#{data.workflow}'"))
+
 		options = data.options || {}
 
 		job = new Job(@backend.generate_id(), workflow, data, parent_id)
