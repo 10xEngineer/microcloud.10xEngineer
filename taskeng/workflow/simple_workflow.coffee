@@ -39,16 +39,16 @@
 # registers next step as object with type `converge`.
 #
 # Only after all child jobs finish/or expire the job can continue. Job data of all sub-jobs are 
-# stored under the job data.NameOfTheSubJobsWorkflow array. It's jobs responsible to process it, 
-# or remove it.
+# stored under the job data.NameOfTheSubJobsWorkflow array based on the job end-state -
+# completed, failed or expired. It's jobs responsible to process it, or remove it.
 #
 # Example:
 #
 # { workflow: 'SimpleWorkflow',
 #  id: '94e34b5f-28f8-4d37-af92-58ad46f4e3f3',
 #   protected: 3,
-#   SecondSimpleWorkflow: 
-#   [ { workflow: 'SecondSimpleWorkflow',
+#   SecondSimpleWorkflow: {
+#		completed: [ { workflow: 'SecondSimpleWorkflow',
 #        options: [Object],
 #        say: 'hi!',
 #        id: 'eb47a13e-c80a-4f65-8da2-85d9d06816ab' },
@@ -59,7 +59,9 @@
 #      { workflow: 'SecondSimpleWorkflow',
 #        options: [Object],
 #        say: 'hi!',
-#        id: '6fa2f4c6-83ab-4d1b-9596-20b03227b96a' } ],
+#        id: '6fa2f4c6-83ab-4d1b-9596-20b03227b96a' } ]
+		failed: [],
+		expired: []}
 #   event: [Function] }
 #
 # Internal/external notifications can be used as events for job flow using listner type 

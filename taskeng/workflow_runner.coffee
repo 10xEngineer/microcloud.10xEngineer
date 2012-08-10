@@ -163,9 +163,8 @@ class WorkflowRunner
 				# finish the task
 				cb()
 
-				job.data.state = 'completed' unless job.data.state == 'failed'
+				job.data.state = 'completed' if job.data.state is 'created'
 				log.debug "job=#{job_id} finished in time=#{run_time} ms with state=#{job.data.state}"
-
 
 				if job.parent_id? 
 					log.debug "sub job=#{job.id} notifies parent"
@@ -177,8 +176,13 @@ class WorkflowRunner
 
 						wf_name = job.workflow.name
 
-						parent_job.data[wf_name] = [] unless parent_job.data[wf_name]
-						parent_job.data[wf_name].push(job.data)
+						unless parent_job.data[wf_name]
+							parent_job.data[wf_name] =
+								completed: []
+								failed: []
+								expired: []
+
+						parent_job.data[wf_name][job.data.state].push(job.data)
 
 						parent_job.removeChild(job)
 						next parent_job
@@ -201,7 +205,10 @@ class WorkflowRunner
 		@backend.staleJobs (job) =>
 			console.log "job=#{job.id} expired"
 
-			@backend.removeJob(job.id)
+			job.data.state = 'expired'
+			job.steps = []
+
+			@.updateJob(job, true)
 
 		@backend.staleListeners (listener) =>
 			console.log "listener=#{listener.id} expired"
@@ -209,9 +216,10 @@ class WorkflowRunner
 			on_expiry = listener.on_expiry
 
 			@backend.getJob listener.id, (err, job) =>
-				job.addStep(on_expiry)
+				job.data.state = 'expired'
+				job.steps = [on_expiry]
 
-				@backend.removeListener(listener.id)
+				@.updateJob(job, true)
 
 		log.debug "stats: jobs=#{_.keys(@backend.jobs).length} queue=#{@queue.length()} listeners=#{_.keys(@backend.listeners).length} subscribers=#{_.keys(@backend.subscriptions).length} tasks=#{@task_count}"
 
