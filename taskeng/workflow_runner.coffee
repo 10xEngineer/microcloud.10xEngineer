@@ -210,6 +210,10 @@ class WorkflowRunner
 
 			@.updateJob(job, true)
 
+			# remove listener (in cases when job expires before the listener)
+			if @backend.hasListener(job.id)
+				@backend.removeListener(job.id)
+
 		@backend.staleListeners (listener) =>
 			console.log "listener=#{listener.id} expired"
 
@@ -220,6 +224,7 @@ class WorkflowRunner
 				job.steps = [on_expiry]
 
 				@.updateJob(job, true)
+				@backend.removeListener(job.id)
 
 		log.debug "stats: jobs=#{_.keys(@backend.jobs).length} queue=#{@queue.length()} listeners=#{_.keys(@backend.listeners).length} subscribers=#{_.keys(@backend.subscriptions).length} tasks=#{@task_count}"
 

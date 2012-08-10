@@ -63,9 +63,13 @@ class Backend
 		@.addSubscriber(id, listener) if listener.type is 'subscribe'
 
 	removeListener: (id) ->
+		return unless @listeners[id]?
 		@.removeSubscriber(id) if @listeners[id].type is 'subscribe'
 
 		delete @listeners[id]
+
+	hasListener: (id) ->
+		@listeners[id]?
 
 	addSubscriber: (id, subscriber) ->
 		@subscriptions[id] = subscriber

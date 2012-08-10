@@ -60,8 +60,8 @@
 #        options: [Object],
 #        say: 'hi!',
 #        id: '6fa2f4c6-83ab-4d1b-9596-20b03227b96a' } ]
-		failed: [],
-		expired: []}
+#		failed: [],
+#		expired: []}
 #   event: [Function] }
 #
 # Internal/external notifications can be used as events for job flow using listner type 
