@@ -45,6 +45,7 @@ runner = new WorkflowRunner(backend)
 runner.register require("./taskeng/workflow/simple_workflow")
 runner.register require("./taskeng/workflow/simple2_workflow")
 runner.register require("./taskeng/workflow/lab_workflow")
+runner.register require("./taskeng/workflow/vm_allocate")
 
 # initial 0mq is only way how to submit job (using REQ only as it confirm only
 # if the job has been accepted or not)
@@ -78,16 +79,29 @@ socket.on 'message', (data) ->
 			operational: 
 				vms: []
 
+	_data2 = 
+		workflow: "VMAllocateWorkflow"
+		lab:
+			name: "labxxx"
+		vm:
+			pool: "xxxtest"
+			name: "xxx666"
+
 	_data =
 		workflow: "SimpleWorkflow"
 
-	job = runner.createJob(_data)
+	job = runner.createJob _data2, null, (err) ->
+		if err
+			console.log err
+			socket.send JSON.stringify
+				status: "error"
+				reason: err.message
+		else
+			reply = 
+				status: "ok"
+				job_id: job.id
 
-	reply = 
-		status: "ok"
-		job_id: job.id
-
-	socket.send JSON.stringify(reply)
+			socket.send JSON.stringify(reply)
 
 # redis pubsub integration
 client.on 'psubscribe', (channel, count) ->
