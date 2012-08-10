@@ -56,7 +56,7 @@ LabSchema.statics.paths = ->
 
 			"pending"
 	
-		vm_allocated: (lab, active_vms) =>
+		vm_available: (lab, active_vms) =>
 			# TODO make re-usable (vm_running, vm_allocated)
 			# FIXME this should be handled by lab workflow
 			#vm_count = lab.definition.vms.length

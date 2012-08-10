@@ -46,7 +46,7 @@ class LxcService < Provider
     end
   end
 
-  def allocate(request)
+  def bootstrap(request)
     # allocate prepared container 
     # arguments: id, course_template (how to finish the provisioning)
 
@@ -59,11 +59,11 @@ class LxcService < Provider
     # confirm processing
     response :ok
 
-    # FIXME remove - simulating long running operation
+    # FIXME remove - simulating long running operation (image provisioning)
     sleep 3 + (rand 10)
 
     # TODO build body with basic attributes (id used from resource_id)
-    notify :vm, request["options"]["id"], :allocate, {}
+    notify :vm, request["options"]["id"], :bootstrapped, {}
   end
 
   def start(request)

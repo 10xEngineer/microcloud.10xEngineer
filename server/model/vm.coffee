@@ -50,12 +50,12 @@ Vm.statics.paths = ->
     start: (vm, vm_data) ->
       vm.start(vm_data)
 
-      return "running"
+      return "available"
 
     allocate: (vm) ->
       log.warn "Invalid event :alocate_xxx for VM in state=prepared"
 
-      return "allocated"
+      return "available"
 
     destroy: (vm) ->
       return "destroyed"
@@ -65,32 +65,33 @@ Vm.statics.paths = ->
       "locked"
 
   "locked":
-    allocate: (vm) ->
+    bootstrapped: (vm) ->
       # FIXME continue how to get lab instance
       #vm.lab.vms.push(vm.id);
       #vm.lab.save (err) ->
       #  if err
       #    log.error("Unable to add vm to lab=#{lab.token}")
 
-      return "allocated"
+      return "available"
 
   "reserved": {}
 
-  "allocated":
+  "available":
     start: (vm, vm_data) ->
       vm.start(vm_data)
 
-      return "running"
+      return "available"
 
     destroy: (vm) ->
       return "destroyed"
 
-  "running":
+  # TODO decomission - can't move from available (chef provisioned to running), doesn't make
+  #      sense.
     stop: (vm, vm_data) ->
       vm.descriptor.ip_addr = null
       vm.markModified('descriptor')
       
-      return "allocated"
+      return "destroyed"
 
   "destroyed": {}
 

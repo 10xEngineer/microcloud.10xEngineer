@@ -156,14 +156,14 @@ module.exports.bootstrap = (req, res, next) ->
         next null, vm
   ]
 
-  allocateVM = ['getVM', (next, results) ->
+  bootstrapVM = ['getVM', (next, results) ->
     vm = results.getVM
 
     data = 
       id: vm.uuid
       server: vm.server.hostname
 
-    req = broker.dispatch vm.server.type, 'allocate', data
+    req = broker.dispatch vm.server.type, 'bootstrap', data
     req.on 'data', (message) ->
       next null
 
@@ -176,7 +176,7 @@ module.exports.bootstrap = (req, res, next) ->
     findPool: findPool
     getLab: getLab
     getVM: getVM
-    allocateVM: allocateVM
+    bootstrapVM: bootstrapVM
   , (err, results) ->
     if err
       helper.handleErr res, err
