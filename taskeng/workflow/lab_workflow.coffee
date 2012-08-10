@@ -1,6 +1,12 @@
 #
 # balance lab workflow
 #
+# TODO compile list of VMs to provision/remove
+# TODO launch new VMs
+# TODO wait for all VMs to bootstrap
+# TODO ?? chef run
+# TODO 
+#
 log = require("log4js").getLogger()
 
 on_error = (helper, data, next, err) ->
@@ -40,27 +46,32 @@ verify_vms = (helper, data, next) ->
 
 	next null, data
 
-allocate_vms = (helper, data,next) ->
-	# TODO pass pool name
-	# FIXME allocation is performed in series (sub-jobs for the rescue)
+bootstrap_vms = (helper, data,next) ->
+	for i of data.launch_vms
+		bootstrap_data = 
+			workflow: "VMAllocateWorkflow"
+			lab: data.lab
+			vm: data.launch_vms[i]
 
-	pool = data.lab.pool
+		helper.createSubJob data.id, bootstrap_data, (err) ->
+			if err
+				log.error "job=#{data.id} subJob workflow=#{bootstrap_data.workflow} failed reason=#{err.message}"
 
-	data = 
-		lab: data.lab.name
-		vms: data.launch_vms
+	next null, data,
+		type: 'converge'
+		timeout: 180000
+		# TODO continue -> wait_for_lab (what exactly for?s)
+		callback: dummy
+		on_expiry: on_expiry_bootstrap
 
-	url = "/pools/#{pool}/allocate"
+on_expiry_bootstrap = (helper, data, next) ->
+	# FIXME implement
+	console.log "--- LAB WORKFLOW boostrap on_expiry; couldn't allocate requested VMs"
 
-	console.log url 
-	helper.post url, data, (err, req, res, obj) ->
-		if err
-			console.log '---- allocate failed'
-			return next res
+	next null, data
 
-		delete data.launch_vms
-
-		return next null, data
+dummy = (helper, data, next) ->
+	next null, data
 
 wait_for_lab = (helper, data, next) ->
 	next null, data, 
@@ -91,7 +102,7 @@ ping = (helper, data, next) ->
 class BalanceLabWorkflow
 	constructor: () ->
 		return {
-			flow: [verify_vms, allocate_vms, wait_for_lab]
+			flow: [verify_vms, bootstrap_vms]
 			on_error: on_error
 			timeout: 300000
 		}
