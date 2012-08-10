@@ -50,7 +50,7 @@ class Job extends Base
 					return @runner.updateJob(this, true)
 
 			on_error = @workflow_def.on_error
-			return on_error BrokerHelper, @.data, @.on_error_helper if on_error
+			return on_error BrokerHelper, @.data, @.on_error_helper, err if on_error
 
 		re_insert = true
 
@@ -82,7 +82,7 @@ class Job extends Base
 		if err
 			console.log '-JOB: on_error failed'
 
-		console.log '-JOB: on_error next helper triggered'
+		log.debug "on_error next helper triggered for job=#{@id}"
 
 		if add_step
 			@.steps.push(add_step)
@@ -90,7 +90,8 @@ class Job extends Base
 			@.steps = []
 
 		@active_task_cb()
-		@runner.updateJob(this)
+		# don't need to re-insert job as we're in error handler (triggered directly)
+		@runner.updateJob(this, false, false)
 
 	expired: ->
 		# total workflow run time is limited by @timeout

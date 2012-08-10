@@ -14,7 +14,7 @@ lock_vm = (helper, data, next) ->
 
   helper.post "/pools/#{pool_name}/allocate", allocate_data, (err, req, res, obj) ->
     if err
-      next res
+      next obj
       
     data.vm.uuid = obj.uuid
 
@@ -47,6 +47,8 @@ on_error = (helper, data, next, err) ->
   # FIXME implement
   console.log '-VM_ALLOCATE: failed'
   console.log err
+
+  next null, data
 
 class VMAllocateWorkflow
   constructor: () ->

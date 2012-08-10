@@ -145,7 +145,7 @@ class WorkflowRunner
 			next_step = job.nextStep()
 			job.active_task_cb = cb
 
-			if next_step
+			if next_step?
 				@task_count++
 
 				if typeof next_step is 'function'
@@ -160,7 +160,9 @@ class WorkflowRunner
 			else
 				run_time = new Date().getTime() - job.created_at
 				log.debug "job=#{job_id} finished in time=#{run_time} ms"
+
 				# finish the task
+				cb()
 
 				if job.parent_id? 
 					log.debug "sub job=#{job.id} notifies parent"
@@ -182,7 +184,7 @@ class WorkflowRunner
 						log.error "job=#{job.parent_id} child-to-parent notification failed; reason=#{err}"
 
 				@.removeJob(job_id)
-				cb()
+				
 
 	run: ->
 		@.setUpdateInterval(@.run_ext, @interval)
