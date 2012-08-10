@@ -9,7 +9,7 @@ class Job extends Base
 	DEFAULT_RETRY_TIMEOUT = 5000
 
 	constructor: (@id, @workflow, @data, @parent_id = null) ->
-		@state = "created"
+		@data.state = "created"
 
 		@workflow_def = @workflow()
 		@steps = @workflow_def.flow
@@ -88,6 +88,7 @@ class Job extends Base
 			@.steps.push(add_step)
 		else
 			log.error "job=#{@.id} terminated on_error"
+			@.data.state = 'failed'
 			@.steps = []
 
 		@active_task_cb()

@@ -159,10 +159,13 @@ class WorkflowRunner
 				next.step @helper, job.data, @.build_helper(job, cb)
 			else
 				run_time = new Date().getTime() - job.created_at
-				log.debug "job=#{job_id} finished in time=#{run_time} ms"
 
 				# finish the task
 				cb()
+
+				job.data.state = 'completed' unless job.data.state == 'failed'
+				log.debug "job=#{job_id} finished in time=#{run_time} ms with state=#{job.data.state}"
+
 
 				if job.parent_id? 
 					log.debug "sub job=#{job.id} notifies parent"
