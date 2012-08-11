@@ -65,6 +65,10 @@ Vm.statics.paths = ->
       "locked"
 
   "locked":
+    start: (vm) ->
+      "running"
+
+  "running":
     bootstrapped: (vm) ->
       # FIXME continue how to get lab instance
       #vm.lab.vms.push(vm.id);

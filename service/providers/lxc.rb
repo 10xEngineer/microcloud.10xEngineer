@@ -71,6 +71,11 @@ class LxcService < Provider
 
       response :fail, error
     end
+
+    # FIXME simulate random bootstrap time
+    sleep 10 + (rand 15)
+
+    notify :vm, request["options"]["id"], :bootstrapped, {} 
   end
 
   def stop(request)
