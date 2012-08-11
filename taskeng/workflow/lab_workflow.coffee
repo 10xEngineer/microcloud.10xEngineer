@@ -1,16 +1,13 @@
 #
 # balance lab workflow
 #
-# TODO compile list of VMs to provision/remove
-# TODO launch new VMs
-# TODO wait for all VMs to bootstrap
 # TODO ?? chef run
 # TODO 
 #
 log = require("log4js").getLogger()
 
 on_error = (helper, data, next, err) ->
-	log.error "lab provisioning failed TODO"
+	log.error "-- XXX --- lab provisioning failed TODO"
 
 	next null, data
 
@@ -71,7 +68,19 @@ on_expiry_bootstrap = (helper, data, next) ->
 	next null, data
 
 dummy = (helper, data, next) ->
-	next null, data
+	# FIXME failed
+
+	console.log '--- DUMMY'
+	console.log "-- stats: completed: #{data.VMAllocateWorkflow.completed.length}"
+	console.log "-- stats: failed: #{data.VMAllocateWorkflow.failed.length}"
+	console.log "-- stats: expired: #{data.VMAllocateWorkflow.expired.length}"
+	console.log "--- expected: #{data.VMAllocateWorkflow.completed.length}"
+	console.log "--- expected: #{data.launch_vms.length}"
+
+	if data.VMAllocateWorkflow.completed.length == data.launch_vms.length
+		next null, data
+	else 
+		next "XYZ", data
 
 wait_for_lab = (helper, data, next) ->
 	next null, data, 

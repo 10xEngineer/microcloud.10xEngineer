@@ -50,9 +50,15 @@ LabSchema.statics.paths = ->
 
 			"pending"
 
+	# TODO pending does not really represent true state
 	"pending":
 		vm_locked: (lab, vms) ->
 			log.debug "lab=#{lab.name} received vm_locked"
+
+			"pending"
+
+		vm_running: (lab, vms) ->
+			log.debug "lab=#{lab.name} received vm_running"
 
 			"pending"
 	
@@ -70,7 +76,6 @@ LabSchema.statics.paths = ->
 		confirm: (lab) ->
 			log.debug "lab=#{lab.name} state=confirmed"
 			"created"
-
 
 #
 # VM integration

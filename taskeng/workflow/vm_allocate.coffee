@@ -15,14 +15,13 @@ bootstrap_vm = (helper, data, next) ->
   helper.post "/pools/#{pool_name}/bootstrap", bootstrap_data, (err, req, res, obj) ->
     if err
       next obj
-      
+
     data.vm.uuid = obj.uuid
 
     next null, data
 
 # wait for VM to get allocated (analogy to `knife bootstrap`)
 wait_for_vm = (helper, data, next) ->
-
   vm_uuid = "vm:#{data.vm.uuid}"
 
   next null, data,
@@ -53,6 +52,7 @@ on_error = (helper, data, next, err) ->
 class VMAllocateWorkflow
   constructor: () ->
     return {
+      # TODO insert start (depends on server handler type)
       flow: [bootstrap_vm, wait_for_vm]
       on_error: on_error
       timeout: 120000
