@@ -10,7 +10,7 @@ class LxcService < Provider
   # descriptor (disk size, cgroups, firewall, etc). might come from course-lab-descriptor
 
   before_filter :validate_hostname
-  before_filter :validate_vm, :only => [:allocate, :start, :stop, :status, :destroy]
+  before_filter :validate_vm, :only => [:bootstrap, :start, :stop, :status, :destroy]
   before_filter :setup_ssh
 
   # ssh stub
@@ -47,26 +47,13 @@ class LxcService < Provider
   end
 
   def bootstrap(request)
-    # allocate prepared container 
-    # arguments: id, course_template (how to finish the provisioning)
-
-    # TODO allocate vs start
-    # TODO unable to run lxc-execute to finish provisioning
-    # TODO lxc-start 
+    # updated logic (10xEngineer -> 10xLabs switch) the bootstrap is effectivly lcx-start
     #
-    endpoint = @config["hostnode"]["endpoint"]
+    # 1. VMs are already prepared
+    # 2. Start finishes the bootstrap cycle
+    # 3. Initial bootstrap (think knife bootstrap) is facilitated as part of the first boot
+    # 4. Sends external notification to MC/TE
 
-    # confirm processing
-    response :ok
-
-    # FIXME remove - simulating long running operation (image provisioning)
-    sleep 3 + (rand 10)
-
-    # TODO build body with basic attributes (id used from resource_id)
-    notify :vm, request["options"]["id"], :bootstrapped, {}
-  end
-
-  def start(request)
     command = ["/usr/bin/sudo", "/usr/local/bin/10xeng-vm", "-j", "start"]
     command << "--id #{@id}"
 
@@ -75,7 +62,7 @@ class LxcService < Provider
 
       options = Yajl::Parser.parse(res)
 
-      response :ok, options
+      response :ok
     rescue Net::SSH::AuthenticationFailed => e
       response :fail, {:reason => "Hostnode authentication failed"}
     rescue Exception => e
