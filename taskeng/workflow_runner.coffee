@@ -79,8 +79,10 @@ class WorkflowRunner
 	updateListener: (job_id, listener, type, data, cb = null) ->
 		@backend.getJob job_id, (err, job) =>
 			if err
-				# FIXME cb == null
-				return cb(err)
+				if cb?
+					return cb(err)
+				else
+					return 
 
 			if listener.type is 'converge'
 				return unless job.subjobs.length == 0
@@ -187,7 +189,7 @@ class WorkflowRunner
 						parent_job.removeChild(job)
 						next parent_job
 
-					@.processEvent job.parent_id, job.data, (err) ->
+					@.processEvent job.parent_id, null, job.data, (err) ->
 						log.error "job=#{job.parent_id} child-to-parent notification failed; reason=#{err}"
 
 				@.removeJob(job_id)
