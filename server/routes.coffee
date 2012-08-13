@@ -61,11 +61,22 @@ module.exports.registerRoutes = (server) ->
 	#server.get '/labs/:lab/versions/compare/:ver_from...:ver_to', commands.labs.compare
 
 	#
+	# NEW deploy specific labs/cookbooks
+	#
+	#server.get '/:owner/'
+	#server.get '/:owner/:lab'
+	#server.get '/:owner/:lab/versions'
+	#server.get '/:owner/:lab/versions/:version'
+	#server.get '/:owner/cookbooks'
+	#server.get '/:owner/cookbooks/:cookbook'
+	#server.get '/:owner/cookbooks/:cookbook/versions'
+	#server.get '/:owner/cookbooks/:cookbook/versions/:versions'
+	#
+	#server.get '/cookbooks' -> redirect to default user's cookbooks
+
+	#
 	# actions
 	#server.post '/labs/:lab', commands.labs.update
-
-
-
 
 	# ---------------- original -----------------------------------------
 	# lab definition
