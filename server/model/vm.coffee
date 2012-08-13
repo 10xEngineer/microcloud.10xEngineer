@@ -81,6 +81,12 @@ Vm.statics.paths = ->
   "reserved": {}
 
   "available":
+    # TODO debug notifications from LXC (and Xen once available)
+    #      legacy notification (not longer needed)
+    bootstrap: (vm) ->
+      log.warn "duplicate notification 'bootstrap' for vm=#{vm.uuid}"
+      "available"
+
     start: (vm, vm_data) ->
       vm.start(vm_data)
 

@@ -29,17 +29,13 @@ wait_for_vm = (helper, data, next) ->
     timeout: 60000
     selector: (object, message, next) ->
       next() if object is vm_uuid and message.event is 'bootstrapped'
-    callback: do_something
-    on_expiry: on_expiry_allocate
+    callback: workflow_finish
+    on_expiry: on_expiry_bootstrap
 
-do_something = (helper, data, next) ->
-  console.log '---- VM bootstrap finished'
-
+workflow_finish = (helper, data, next) ->
   next null, data
 
-on_expiry_allocate = (helper, data, next) ->
-  console.log '---- VM bootstrap expired'
-
+on_expiry_bootstrap = (helper, data, next) ->
   next null, data
 
 on_error = (helper, data, next, err) ->
