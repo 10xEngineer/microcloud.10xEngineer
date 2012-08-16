@@ -95,16 +95,18 @@ Vm.statics.paths = ->
     destroy: (vm) ->
       return "destroyed"
 
-  # TODO decomission - can't move from available (chef provisioned to running), doesn't make
-  #      sense.
     stop: (vm, vm_data) ->
       vm.descriptor.ip_addr = null
+      vm.descriptor.mac_addr = null
       vm.markModified('descriptor')
       
+      return "stopped"
+
+  "stopped":
+    destroy: (vm) ->
       return "destroyed"
 
   "destroyed": {}
-
 
 Vm.statics.reserve = (vm, lab) ->
   vm.fire 'book', lab, (err) ->
@@ -115,15 +117,16 @@ Vm.methods.start = (data) ->
   this.descriptor.ip_addr = data.ip_addr
   this.markModified('descriptor')
 
-Vm.addListener 'beforeTransition', (vm, event, data) ->
+#Vm.addListener 'beforeTransition', (vm, event, data) ->
+
+Vm.addListener 'afterTransition', (vm, prev_state, data) ->
+  # FIXME-events start/stop event notification
+
   if data.descriptor?
     vm.descriptor = data.descriptor
     vm.save (err) ->
       if err
         console.warn "Unable to save vm=#{vm.uuid} state on event=#{event}"
-
-Vm.addListener 'afterTransition', (vm, prev_state) ->
-  # FIXME-events start/stop event notification
 
   # notify hostnode
   if vm.server && mongoose.model("Hostnode")
