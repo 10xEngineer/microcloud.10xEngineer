@@ -113,7 +113,7 @@ module.exports.destroy = (req, res, next) ->
 
         req = broker.dispatch vm.server.type, 'destroy', options
         req.on 'data', (message) ->
-          vm.fire 'destroy', data.vm, (err) ->
+          vm.fire 'destroy', message.options, (err) ->
           if err
             console.log err
 
