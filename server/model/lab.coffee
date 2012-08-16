@@ -96,6 +96,4 @@ LabSchema.addListener 'vmStateChange', (lab, vm, prev_state) ->
 	  
 	log.debug "lab=#{lab.name} event=vmStateChange vm=#{vm.uuid} (#{prev_state} -> #{vm.state})"
 
-
-
 module.exports.register = mongoose.model 'Lab', LabSchema

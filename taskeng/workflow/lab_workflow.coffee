@@ -23,6 +23,8 @@ get_lab = (helper, data, next) ->
 		next null, data
 
 verify_vms = (helper, data, next) ->
+	# TODO find the diff in VMs  (run-list, attributes, etc.)
+
 	current_vms = {}
 	for vm in data.lab.operational.vms
 		current_vms[vm.name] = vm

@@ -3,6 +3,7 @@ module.exports = ->
 log = require("log4js").getLogger()
 mongoose = require("mongoose")
 Lab = mongoose.model("Lab")
+Vm = mongoose.model("Vm")
 Definition = mongoose.model("Definition")
 broker = require("../broker")
 async     = require 'async'
@@ -96,7 +97,26 @@ module.exports.show = (req, res, next) ->
 		.findOne({name: req.params.lab})
 		.populate("current_definition")
 		.exec (err, lab) ->
+			unless lab
+				return res.send 404, 
+					reason: "Lab not found."
+
 			res.send lab
+
+module.exports.get_vms = (req, res, next) ->
+	Lab
+		.findOne({name: req.params.lab})
+		.populate("current_definition")
+		.exec (err, lab) ->
+			unless lab
+				return res.send 404, 
+					reason: "Lab not found."
+
+			Vm
+				.find({lab: lab._id})
+				.exec (err, vms) ->
+					res.send vms
+
 
 module.exports.show_versions = (req, res, next) ->
 	versions = []
