@@ -59,7 +59,7 @@ module.exports.accept = (req, res, next) ->
 	# get all db-ref 
 	populate = []
 	for attr, val of model.schema.tree
-		if typeof val is 'object' and val.auto and val.ref
+		if typeof val is 'object' and val.xauto_populate and val.ref
 			query = query.populate(attr)
 
 

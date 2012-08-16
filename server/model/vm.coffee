@@ -8,10 +8,10 @@ async     = require 'async'
 Vm = new mongoose.Schema(
   uuid: {type: String, unique: true},
   state: {type: String, default: 'prepared'},
-  lab: {type:ObjectId, default: null, ref: 'Lab', auto:true},
+  lab: {type:ObjectId, default: null, ref: 'Lab', xauto_populate:true},
   vm_type: String,
   vm_name: String,
-  server: {type: ObjectId, ref: 'Hostnode', auto: true}
+  server: {type: ObjectId, ref: 'Hostnode', xauto_populate: true}
   pool: { type: ObjectId, ref: 'Pool' }
   # Mixed - dont' forget vm.markModified('descriptor')
   # http://mongoosejs.com/docs/schematypes.html#mixed

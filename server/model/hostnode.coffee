@@ -10,7 +10,7 @@ Hostnode = new Schema
   server_id : {type: String, unique: true}
   hostname: String
   provider: String
-  pool: {type:ObjectId, ref: 'Pool', auto: true}
+  pool: {type:ObjectId, ref: 'Pool', xauto_populate: true}
   type: String
   token: String
 
