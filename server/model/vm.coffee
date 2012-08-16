@@ -115,6 +115,13 @@ Vm.methods.start = (data) ->
   this.descriptor.ip_addr = data.ip_addr
   this.markModified('descriptor')
 
+Vm.addListener 'beforeTransition', (vm, event, data) ->
+  if data.descriptor?
+    vm.descriptor = data.descriptor
+    vm.save (err) ->
+      if err
+        console.warn "Unable to save vm=#{vm.uuid} state on event=#{event}"
+
 Vm.addListener 'afterTransition', (vm, prev_state) ->
   # FIXME-events start/stop event notification
 
