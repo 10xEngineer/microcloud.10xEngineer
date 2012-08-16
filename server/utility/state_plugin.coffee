@@ -32,7 +32,7 @@ module.exports = exports = stateMachinePlugin = (schema, init_with) ->
     action      = current[event]
     prev_state  = this.state
 
-    schema.emit 'beforeTransition', this, event
+    schema.emit 'beforeTransition', this, event, data
     
     if new_state = action this, data
       # publish notification
@@ -52,7 +52,7 @@ module.exports = exports = stateMachinePlugin = (schema, init_with) ->
       this.save (err) =>
         callback err, this
         unless err
-          schema.emit 'afterTransition', this, prev_state
+          schema.emit 'afterTransition', this, prev_state, data
           if new_state isnt prev_state
             schema.emit "onEntry:#{new_state}", this, prev_state
             schema.emit "onEntry", this, prev_state
