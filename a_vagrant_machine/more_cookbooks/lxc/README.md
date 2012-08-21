@@ -1,3 +1,0 @@
-# LXC Cookbook
-
-TODO

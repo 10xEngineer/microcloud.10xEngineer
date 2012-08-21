@@ -1,3 +1,0 @@
-# Microcloud host node
-
-
