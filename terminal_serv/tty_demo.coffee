@@ -44,7 +44,11 @@ myAuth = (callback, realm) ->
 
 		callback res == null, user, pass, (err, user, lab) ->
 			req.user = req.remoteUser = user
-			req.lab = lab
+
+			req.config = 
+				shell: "/Users/radim/test.sh"
+				shellArgs: []
+
 			next()
 
 verify = (is_socket, user, pass, next) ->

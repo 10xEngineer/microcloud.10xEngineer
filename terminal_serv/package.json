@@ -10,6 +10,6 @@
   "private": true,
   "dependencies": {
     "express": "*",
-    "tty.js": "git+ssh://git@bunny.laststation.net:440/tty.js#per_session"
+    "tty.js": "git://github.com/radim/tty.js.git#per_socket"
   }
 }
