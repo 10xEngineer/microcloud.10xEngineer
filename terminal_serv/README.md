@@ -23,6 +23,17 @@ where _auth = _BasicAuth
 	- calls next, user
 
 
+--- work in progress ----
+
+TODO provide own BasicAuth
+TODO authentication is triggered for all resources at the same time 
+	 res == null for socket.io calls
+
+callback (verify) can have more than 3 params
+https://github.com/senchalabs/connect/blob/master/lib/middleware/basicAuth.js#L82
+
+
+
 
 -> ENTRY point setAuth
 
