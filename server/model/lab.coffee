@@ -34,6 +34,11 @@ LabSchema = new mongoose.Schema({
 		# TODO networks
 	}
 
+	# TODO lab attributes is just a temporary mechanism how to store 
+	#      data in lab-context and make them available to the underlying
+	#      components.
+	#      Initial use-case is chef-level resourec to retrive data as a
+	#      replacement of search/databag.
 	attrs: {
 	}
 })
