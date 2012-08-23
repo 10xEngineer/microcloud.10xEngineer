@@ -17,6 +17,7 @@ gem "vagrant"
 gem "fog"
 gem "net-ssh"
 gem "uuid"
+gem "sshkey"
 
 # git management
 gem "grit"

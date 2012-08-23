@@ -19,6 +19,11 @@ socket = context.socket ZMQ::REQ
 #  :action => :ping
 #}
 
+request = {
+  :service => :key,
+  :action => :create
+}
+
 #
 #request = {
 #  :service => :lxc,
@@ -37,13 +42,13 @@ socket = context.socket ZMQ::REQ
 #  }
 #}
 
-request = {
-  :service => :git_adm,
-  :action => :create_repo,
-  :options => {
-    :name => "labxxx"
-  }
-}
+#request = {
+#  :service => :git_adm,
+#  :action => :create_repo,
+#  :options => {
+#    :name => "labxxx"
+#  }
+#}
 
 #request = {
 #  :service => :ec2,
@@ -63,8 +68,8 @@ message = Yajl::Encoder.encode(request)
 
 # local unix domain used for connection
 # should be configurable (as it might change once we got further deployment details)
-socket.connect "ipc:///tmp/taskeng"
-#"ipc:///tmp/mc.broker"
+#socket.connect "ipc:///tmp/taskeng"
+socket.connect "ipc:///tmp/mc.broker"
 
 1.times do 
   # send message
