@@ -27,9 +27,23 @@ module.exports.get = (req, res, next) ->
   #      https://trello.com/card/api-objects-decorators/50067c2712a969ae032917f4/39
   Vm
     .findOne({uuid: req.params.vm})
+    .populate("server")
     .exec (err, vm) ->  
       if vm
-        res.send vm
+        # TODO hardcoded
+        term_server_url = "http://#{vm.server.hostname}:9000/"
+
+        vm_data =  
+          uuid: vm.uuid
+          descriptor: vm.descriptor
+          type: vm.server.type
+          state: vm.state
+          term_server_url: term_server_url
+          vm_name: vm.vm_name
+          vm_type: vm.vm_type
+
+        res.send vm_data
+
       else res.send 404, err || "VM not found"
 
 module.exports.updates = (req, res, next) ->
