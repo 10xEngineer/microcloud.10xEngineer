@@ -28,6 +28,8 @@ module.exports.create = (req, res, next) ->
 		return res.send 412
 			reason: "Lab 'name' is required."
 
+	lab_attrs = data.attrs || {}
+
 	async.waterfall [
 		(next) ->
 			# TODO process parent lab/repo
@@ -50,8 +52,10 @@ module.exports.create = (req, res, next) ->
 			lab_data = 
 				name: data.name
 				token: token
+				attrs: lab_attrs
 
 			lab = new Lab(lab_data)
+			lab.markModified('attrs')
 			lab.save (err) ->
 				if err
 					next 

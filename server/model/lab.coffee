@@ -33,6 +33,9 @@ LabSchema = new mongoose.Schema({
 		# TODO storage
 		# TODO networks
 	}
+
+	attrs: {
+	}
 })
 
 LabSchema.index({ name: 1 }, { unique: true })
