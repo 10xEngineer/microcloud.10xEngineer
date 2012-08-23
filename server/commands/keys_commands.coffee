@@ -40,11 +40,30 @@ module.exports.create = (req, res, next) ->
 				identity: message.options.identity
 
 module.exports.show = (req, res, next) ->
-	# FIXME not implemented
-	res.send {}
+	Keypair
+		.findOne({name: req.params.key})
+		.exec (err, keypair) ->
+			if keypair
+				res.send keypair
+			else
+				res.send 404,
+					reason: "keypair '#{req.params.key}' not found."
 
 module.exports.destroy = (req, res, next) ->
+	# FIXME use soft-delete
 	Keypair
-		.findOne(fingerprint)
-	# FIXME not implemented
-	res.send {}
+		.findOne({name: req.params.key})
+		.exec (err, keypair) ->
+			if keypair
+				keypair.remove (err) ->
+					if err
+						log.warn "unable to remove keypair=#{req.params.key} reason=#{err.message}"
+						return res.send 500,
+							reason: err.message
+
+					res.send 
+						status: "deleted"
+
+			else
+				res.send 404,
+					reason: "keypair '#{req.params.key}' not found."
