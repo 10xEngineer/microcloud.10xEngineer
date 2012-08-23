@@ -26,6 +26,7 @@ server.use (req, res, next) ->
 # model
 require("./server/model/hostnode").register
 require("./server/model/provider").register
+require("./server/model/keypair").register
 require("./server/model/vm").register
 require("./server/model/lab").register
 require("./server/model/definition").register

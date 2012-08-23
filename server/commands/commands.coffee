@@ -10,6 +10,7 @@ notification = module.exports.notifications = require("./notifications_commands"
 providers = module.exports.providers = require("./providers_commands")
 vms = module.exports.vms = require("./vms_commands")
 labs = module.exports.labs = require("./labs_commands")
+keys = module.exports.keys = require("./keys_commands")
 
 events = module.exports.events = require("./events_commands")
 

@@ -41,6 +41,13 @@ module.exports.registerRoutes = (server) ->
 	server.del '/vms/:vm', commands.vms.destroy
 
 	#
+	# Key management
+	#
+	server.post '/keys', commands.keys.create
+	server.get '/keys/:key', commands.keys.show
+	server.del '/keys/:key', commands.keys.destroy
+
+	#
 	# Lab management
 	#
 	# TODO subject to heavy refactoring
