@@ -7,10 +7,16 @@ broker = require("../broker")
 
 module.exports.create = (req, res, next) ->
 	passphrase = null
+	name = null
 	if req.body
 		data = JSON.parse req.body
 
+		name = data.name || null
 		passphrase = data.passphrase || null
+
+	unless name?
+		res.send 412, 
+			reason: "keypair name required."
 
 	options = {}
 	options["passphrase"] = passphrase if passphrase?
@@ -18,6 +24,7 @@ module.exports.create = (req, res, next) ->
 	req = broker.dispatch 'key', 'create', options
 	req.on 'data', (message) ->
 		key_data = 
+			name: name
 			fingerprint: message.options.fingerprint
 			ssh_public_key: message.options.public
 
@@ -25,7 +32,8 @@ module.exports.create = (req, res, next) ->
 		keypair.save (err) ->
 			if err
 				log.error "unable to save keypair=#{message.options.fingerprint}"
-				return res.send 409, err
+				return res.send 409, 
+					reason: err.message
 
 			res.send 201,
 				fingerprint: key_data.fingerprint
@@ -36,5 +44,7 @@ module.exports.show = (req, res, next) ->
 	res.send {}
 
 module.exports.destroy = (req, res, next) ->
+	Keypair
+		.findOne(fingerprint)
 	# FIXME not implemented
 	res.send {}

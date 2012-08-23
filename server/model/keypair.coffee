@@ -6,7 +6,8 @@ Schema    = mongoose.Schema
 timestamps    = require "../utility/timestamp_plugin"
 
 KeypairSchema = new Schema
-	fingerprint: {type:String, unique: true}
+	name: {type: String, unique: true}
+	fingerprint: {type:String}
 	ssh_public_key: String
 
 KeypairSchema.plugin timestamps
