@@ -3,6 +3,10 @@
 # 
 #
 Lab.definition :lab1_10xeng do
+
+  # mixin 
+  include_aspect UBS::Base 
+
   # explicit VM definition
   # TODO how to specify resource pool (and therefore provider)?
   # TODO how to override provider settings? (instance size?)
