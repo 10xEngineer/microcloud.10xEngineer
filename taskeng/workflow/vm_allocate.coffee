@@ -9,8 +9,7 @@ bootstrap_vm = (helper, data, next) ->
 
   bootstrap_data = 
     lab: data.lab.name
-    vm: 
-      vm_name: data.vm.name
+    vm: data.vm
 
   helper.post "/pools/#{pool_name}/bootstrap", bootstrap_data, (err, req, res, obj) ->
     if err

@@ -14,7 +14,7 @@ Vm = mongoose.model 'Vm'
 ObjectId = mongoose.Schema.ObjectId
 
 AllocatedVMSchema = new mongoose.Schema({
-	name: { type: String, required: true }
+	name: { type: String }
 	vm: {type: ObjectId, ref: 'Vm'}
 	# TODO attributes
 	# TODO networking details
@@ -38,7 +38,7 @@ LabSchema = new mongoose.Schema({
 	#      data in lab-context and make them available to the underlying
 	#      components.
 	#      Initial use-case is chef-level resourec to retrive data as a
-	#      replacement of search/databag.
+#      replacement of search/databag.
 	attrs: {
 	}
 })
@@ -109,9 +109,8 @@ LabSchema.addListener 'vmStateChange', (lab, vm, prev_state) ->
 
 		lab.operational.vms.push(allocated_vm)
 		lab.save (err) ->
-
 			if err 
-				log.warn "unable to update vm=#{vm.uuid} err=#{err}" 
+				log.warn "unable to update(1) lab=#{lab.name} vm=#{vm.uuid} err=#{err}"
 
 	# TODO test once the VM lifecycle notifications are fixed
 	# https://trello.com/card/lxc-dnsmasq-does-not-maintain-ip-address-lease-based-on-actual-container-state/50067c2712a969ae032917f4/57
@@ -123,7 +122,7 @@ LabSchema.addListener 'vmStateChange', (lab, vm, prev_state) ->
 
     		lab.save (err) ->
     			if err
-    				log.warn "unable to update vm=#{vm.uuid} err=#{err}" 
+    				log.warn "unable to update(2) lab=#{lab.name} for vm=#{vm.uuid} err=#{err}" 
 	  
 	log.debug "lab=#{lab.name} event=vmStateChange vm=#{vm.uuid} (#{prev_state} -> #{vm.state})"
 
