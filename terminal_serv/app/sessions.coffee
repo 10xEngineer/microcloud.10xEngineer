@@ -6,6 +6,7 @@ log = require("log4js").getLogger()
 http = require("http")
 uuid = require("node-uuid")
 crypto = require('crypto')
+fs = require('fs')
 
 MAGIC_STRING = "GyFfJywqgwVcXeY24J"
 
@@ -19,7 +20,7 @@ module.exports.create = (req, res, next) ->
 		return res.send 412, 
 			reason: "lab, user, vm_name and private_key required."
 
-	session_id = uuid.v4()
+	id = uuid.v4()
 
 	get_vms = (lab, callback) ->
 		# FIXME hardcoded
@@ -57,7 +58,7 @@ module.exports.create = (req, res, next) ->
 
 		callback(shasum.digest('hex'))
 
-	store_session = (session_id, user, vm, callback) ->
+	store_session = (session_id, user, vm, private_key, callback) ->
 		hash = "#{session_id}:#{user}@#{vm.descriptor.ip_addr}"
 
 		generate_secret hash, (secret) ->
@@ -67,23 +68,36 @@ module.exports.create = (req, res, next) ->
 				.hset(session_id, "host", vm.descriptor.ip_addr)
 				.exec (err, replies) ->
 					unless err
-						callback null, secret
+						save_key session_id, private_key, (err) ->
+							if err
+								return callback err
+
+							log.debug "session=#{session_id} host=#{vm.descriptor.ip_addr} created"
+							callback null, secret
 					else
 						callback err
 
+	save_key = (session_id, key, callback) ->
+		# FIXME proper localtion
+		fname = "/tmp/#{session_id}.key"
 
+		fs.writeFile fname, key, (err) ->
+			if err
+				return callback err
+
+			callback(null)
 
 	# get the vm
 	get_vms data.lab, (err, vm) ->
 		if err
 			return res.send 417, err
 
-		store_session session_id, data.user, vm, (err, secret) ->
+		store_session id, data.user, vm, data.private_key, (err, secret) ->
 			if err
 				return res.send 500, err
 
 			res.send 
-				id: session_id
+				id: id
 				secret: secret
 
 		# TODO store private_key to a file
