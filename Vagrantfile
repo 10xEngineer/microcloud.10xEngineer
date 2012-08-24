@@ -15,7 +15,7 @@ Vagrant::Config.run do |config|
   config.vm.box = '10xeng-precise32'
 
   # define ports to forward to host
-  #config.vm.forward_port 8080, 8080
+  config.vm.forward_port 9000, 9000
   config.vm.forward_port 443, 8443
   
   # additional shared folders
@@ -45,6 +45,13 @@ Vagrant::Config.run do |config|
     # override configuration
     chef.json = {
       # location of Microcloud endpoint
+      :users => 
+        [
+          {
+            :id => "xxx",
+            :key => "test-key"
+          }
+        ],
       :microcloud => {
         :endpoint => $microcloud_endpoint,
       },
