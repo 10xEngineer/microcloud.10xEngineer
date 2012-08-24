@@ -21,16 +21,6 @@ module.exports.create = (req, res, next) ->
 
 	session_id = uuid.v4()
 
-	# get the vm
-	get_vms data.lab, (err, vm) ->
-		if err
-			return res.send 417, err
-
-		# TODO generate secret token
-		# TODO save to redis
-		# TODO store private_key to a file
-		# DONE
-
 	get_vms = (lab, callback) ->
 		# FIXME hardcoded
 		url = "http://bunny.laststation.net:8080/labs/#{data.lab}/vms"
@@ -41,7 +31,7 @@ module.exports.create = (req, res, next) ->
 			_res.on 'data', (chunk) ->
 				vms_raw += chunk
 
-			_res.on 'end', () ->			
+			_res.on 'end', () ->
 				if _res.statusCode != 200
 					return res.send _res.statusCode, "can't get lab VMs: #{_res.statusCode}"
 
@@ -60,12 +50,46 @@ module.exports.create = (req, res, next) ->
 
 		callback(null)
 
-	create_secret = (data, callback) ->
+	generate_secret = (data, callback) ->
 		shasum = crypto.createHash('sha1')
 		shasum.update(data)
 		shasum.update(MAGIC_STRING)
 
 		callback(shasum.digest('hex'))
+
+	store_session = (session_id, user, vm, callback) ->
+		hash = "#{session_id}:#{user}@#{vm.descriptor.ip_addr}"
+
+		generate_secret hash, (secret) ->
+			client.multi()
+				.hset(session_id, "secret", secret)
+				.hset(session_id, "user", user)
+				.hset(session_id, "host", vm.descriptor.ip_addr)
+				.exec (err, replies) ->
+					unless err
+						callback null, secret
+					else
+						callback err
+
+
+
+	# get the vm
+	get_vms data.lab, (err, vm) ->
+		if err
+			return res.send 417, err
+
+		store_session session_id, data.user, vm, (err, secret) ->
+			if err
+				return res.send 500, err
+
+			res.send 
+				id: session_id
+				secret: secret
+
+		# TODO store private_key to a file
+		# DONE
+
+
 
 
 
