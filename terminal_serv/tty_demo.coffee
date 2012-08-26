@@ -3,6 +3,9 @@ log = require("log4js").getLogger()
 express = require 'express'
 sessions = require './app/sessions'
 mgmt_app = express()
+redis = require("redis")
+client = redis.createClient()
+http = require("http")
 
 # management interface
 # TODO refactor mgmt interface into a module
@@ -16,11 +19,17 @@ console.log "management interface started on port \x1b[1m9001\x1b[m"
 # tty.js 
 #
 
-# https://github.com/senchalabs/connect/blob/master/lib/utils.js#L291
+# https://github.com/senchalabs/connect/blob/master/lib/utils.js
 unauthorized = (res, realm) ->
 	res.statusCode = 401
 	res.setHeader('WWW-Authenticate', 'Basic realm="' + realm + '"')
 	res.end('Unauthorized')
+
+error = (code, msg) ->
+	err = new Error(msg || http.STATUS_CODES[code])
+	err.status = code
+
+	return err
 
 app = tty.createServer(
 	# TODO specify connect wrapper
@@ -35,16 +44,8 @@ app = tty.createServer(
 # TODO how to get vm name
 labBasicAuth = (callback, realm) ->
 
-myAuth = (callback, realm) ->
+labAuth = (callback, realm) ->
 	return (req, res, next) ->
-		console.log req.socket
-		vm_name = req.socket
-
-		console.log '--- my auth process'
-		# res == null => socket.io request
-		console.log res == null
-		console.log req.originalUrl
-
 		authorization = req.headers.authorization;
 		next() if req.user
 
@@ -53,47 +54,40 @@ myAuth = (callback, realm) ->
 		authorization = req.headers.authorization;
 		parts = authorization.split(' ')
 
-		user = 'foo'
-		pass = 'bar'
+		return next error(400) if parts.length != 2
 
-		callback res == null, user, pass, (err, user, lab) ->
+		scheme = parts[0]
+		credentials = new Buffer(parts[1], 'base64').toString().split(':')
+		user = credentials[0]
+		pass = credentials[1]
+
+		callback res == null, user, pass, (err, user, lab_data) ->
+			if err || !user?
+				console.log '--- unauthorized'
+				return unauthorized(res, realm)
+
 			req.user = req.remoteUser = user
 
 			# TODO user, vm_ip, identity_file, 
 			req.config = 
 				shell: "/Users/radim/test.sh"
-				shellArgs: []
+				shellArgs: [user, lab_data.user, lab_data.host]
 
 			next()
 
 verify = (is_socket, user, pass, next) ->
-	console.log is_socket
-	if user != 'foo' && pass != 'bar'
-		return next()
+	client.hgetall user, (err, data) ->
+		if err
+			return next(err)
 
-	next null, 'foo', 'labxxx'
+		if data and data.secret == pass
+			lab_data = 
+				user: data.user
+				host: data.host
 
-app.setAuth myAuth(verify)
+			return next null, user, lab_data
+		else
+			return next(true)
 
-# basicAuth is part of connect's middleware
-# http://www.senchalabs.org/connect/basicAuth.html
-
-# TODO fork env: process.env (add '10xlabs indicator')
-
-# TODO tty.shell -> point to ssh_connect.rb
-# FIXME how to pass custom arguments to ssh_connect.rb
-#       https://githubw.com/chjj/tty.js/blob/master/lib/tty.js#L400
-
-app.on 'session', () ->
-	console.log '--- session init'
-
-# TODO store key
-# TODO shell entry -> lab + vm_name + session_id -> 
-
-# TODO skip authentication for /sessions
-app.post '/sessions', sessions.create
-
-app.get '/foo', (req, res, next) ->
-	res.send 'bar'
-	
+app.setAuth labAuth(verify)
 app.listen()
