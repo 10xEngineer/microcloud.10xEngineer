@@ -30,6 +30,12 @@ Add 10xEngineer.me default Vagrant box
 
     vagrant box add 10xeng-precise32 http://ops-images.s3.amazonaws.com/10xeng-precise32.box
 
+Prepare local development cache (will download over 200MB of Ubuntu packages)
+
+    ./setup_cache.sh
+
+File don't need to be re-downloaded as long as the `.cache` folder remains intact. To update the file simple delete `.cache/` and run the script again.
+
 Run the environment and ssh in
 
     vagrant up

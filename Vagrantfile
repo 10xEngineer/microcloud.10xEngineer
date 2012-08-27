@@ -37,6 +37,9 @@ Vagrant::Config.run do |config|
     chef.data_bags_path = 'data_bags'
     chef.log_level = :debug
 
+    # development env specific recipes
+    chef.add_recipe '10xlab::development'
+    
     # guest configuration
     #chef.add_role 'microcloud'
     chef.add_role 'hostnode'

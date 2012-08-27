@@ -12,6 +12,9 @@ pids
 logs
 results
 
+# local dev cache
+.cache
+
 node_modules
 npm-debug.log
 
