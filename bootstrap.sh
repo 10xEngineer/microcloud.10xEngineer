@@ -1,7 +1,9 @@
 #!/bin/sh
 
 #
-# temporary bootstrap
+# DO NOT REMOVE!
+#
+# Part of 10xlab hostnode bootstrap
 #
 mkdir /var/chef
 
