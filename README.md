@@ -28,7 +28,7 @@ Install vagrant http://vagrantup.com and VirtualBox
 
 Add 10xEngineer.me default Vagrant box
 
-    vagrant box add 10xeng-precise32 http://ops-images.s3.amazonaws.com/10xeng-precise32.box
+    vagrant box add 10xeng-precise32 http://tenxlabs-dev.s3.amazonaws.com/tenxeng-precise32.box
 
 Prepare local development cache (will download over 200MB of Ubuntu packages)
 
