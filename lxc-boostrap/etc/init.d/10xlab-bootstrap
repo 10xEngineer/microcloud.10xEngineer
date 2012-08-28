@@ -87,9 +87,12 @@ repo=`cat /tmp/bootstrap.meta | ./json_parse.rb repo`
 
 # TODO fix location
 export GIT_SSH='./ssh-wrapper.sh'
-$GIT clone $repo /tmp/$ROOT
+$GIT clone $repo $ROOT
 
 gem install chef --no-ri --no-rdoc
 
+# cleanup key
+rm /tmp/bootstrap.key
+
 # /etc/10xlab/bootstrap.rb
-$CHEF_SOLO -c /vagrant/lxc-boostrap/bootstrap.rb -j /tmp/bootstrap.meta
+$CHEF_SOLO -c /etc/10xlab/bootstrap.rb -j /tmp/bootstrap.meta
