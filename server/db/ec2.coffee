@@ -17,6 +17,7 @@ ec2 = ->
   }
 
   ec2_provider = new Provider(config)
+  ec2_provider.markModified("data")
   ec2_provider.save (err) ->
     if err
       console.log "Unable to create ec2 provider: #{err}"
