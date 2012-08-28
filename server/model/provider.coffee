@@ -12,7 +12,7 @@ Provider = new mongoose.Schema
   service   : String
   # default hostnode type (node service handler)
   handler   : String 
-  data      : {env: String}
+  data      : {}
 
 Provider.plugin timestamps
 Provider.plugin uniqueness

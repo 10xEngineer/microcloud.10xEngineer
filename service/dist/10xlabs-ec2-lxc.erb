@@ -14,14 +14,19 @@ cd /tmp
 wget -O hostnode-dist.tar.gz "<%= @download_url %>"
 tar xfz hostnode-dist.tar.gz -C $TXENG_ROOT
 
+ln -s $TXENG_ROOT/chef_repo /var/chef
+ln -s $TXENG_ROOT/data_bags /var/chef/data_bags
+
 INSTANCE=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
 
-cd $TXENG_ROOT
+cd $TXENG_ROOT/chef_repo/nodes/hostnode
 mv hostnode.json hostnode.json.orig
 cat hostnode.json.orig | sed "s/x-replace-x/${INSTANCE}/" >hostnode.json
 
+cd $TXENG_ROOT
+
 #if [ -x boostrap.sh ]; then
-  ./bootstrap.sh
+  ./bootstrap.sh hostnode
 #fi
 
 
