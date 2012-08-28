@@ -30,7 +30,7 @@ Add 10xEngineer.me default Vagrant box
 
     vagrant box add 10xeng-precise32 http://tenxlabs-dev.s3.amazonaws.com/tenxeng-precise32.box
 
-Prepare local development cache (will download over 200MB of Ubuntu packages)
+Prepare local development cache (will download archive around 250 MB)
 
     ./setup_cache.sh
 
