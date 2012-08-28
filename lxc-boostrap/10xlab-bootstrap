@@ -1,0 +1,55 @@
+#!/bin/bash
+#
+### BEGIN INIT INFO
+# Provides:          10xlab-bootstrap
+# Required-Start:    networking
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: Initializes 10xLabs repository on a local machine
+# Description:       Initializes 10xLabs repository on a local machine.
+### END INIT INFO
+
+. /lib/lsb/init-functions
+
+NAME=10xlab-bootstrap
+ROOT=/var/10xlab
+METADATA=http://10.0.3.1/instance
+JSON_PARSE=./json_parse.rb
+GIT=/usr/bin/git
+CHEF_SOLO=/usr/local/bin/chef-solo
+
+function get_metadata()
+{
+	#
+	# FIXME hardcoded metadata (retrieve from local ENDPOINT)
+	#
+	# - START ------------------------------------------------------
+	cat >/tmp/bootstrap.meta <<-EOH
+{
+	"repo": "ssh://tenx@bunny.laststation.net:440/263f0030-d317-012f-e1b2-58b035f9777f",
+	"run_list": ["recipe[git]", "recipe[ruby]", "recipe[nginx]"],
+	"microcloud": {
+    	"endpoint": "http://bunny.laststation.net:8080/"
+    }
+}
+	EOH
+	# - END --------------------------------------------------------
+}
+
+# bootstrap only the first time
+if [ -f $ROOT/metadata.rb ]; then
+	exit
+fi
+
+log_daemon_msg "Bootstrapping 10xLabs definition" ""
+get_metadata
+
+# parse source GIT repository
+repo=`cat /tmp/bootstrap.meta | ./json_parse.rb repo`
+
+$GIT clone $repo /tmp/$ROOT
+
+gem install chef --no-ri --no-rdoc
+
+# $CHEF_SOLO -c /etc/10xlab/bootstrap.rb -j /tmp/bootstrap.meta
