@@ -70,6 +70,37 @@ class GitAdmService < Provider
     end
   end
 
+  def archive_to_file(request) 
+    # TODO specify commit - of the current_definition
+    commit = 'master'
+
+    repo = request["options"]["repo"]
+    repo_name = repo.split('/').last
+
+    # FIXME proper temp file location
+    filename = "/tmp/#{repo_name}-#{commit}.tar.gz"
+
+    raise "Repository to archive is required." if repo.nil?
+
+    # clone requested repository
+    temp_dir = Dir.mktmpdir
+
+    git = Grit::Git.new(GITOLITE_ADMIN_TMP)
+    options = {
+      :quiet => false,
+      :verbose => true,
+      :progress => true,
+      :branch => "master"
+    }
+
+    git.clone(options, repo, temp_dir)
+
+    repo = Grit::Repo.new(temp_dir)
+    archive = repo.archive_to_file('master', nil, filename)
+
+    response :ok, {:archive => filename}
+  end
+
 private
   def generate_token(length = 32)
     SecureRandom.urlsafe_base64(length)
