@@ -9,6 +9,7 @@ broker = require("../broker")
 async     = require 'async'
 crypto    = require 'crypto'
 BasicDefinition = require "../labs/basic_definition"
+fs = require "fs"
 
 module.exports.create = (req, res, next) ->
 	# FIXME not yet finished
@@ -106,6 +107,49 @@ module.exports.show = (req, res, next) ->
 					reason: "Lab not found."
 
 			res.send lab
+
+module.exports.archive = (req, res, next) ->
+	# TODO set proper headers
+	# TODO file download doesn't have any size indication
+	serve_file = (filename, callback) ->
+		_file = filename.split('/')[-1..]
+		fs.exists filename, (exists) ->
+			unless exists
+				return callback(new Error("Archive missing"))
+
+			stats = fs.stat filename, (err, stats) ->
+				if err
+					return callback(new Error("Unable to stat archive."))
+
+				res.contentType = "application/gzip"
+				res.header "Content-Disposition", "attachment; filename=#{_file}"
+				res.header "Content-Length", stats.size
+
+				stream = fs.createReadStream(filename)
+				return stream.pipe(res)
+
+	Lab
+		.findOne({name: req.params.lab})
+		.populate("current_definition")
+		.exec (err, lab) ->
+			unless lab
+				return res.send 404, 
+					reason: "Lab not found."
+
+			# FIXME lab definition should have commit to link the particular revision and version
+			commit = 'master'
+
+			options = 
+				repo: lab.repo
+				commit: commit
+
+			req = broker.dispatch 'git_adm', "archive_to_file", options
+			req.on 'data', (message) =>
+				archive = message.options.archive
+
+				serve_file archive, (err) ->
+					if err
+						res.send err.message
 
 module.exports.get_vms = (req, res, next) ->
 	Lab
