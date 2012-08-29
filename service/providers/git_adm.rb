@@ -71,11 +71,9 @@ class GitAdmService < Provider
   end
 
   def archive_to_file(request) 
-    # TODO specify commit - of the current_definition
-    commit = 'master'
-
     repo = request["options"]["repo"]
     repo_name = repo.split('/').last
+    commit = request["options"]["commit"] || 'master'
 
     # FIXME proper temp file location
     filename = "/tmp/#{repo_name}-#{commit}.tar.gz"
