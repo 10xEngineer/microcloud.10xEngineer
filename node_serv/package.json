@@ -1,0 +1,15 @@
+{
+  "name": "node_serv.microcloud.10xEngineer",
+  "version": "0.1.0",
+  "engines": {
+    "node": ">= 0.6.x < 0.9.0"
+  },
+  "scripts": {
+    "test": "vows tests/*.js"
+  },
+  "private": true,
+  "dependencies": {
+    "log4js": "*",
+    "restify": "*"
+  }
+}
