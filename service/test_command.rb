@@ -68,8 +68,8 @@ message = Yajl::Encoder.encode(request)
 
 # local unix domain used for connection
 # should be configurable (as it might change once we got further deployment details)
-#socket.connect "ipc:///tmp/taskeng"
-socket.connect "ipc:///tmp/mc.broker"
+socket.connect "ipc:///tmp/taskeng"
+#socket.connect "ipc:///tmp/mc.broker"
 
 1.times do 
   # send message

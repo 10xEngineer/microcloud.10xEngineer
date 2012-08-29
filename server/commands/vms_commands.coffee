@@ -28,6 +28,7 @@ module.exports.get = (req, res, next) ->
   Vm
     .findOne({uuid: req.params.vm})
     .populate("server")
+    .populate("lab")
     .exec (err, vm) ->  
       if vm
         # TODO hardcoded
@@ -38,6 +39,9 @@ module.exports.get = (req, res, next) ->
           descriptor: vm.descriptor
           type: vm.server.type
           state: vm.state
+          lab:
+              name: vm.lab.name
+              repo: vm.lab.repo
           term_server_url: term_server_url
           vm_name: vm.vm_name
           vm_type: vm.vm_type
