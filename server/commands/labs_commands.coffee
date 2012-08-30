@@ -187,7 +187,7 @@ module.exports.submit_version = (req, res, next) ->
 	unless req.body
 		return res.send 412, 
 			reason: "Missing request body."
-	
+
 	try 
 		data = JSON.parse req.body if req.body
 	catch error

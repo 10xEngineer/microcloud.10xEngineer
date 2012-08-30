@@ -47,9 +47,9 @@ module.exports = class BasicDefinition extends DefinitionBase
 			if res < 0
 				direction = "rollback"
 			else if res == 0
-				this.emit 'refused', "Target lab definition is already deployed."
+				return this.emit 'refused', "Target lab definition is already deployed."
 		
-		@lab.fire 'lock'
+		#@lab.fire 'lock'
 
 		job_data = 
 			workflow: "BalanceLabWorkflow"

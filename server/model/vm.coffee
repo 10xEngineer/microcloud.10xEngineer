@@ -68,6 +68,13 @@ Vm.statics.paths = ->
     start: (vm) ->
       "running"
 
+    bootstrapped: (vm) ->
+      # FIXME dnsmasq is not reliable in triggering VM lifecycle notifications
+      #       bootstrapped arrives before 'start' in 50% of the cases
+      log.warn "vm=#{vm.uuid} bootstrapped event before RUNNING"
+
+      return "available"
+
   "running":
     bootstrapped: (vm) ->
       # FIXME continue how to get lab instance

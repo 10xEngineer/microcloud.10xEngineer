@@ -14,15 +14,23 @@ socket = context.socket ZMQ::REQ
 #poller.register(socket, ZMQ::POLLOUT)
 
 # sample message
+request = {
+  :service => :dummy,
+  :action => :ping
+}
+
 #request = {
-#  :service => :dummy,
-#  :action => :ping
+#  :service => :key,
+#  :action => :create
 #}
 
-request = {
-  :service => :key,
-  :action => :create
-}
+#request = {
+#	:service => :git_adm,
+#	:action => :archive_to_file,
+#	:options => {
+#		:repo => "ssh://tenx@bunny.laststation.net:440/263f0030-d317-012f-e1b2-58b035f9777f"
+#	}
+#}
 
 #
 #request = {

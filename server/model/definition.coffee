@@ -11,6 +11,7 @@ DefinitionSchema = new mongoose.Schema({
 	lab: {type: ObjectId, ref: 'Lab'}
 
 	# basic metadata
+	revision: { type: String, required: true }
 	version: { type: String, required: true }
 	handler: {type: String, required: true }
 	
