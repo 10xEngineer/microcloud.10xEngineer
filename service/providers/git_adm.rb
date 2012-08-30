@@ -46,7 +46,8 @@ class GitAdmService < Provider
         :quiet => false,
         :verbose => true,
         :progress => true,
-        :branch => "master"
+        :branch => "master",
+        :timeout => false
       }
 
       git.clone(options, repo, temp_dir)
@@ -88,7 +89,8 @@ class GitAdmService < Provider
       :quiet => false,
       :verbose => true,
       :progress => true,
-      :branch => "master"
+      :branch => "master",
+      :timeout => false
     }
 
     git.clone(options, repo, temp_dir)
@@ -214,7 +216,8 @@ private
         :quiet => false,
         :verbose => true,
         :progress => true,
-        :branch => "master"
+        :branch => "master",
+        :timeout => false
       }
 
       git.clone(options, GITOLITE_ADMIN_REPO, GITOLITE_ADMIN_TMP)
