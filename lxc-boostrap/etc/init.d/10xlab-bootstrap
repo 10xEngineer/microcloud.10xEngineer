@@ -27,8 +27,8 @@ CHEF_SOLO=/usr/local/bin/chef-solo
 
 function get_metadata()
 {
-	curl -o /tmp/bootstrap.meta ${ENDPOINT}/metadata
-	curl -o /tmp/repository.tar.gz ${ENDPOINT}/repository
+	curl -s -o /tmp/bootstrap.meta ${ENDPOINT}/metadata
+	curl -s -o /tmp/repository.tar.gz ${ENDPOINT}/repository
 }
 
 # bootstrap only the first time
@@ -40,7 +40,7 @@ log_daemon_msg "Bootstrapping 10xLabs definition" ""
 get_metadata
 
 mkdir -p /var/10xlab
-tar xvfz /tmp/repository.tar.gz -C /var/10xlab
+tar xvfz /tmp/repository.tar.gz -C /var/10xlab 1>/dev/null
 
 gem install chef --no-ri --no-rdoc
 
