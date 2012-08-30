@@ -67,7 +67,7 @@ class Metadata
       :maintainer_email => @maintainer_email,
       :handler => @handler,
       :description => @description,
-      :vms => Hash[*@vms.collect {|vm| [vm.name, vm.to_obj]}.flatten]
+      :vms => @vms.collect { |vm| vm.to_obj}
     }
   end
 
