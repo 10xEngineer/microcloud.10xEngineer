@@ -41,7 +41,7 @@ module.exports.get = (req, res, next) ->
       descriptor: vm.descriptor
       type: vm.server.type
       state: vm.state
-      run_list: vm_def.runlist
+      run_list: vm_def.run_list
       lab:
           name: lab.name
           repo: lab.repo

@@ -10,7 +10,7 @@ VMSchema = new mongoose.Schema
 	name: String
 	vm_type: String
 	hostname: String
-	runlist: []
+	run_list: []
 
 DefinitionSchema = new mongoose.Schema({
 	# belongs to Lab

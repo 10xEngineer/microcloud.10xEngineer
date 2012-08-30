@@ -18,7 +18,7 @@ module.exports = class BasicDefinition extends DefinitionBase
 		# check lab definition version (existence of two same versions is enforce by unique 
 		# compound key on definition shema - see model).
 
-		if !current? or compare_versions(@definition.version, current.version)
+		if !current? or compare_versions(@definition.version, current.version)			
 			def_data = @definition
 			def_data.lab = @lab
 
