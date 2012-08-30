@@ -8,4 +8,4 @@
 
 # FIXME hardcoded ip address of compilation node
 
-ssh -A -o "StrictHostKeyChecking=no" -i ~/.ssh/compile compile@176.34.236.201 "cd /home/compile/deploy/compilation && bin/compile.sh $@"
+ssh -A -o "StrictHostKeyChecking no" -i ~/.ssh/compile compile@176.34.236.201 "cd /home/compile/deploy/compilation && bin/compile.sh $@"

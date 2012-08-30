@@ -22,7 +22,8 @@ def prepare_repo(temp_dir, repo, rev = nil)
     :quiet => false,
     :verbose => true,
     :progress => true,
-    :branch => "master"
+    :branch => "master",
+    :timeout => false
   }
 
   git.clone(options, repo, temp_dir)
