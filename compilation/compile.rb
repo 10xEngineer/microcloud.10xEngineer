@@ -26,7 +26,12 @@ def prepare_repo(temp_dir, repo, rev = nil)
     :timeout => false
   }
 
-  git.clone(options, repo, temp_dir)
+  begin
+    git.clone(options, repo, temp_dir)
+  rescue => e
+    puts "prepare_repo: git.clone failed"
+    puts e.inspect
+  end
 
   if rev
     repo = Grit::Repo.new(temp_dir)
