@@ -4,6 +4,7 @@ mongoose = require("mongoose")
 log = require("log4js").getLogger()
 broker = require("../broker")
 Vm = mongoose.model('Vm')
+Lab = mongoose.model('Lab')
 Hostnode = mongoose.model('Hostnode')
 
 
@@ -23,30 +24,49 @@ module.exports.index = (req, res, next) ->
       res.send 404, "No hostnode=#{req.params.node_id} found"
 
 module.exports.get = (req, res, next) ->
+
+  getVMDefinition = (vms, vm_name) ->
+    vm_list = (vm for vm in vms when vm.name == vm_name)
+
+    return vm_list[0]
+
+  compile_vmdata = (lab, vm) ->
+    # TODO hardcoded
+    term_server_url = "http://#{vm.server.hostname}:9000/"
+
+    vm_def = getVMDefinition lab.current_definition.vms, vm.vm_name
+
+    vm_data =  
+      uuid: vm.uuid
+      descriptor: vm.descriptor
+      type: vm.server.type
+      state: vm.state
+      run_list: vm_def.runlist
+      lab:
+          name: lab.name
+          repo: lab.repo
+          definition:
+            version: lab.current_definition.version            
+      term_server_url: term_server_url
+      vm_name: vm.vm_name
+      vm_type: vm.vm_type
+
+    res.send vm_data
+
   # TODO use decorators
   #      https://trello.com/card/api-objects-decorators/50067c2712a969ae032917f4/39
   Vm
     .findOne({uuid: req.params.vm})
     .populate("server")
-    .populate("lab")
     .exec (err, vm) ->  
       if vm
-        # TODO hardcoded
-        term_server_url = "http://#{vm.server.hostname}:9000/"
-
-        vm_data =  
-          uuid: vm.uuid
-          descriptor: vm.descriptor
-          type: vm.server.type
-          state: vm.state
-          lab:
-              name: vm.lab.name
-              repo: vm.lab.repo
-          term_server_url: term_server_url
-          vm_name: vm.vm_name
-          vm_type: vm.vm_type
-
-        res.send vm_data
+        Lab
+          .findOne({_id: vm.lab})
+          .populate("current_definition")
+          .exec (err, lab) ->
+            if lab
+              return compile_vmdata lab, vm
+            else res.send 500, err || "Invalid VM (no lab definition)"
 
       else res.send 404, err || "VM not found"
 

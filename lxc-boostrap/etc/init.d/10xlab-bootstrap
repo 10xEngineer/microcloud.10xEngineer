@@ -20,27 +20,15 @@ exec > >(tee /var/log/10xlab-bootstrap.log) 2>&1
 
 NAME=10xlab-bootstrap
 ROOT=/var/10xlab
-METADATA=http://10.0.3.1/instance
+ENDPOINT=http://10.0.3.1:8000
 JSON_PARSE=./json_parse.rb
 GIT=/usr/bin/git
 CHEF_SOLO=/usr/local/bin/chef-solo
 
 function get_metadata()
 {
-	#
-	# FIXME hardcoded metadata (retrieve from local ENDPOINT)
-	#
-	# - START ------------------------------------------------------
-	cat >/tmp/bootstrap.meta <<-EOH
-{
-	"repo": "ssh://tenx@bunny.laststation.net:440/263f0030-d317-012f-e1b2-58b035f9777f",
-	"run_list": ["recipe[git]", "recipe[ruby]", "recipe[nginx]"],
-	"microcloud": {
-    	"endpoint": "http://bunny.laststation.net:8080/"
-    }
-}
-	EOH
-	# - END --------------------------------------------------------
+	curl -o /tmp/bootstrap.meta ${ENDPOINT}/metadata
+	curl -o /tmp/repository.tar.gz ${ENDPOINT}/repository
 }
 
 # bootstrap only the first time
@@ -50,9 +38,6 @@ fi
 
 log_daemon_msg "Bootstrapping 10xLabs definition" ""
 get_metadata
-
-# download repository
-curl -o /tmp/repository.tar.gz http://10.0.3.1:8000/repository
 
 mkdir -p /var/10xlab
 tar xvfz /tmp/repository.tar.gz -C /var/10xlab
