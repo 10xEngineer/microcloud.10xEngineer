@@ -10,6 +10,7 @@
   "private": true,
   "dependencies": {
     "log4js": "*",
-    "restify": "*"
+    "restify": "*",
+    "nconf": "*"
   }
 }
