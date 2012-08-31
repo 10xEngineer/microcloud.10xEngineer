@@ -115,7 +115,7 @@ class BalanceLabWorkflow
 		return {
 			flow: [verify_vms, bootstrap_vms]
 			on_error: on_error
-			timeout: 300000
+			timeout: 900000
 		}
 
 module.exports = BalanceLabWorkflow

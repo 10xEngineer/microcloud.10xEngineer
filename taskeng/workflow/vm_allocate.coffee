@@ -50,7 +50,7 @@ class VMAllocateWorkflow
       # TODO insert start (depends on server handler type)
       flow: [bootstrap_vm, wait_for_vm]
       on_error: on_error
-      timeout: 120000
+      timeout: 600000
     }
 
 module.exports = VMAllocateWorkflow
