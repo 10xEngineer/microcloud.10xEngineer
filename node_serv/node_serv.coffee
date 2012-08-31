@@ -39,9 +39,8 @@ server.get "/endpoint", (req, res, next) ->
 server.get "/repository", (req, res, next) ->
 	getLab req.vm_uuid, (err, lab_name) ->
 		microcloud = url.parse nconf.get("endpoint")
-
 		options = 
-			host: microcloud.host
+			host: microcloud.hostname
 			port: microcloud.port
 			path: "/labs/#{lab_name}/archive"
 			method: "GET"
