@@ -42,7 +42,7 @@ get_metadata
 mkdir -p /var/10xlab
 tar xvfz /tmp/repository.tar.gz -C /var/10xlab 1>/dev/null
 
-gem install chef --no-ri --no-rdoc
+gem install chef yajl-ruby --no-ri --no-rdoc
 gem install /var/cache/10xlabs/10xlabs-bootstrap-handler-0.0.1.gem
 
 # /etc/10xlab/bootstrap.rb
