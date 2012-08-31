@@ -9,7 +9,6 @@ require 'ffi-rzmq'
 require 'net/ssh'
 require 'mongoid'
 require 'logger'
-require 'yaml'
 require 'yajl'
 
 log = Logger.new(STDOUT)
@@ -24,9 +23,9 @@ service_name = ARGV.shift
 
 # load config
 if ENV['MICROCLOUD_ENV'] == 'production'
-  config_file = '/etc/10xlabs-hostnode.yaml'
+  config_file = '/etc/10xlabs-hostnode.json'
 else
-  config_file = File.join(File.dirname(__FILE__), "../config/10xlabs-hostnode.yaml")
+  config_file = File.join(File.dirname(__FILE__), "../config/10xlabs-hostnode.json")
 end
 
 config = TenxEngineer.config(config_file)

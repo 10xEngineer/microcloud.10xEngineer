@@ -1,8 +1,8 @@
-require 'yaml'
+require 'yajl'
 
 module TenxEngineer
-  def endpoint(config = File.join(File.dirname(__FILE__), "../config/10xlabs-hostnode.yaml"))
-    config = YAML::load(File.open(config))
+  def endpoint(config = File.join(File.dirname(__FILE__), "../config/10xlabs-hostnode.json"))
+    config = Yajl::Parser.parse(File.open(config))
 
     config["endpoint"]
   end

@@ -1,14 +1,14 @@
-require 'yaml'
+require 'yajl'
 
 module TenxEngineer
   #
   # TODO validate all configuration (endpoint, ssh_key)
   # TODO deployment considerations
   #
-  def config(config = "/etc/10xlabs-hostnode.yaml")                                
+  def config(config = "/etc/10xlabs-hostnode.json")                                
     return nil unless File.exists?(config)                                        
 
-    config = YAML::load(File.open(config))                                        
+    config = Yajl::Parser.parse(File.open(config))
 
     return config
   end   
