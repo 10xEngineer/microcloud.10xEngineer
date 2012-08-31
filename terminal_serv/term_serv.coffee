@@ -6,6 +6,14 @@ mgmt_app = express()
 redis = require("redis")
 client = redis.createClient()
 http = require("http")
+nconf = require("nconf")
+
+# configuration
+nconf
+	.argv()
+	.env()
+	.file
+		file: "/etc/10xlabs-hostnode.json"
 
 # management interface
 # TODO refactor mgmt interface into a module

@@ -7,6 +7,7 @@ http = require("http")
 uuid = require("node-uuid")
 crypto = require('crypto')
 fs = require('fs')
+nconf = require("nconf")
 
 MAGIC_STRING = "GyFfJywqgwVcXeY24J"
 
@@ -23,8 +24,8 @@ module.exports.create = (req, res, next) ->
 	id = uuid.v4()
 
 	get_vms = (lab, callback) ->
-		# FIXME hardcoded
-		url = "http://bunny.laststation.net:8080/labs/#{data.lab}/vms"
+		endpoint = nconf.get("endpoint")
+		url = "#{endpoint}/labs/#{data.lab}/vms"
 
 		http.get url, (_res) ->
 			vms_raw = ""
@@ -78,7 +79,7 @@ module.exports.create = (req, res, next) ->
 						callback err
 
 	save_key = (session_id, key, callback) ->
-		# FIXME proper localtion
+		# FIXME proper location
 		fname = "/tmp/#{session_id}.key"
 
 		fs.writeFile fname, key, (err) ->
