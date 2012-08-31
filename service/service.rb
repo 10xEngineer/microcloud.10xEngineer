@@ -24,9 +24,9 @@ service_name = ARGV.shift
 
 # load config
 if ENV['MICROCLOUD_ENV'] == 'production'
-  config_file = '/etc/10xeng.yaml'
+  config_file = '/etc/10xlabs-hostnode.yaml'
 else
-  config_file = File.join(File.dirname(__FILE__), "../config/10xeng.yaml")
+  config_file = File.join(File.dirname(__FILE__), "../config/10xlabs-hostnode.yaml")
 end
 
 config = TenxEngineer.config(config_file)
