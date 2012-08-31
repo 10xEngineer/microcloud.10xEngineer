@@ -32,6 +32,10 @@ getLab = (vm_uuid, next) ->
 
 		next(null, obj.lab.name)
 
+server.get "/endpoint", (req, res, next) ->
+	res.send 
+		endpoint: nconf.get("endpoint")
+
 server.get "/repository", (req, res, next) ->
 	getLab req.vm_uuid, (err, lab_name) ->
 		microcloud = url.parse nconf.get("endpoint")
