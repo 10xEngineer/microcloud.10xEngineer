@@ -111,6 +111,8 @@ LabSchema.addListener 'vmStateChange', (lab, vm, prev_state) ->
 		lab.save (err) ->
 			if err 
 				log.warn "unable to update(1) lab=#{lab.name} vm=#{vm.uuid} err=#{err}"
+			else
+				log.debug "vm=#{vm.uuid} added to lab=#{lab.name} operational list"
 
 	# TODO test once the VM lifecycle notifications are fixed
 	# https://trello.com/card/lxc-dnsmasq-does-not-maintain-ip-address-lease-based-on-actual-container-state/50067c2712a969ae032917f4/57
