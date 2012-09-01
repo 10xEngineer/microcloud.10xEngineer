@@ -54,43 +54,12 @@ socket = zmq.socket "rep"
 socket.identity = "taskeng/#{process.pid}"
 socket.bind(url)
 
-socket.on 'message', (data) ->
-	# FIXME process real data
-	_data1 = 
-		workflow: "BalanceLabWorkflow"
-		options:
-			scheduled: new Date().getTime() + 5000
-			timeout: 120000
-		definition:
-			version: "0.0.12"
-			revision: "0a5bc35b3acbe115ce68efde9acab7aa0d4d8dd2"
-			maintainer: "Radim Marek X1"
-			maintainer_email: "radim@10xengineer.me"
-			handler: "TenxLabs::ChefHandler"
-			vms:
-				webserv:
-					name : "webserv"
-					base_image: "ubuntu_precise32"
-					hostname : "webserv.local"
-					run_list : ["recipe[ruby]", "recipe[ntpdate::client]"]
-		lab:
-			name: "labxxx"
-			pool: "xxxtest"
-			operational: 
-				vms: []
+socket.on 'message', (message) ->
+	data = JSON.parse message
+	console.log '----'
+	console.log data
 
-	_data2 = 
-		workflow: "VMAllocateWorkflow"
-		lab:
-			name: "labxxx"
-			pool: "xxxtest"			
-		vm:
-			name: "xxx666"
-
-	_data =
-		workflow: "SimpleWorkflow"
-
-	job = runner.createJob _data1, null, (err, job_id) ->
+	job = runner.createJob data, null, (err, job_id) ->
 		if err
 			console.log err
 			return socket.send JSON.stringify

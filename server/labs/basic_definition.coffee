@@ -53,13 +53,10 @@ module.exports = class BasicDefinition extends DefinitionBase
 
 		job_data = 
 			workflow: "BalanceLabWorkflow"
-			data:
-				lab:
-					name: @lab.name
-					token: @lab.token
-				definition: @definition
-				migration: direction
-
+			lab: @lab
+			definition: @definition
+			migration: direction
+			
 		# FIXME initiate release workflow
 		req = broker.raw_dispatch job_data, config.get('taskeng')
 		req.on 'data', (message) =>
