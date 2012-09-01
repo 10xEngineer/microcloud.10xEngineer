@@ -25,7 +25,7 @@ wait_for_vm = (helper, data, next) ->
 
   next null, data,
     type: 'subscribe'
-    timeout: 60000
+    timeout: 570000
     selector: (object, message, next) ->
       next() if object is vm_uuid and message.event is 'bootstrapped'
     callback: workflow_finish

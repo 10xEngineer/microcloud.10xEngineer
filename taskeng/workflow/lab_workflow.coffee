@@ -58,7 +58,7 @@ bootstrap_vms = (helper, data,next) ->
 
 	next null, data,
 		type: 'converge'
-		timeout: 180000
+		timeout: 630000
 		# TODO continue -> wait_for_lab (what exactly for?s)
 		callback: dummy
 		on_expiry: on_expiry_bootstrap
@@ -87,7 +87,7 @@ dummy = (helper, data, next) ->
 wait_for_lab = (helper, data, next) ->
 	next null, data, 
 		type: "listener",
-		timeout: 60000,
+		timeout: 600000,
 		callback: lab_allocated
 		on_expiry: rollback
 
