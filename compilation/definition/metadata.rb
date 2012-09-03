@@ -20,7 +20,9 @@ class Metadata
     @maintainer = nil
     @maintainer_email = nil
     @handler = nil
-    @resources = {}
+    @resources = {
+      :compute => :default
+    }
     @version = nil
     @description = nil
     @revision = revision
