@@ -1,9 +1,6 @@
 #
 # balance lab workflow
 #
-# TODO ?? chef run
-# TODO 
-#
 log = require("log4js").getLogger()
 
 on_error = (helper, data, next, err) ->

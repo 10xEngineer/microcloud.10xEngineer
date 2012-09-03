@@ -23,6 +23,8 @@ AllocatedVMSchema = new mongoose.Schema({
 LabSchema = new mongoose.Schema({
 	# TODO link to owner (user/domain) + add it to compound index (below)
 	name: { type: String, required: true }
+
+	# TODO compute pool only for now
 	pool: {type: String }
 	token: { type: String, unique: true }
 	repo: String

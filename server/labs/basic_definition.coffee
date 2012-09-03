@@ -48,6 +48,14 @@ module.exports = class BasicDefinition extends DefinitionBase
 				direction = "rollback"
 			else if res == 0
 				return this.emit 'refused', "Target lab definition is already deployed."
+		else
+			# TODO sets resource pools on first release only
+			#
+			# TODO process compute pool only for now (see lab.coffee)
+			if @definition.resources.compute
+				@lab.pool = @definition.resources.compute.name
+			else
+				return this.emit 'refused', "No resource pool specified."	
 		
 		#@lab.fire 'lock'
 

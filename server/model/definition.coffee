@@ -20,6 +20,7 @@ DefinitionSchema = new mongoose.Schema({
 	revision: { type: String, required: true }
 	version: { type: String, required: true }
 	handler: {type: String, required: true }
+	resources: {}
 	
 	# other metadata
 	maintainer: String
