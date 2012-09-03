@@ -4,6 +4,8 @@ require 'pathname'
 class Metadata
   include TenxLabs::Mixin::ObjectTransform
 
+  RESOURCE_TYPES = [:compute, :storage, :network]
+
   attr_accessor :maintainer, :maintainer_email, :handler, :version, :description
 
   # FIXME provide chef style set_or_return with validations (chef/mixin/params_validate.rb)
@@ -18,6 +20,7 @@ class Metadata
     @maintainer = nil
     @maintainer_email = nil
     @handler = nil
+    @resources = {}
     @version = nil
     @description = nil
     @revision = revision
@@ -36,6 +39,15 @@ class Metadata
 
   def use(handler_klass)
     @handler = handler_klass
+  end
+
+  def resource_pool(klass, name, options = {})
+    raise "Invalid resource pool type '#{klass}'" unless RESOURCE_TYPES.include? klass
+
+    @resources[klass] = {
+      :name => name,
+      :options => options
+    }
   end
 
   def maintainer(maintainer)
@@ -66,6 +78,7 @@ class Metadata
       :maintainer => @maintainer,
       :maintainer_email => @maintainer_email,
       :handler => @handler,
+      :resources => @resources,
       :description => @description,
       :vms => @vms.collect { |vm| vm.to_obj}
     }
