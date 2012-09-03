@@ -24,8 +24,13 @@ LabSchema = new mongoose.Schema({
 	# TODO link to owner (user/domain) + add it to compound index (below)
 	name: { type: String, required: true }
 
-	# TODO compute pool only for now
-	pool: {type: String }
+	# TODO define only default pools for each resource class
+	pools: {
+		compute: {type: ObjectId, ref: 'Pool'},
+		storage: {type: ObjectId, ref: 'Pool'},
+		network: {type: ObjectId, ref: 'Pool'},
+	}
+
 	token: { type: String, unique: true }
 	repo: String
 

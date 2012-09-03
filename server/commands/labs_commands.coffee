@@ -5,6 +5,7 @@ mongoose = require("mongoose")
 Lab = mongoose.model("Lab")
 Vm = mongoose.model("Vm")
 Definition = mongoose.model("Definition")
+Pool = mongoose.model("Pool")
 broker = require("../broker")
 async     = require 'async'
 crypto    = require 'crypto'
@@ -28,6 +29,10 @@ module.exports.create = (req, res, next) ->
 	unless data.name
 		return res.send 412
 			reason: "Lab 'name' is required."
+
+	unless data.pools
+		return res.send 412
+			reason: "Resource pools not provided."
 
 	lab_attrs = data.attrs || {}
 
@@ -63,6 +68,29 @@ module.exports.create = (req, res, next) ->
 						message: "Unable to save lab instance: #{err.message}"
 						code: 500
 				else next null, lab
+		(lab, next) ->
+			console.log '---- pool-ref'
+			# references to resource pools
+			resolve_pool = (pool_type, cb) ->
+				console.log '--- resolve_pool', pool_type
+				pool_name = data.pools[pool_type]
+
+				unless pool_name?
+					return cb(null)
+
+				Pool
+					.findOne({name: pool_name})
+					.exec (err, pool)  ->
+						unless err
+							lab.pools[pool_type] = pool._id
+							return cb()
+						else
+							return cb(err)
+
+			async.forEach ["compute", "storage", "network"], resolve_pool, (err) ->
+				# TODO validate if required pools are provided
+				next null, lab
+
 		(lab, next) ->
 			# create respository
 			options = 
