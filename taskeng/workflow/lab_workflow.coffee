@@ -82,6 +82,12 @@ dummy = (helper, data, next) ->
 	else 
 		next "XYZ", data
 
+update_vms = (helper, data,next) ->
+	# FIXME implement
+	#       update existing VMs (ie. force the repository re-sync and chef-solo run)
+	next null, data
+
+# TODO probably not needed anymore
 wait_for_lab = (helper, data, next) ->
 	next null, data, 
 		type: "listener",
@@ -111,7 +117,7 @@ ping = (helper, data, next) ->
 class BalanceLabWorkflow
 	constructor: () ->
 		return {
-			flow: [verify_vms, bootstrap_vms]
+			flow: [verify_vms, bootstrap_vms, update_vms]
 			on_error: on_error
 			timeout: 900000
 		}

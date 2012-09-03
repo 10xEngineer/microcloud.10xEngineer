@@ -71,7 +71,7 @@ class GitAdmService < Provider
     end
   end
 
-  def archive_to_file(request) 
+  def archive_to_file(request)
     repo = request["options"]["repo"]
     repo_name = repo.split('/').last
     commit = request["options"]["commit"] || 'master'

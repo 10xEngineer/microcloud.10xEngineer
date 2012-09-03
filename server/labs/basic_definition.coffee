@@ -57,7 +57,6 @@ module.exports = class BasicDefinition extends DefinitionBase
 			definition: @definition
 			migration: direction
 			
-		# FIXME initiate release workflow
 		req = broker.raw_dispatch job_data, config.get('taskeng')
 		req.on 'data', (message) =>
 			# once lab request is accepted switch to the new definition
