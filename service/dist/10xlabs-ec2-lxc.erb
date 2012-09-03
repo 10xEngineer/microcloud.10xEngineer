@@ -1,4 +1,8 @@
 #!/bin/bash
+#
+<% if @endpoint_url %>
+# ENDPOINT_URL=<%= @endpoint_url %>
+<% end %>
 
 set -e -x
 exec > >(tee /var/log/10xeng-bootstrap.log|logger -t user-data -s 2>/dev/console) 2>&1
