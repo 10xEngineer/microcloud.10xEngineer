@@ -29,8 +29,9 @@ verify_vms = (helper, data, next) ->
 	launch_vms = []
 	terminate_vms = []
 
-	for vm_name, vm of data.definition.vms
-		unless current_vms.vm_name?
+	for index, vm of data.definition.vms
+		vm_name = vm.name
+		unless current_vms[vm_name]?
 			launch_vms.push(vm)
 
 	for vm_name, vm of data.lab.operational.vms

@@ -56,8 +56,6 @@ socket.bind(url)
 
 socket.on 'message', (message) ->
 	data = JSON.parse message
-	console.log '----'
-	console.log data
 
 	job = runner.createJob data, null, (err, job_id) ->
 		if err
