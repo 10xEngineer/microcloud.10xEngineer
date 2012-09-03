@@ -5,7 +5,8 @@
 log = require("log4js").getLogger()
 
 bootstrap_vm = (helper, data, next) ->
-  pool_name = data.vm.pool || data.lab.pool
+  # FIXME resolve pol
+  pool_name = data.vm.pool || data.lab.pools.compute.name
 
   bootstrap_data = 
     lab: data.lab.name

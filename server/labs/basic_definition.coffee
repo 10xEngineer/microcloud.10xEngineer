@@ -41,21 +41,13 @@ module.exports = class BasicDefinition extends DefinitionBase
 			return
 
 		# if defined, compare, otherwise is always release
-		if @lab.current_definition? 
+		if @lab.current_definition?
 			res = compare_versions(@lab.current_definition.version, @definition.version)
 
 			if res < 0
 				direction = "rollback"
 			else if res == 0
 				return this.emit 'refused', "Target lab definition is already deployed."
-		else
-			# TODO sets resource pools on first release only
-			#
-			# TODO process compute pool only for now (see lab.coffee)
-			if @definition.resources.compute
-				@lab.pool = @definition.resources.compute.name
-			else
-				return this.emit 'refused', "No resource pool specified."	
 		
 		#@lab.fire 'lock'
 

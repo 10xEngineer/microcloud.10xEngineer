@@ -69,10 +69,8 @@ module.exports.create = (req, res, next) ->
 						code: 500
 				else next null, lab
 		(lab, next) ->
-			console.log '---- pool-ref'
 			# references to resource pools
 			resolve_pool = (pool_type, cb) ->
-				console.log '--- resolve_pool', pool_type
 				pool_name = data.pools[pool_type]
 
 				unless pool_name?
@@ -266,6 +264,9 @@ module.exports.release_version = (req, res, next) ->
 			Lab
 				.findOne({name: req.params.lab})
 				.populate("current_definition")
+				.populate("pools.compute")
+				.populate("pools.network")
+				.populate("pools.storage")
 				.exec (err, lab) ->
 					if err
 						return next 
