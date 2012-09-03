@@ -6,7 +6,7 @@ nconf = require "nconf"
 url = require "url"
 
 # TODO bind only to specified IP address (bridge interface)
-bind_host = "0.0.0.0"
+bind_host = "10.0.3.1"
 
 server = restify.createServer()
 server.use(ip_auth.ipBasedAuthentication())
@@ -54,5 +54,5 @@ server.get "/repository", (req, res, next) ->
 
 		request.end()
 
-server.listen 8000, "0.0.0.0", () ->
+server.listen 8000, bind_host, () ->
 	console.log "%s listening at %s", server.name, server.url
