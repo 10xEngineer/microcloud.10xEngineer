@@ -109,12 +109,15 @@ class Ec2Service < Provider
 
     expiration = Time.now.utc + 60*15
     @download_url = target_file.url(expiration)
+
+    # TODO endpoint_url can be populated to user-data script
+    @endpoint_url = @config["endpoint"]
   end
 
   def loop_user_data
     # TODO add authorization details
     instance_data = {
-      :endpoint => @config["hostnode"]["endpoint"]
+      :endpoint => @config["endpoint"]
     }
 
     @loop_user_data = Yajl::Encoder.encode(instance_data)

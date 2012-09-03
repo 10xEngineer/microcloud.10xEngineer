@@ -16,7 +16,7 @@ command -v s3cmd >/dev/null 2>&1 || { echo >&2 "s3tools are required to run host
 #      or instance start ec2.rb user_data
 tar -cz -f $DISTFILE -X hostnode-dist.exclude ./
 
-s3cmd put $DISTFILE $TARGET
-s3cmd setacl $TARGET --acl-public
+#s3cmd put $DISTFILE $TARGET
+#s3cmd setacl $TARGET --acl-public
 
-rm $DISTFILE
+#rm $DISTFILE
