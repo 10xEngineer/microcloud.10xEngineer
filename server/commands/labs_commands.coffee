@@ -188,6 +188,7 @@ module.exports.get_vms = (req, res, next) ->
 
 			Vm
 				.find({lab: lab._id})
+				.select("uuid")
 				.exec (err, vms) ->
 					res.send vms
 
