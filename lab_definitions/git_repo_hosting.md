@@ -1,6 +1,14 @@
 # Git repository hosting
 
-Initial implementation is based on Gitolite and custom broker server (gitadm). For development purposes the repositories are hosted on my personal server (RdM).
+Initial implementation is based on Gitolite and custom broker server (gitadm). 
+
+
+
+---
+
+
+
+For development purposes the repositories are hosted on my personal server (RdM).
 
 Administration is available as GIT repo
 
@@ -16,20 +24,22 @@ Ping me if you want access (needed for development/testing).
 
 ## Gitolite setup for 10xlabs
 
-Create user (in this case `tenx`) and setup gitolite according to [instructions](https://github.com/sitaramc/gitolite/). Use your public key (don't forget to call it name.pub), otherwise you'll be called `id_rsa`.
+Initial githosting bootstrap script is
+
+		cd ./chef_repo
+		export TARGET=TARGET_HOSTNAME
+		./githost_bootstrap.sh
 
 Additional steps:
 
-1. add mchammer.pub to `keydir/`
-2. create `10xlabs/metadata.json` with following content
+1. create `10xlabs/metadata.json` with following content
 
 		{
 			"gitolite-admin":{
 				"permissions": [
-					{"your_username":"RW+"},
-					{"mchammer":"RW+"}
+					{"tenxgit":"RW+"}
 				]
 			}
 		}
 
-3. Save it and commit
+2. Save it and commit
