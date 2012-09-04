@@ -73,7 +73,7 @@ labAuth = (callback, realm) ->
 
 			# TODO user, vm_ip, identity_file, 
 			req.config = 
-				shell: "/Users/radim/test.sh"
+				shell: "/opt/10xlabs/term_serv/bin/ssh_connect.sh"
 				shellArgs: [user, lab_data.user, lab_data.host]
 
 			next()
