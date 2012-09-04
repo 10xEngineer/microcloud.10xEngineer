@@ -24,7 +24,7 @@ verify_vms = (helper, data, next) ->
 
 	current_vms = {}
 	for vm in data.lab.operational.vms
-		current_vms[vm.name] = vm
+		current_vms[vm.name] = vm if vm?
 
 	launch_vms = []
 	terminate_vms = []
