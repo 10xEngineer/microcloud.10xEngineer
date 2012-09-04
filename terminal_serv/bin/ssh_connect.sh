@@ -3,5 +3,8 @@
 set -e
 
 SSH=/usr/bin/ssh
+key=/tmp/$1.key
 
-${SSH} -o "StrictHostKeyChecking=no" $1@$2 -i $3 
+chmod 0600 $key
+${SSH} -o "StrictHostKeyChecking=no" $2@$3 -i $key
+

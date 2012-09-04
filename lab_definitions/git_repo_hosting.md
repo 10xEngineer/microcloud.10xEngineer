@@ -24,22 +24,10 @@ Ping me if you want access (needed for development/testing).
 
 ## Gitolite setup for 10xlabs
 
-Initial githosting bootstrap script is
+GIT hosting bootstrap script is
 
 		cd ./chef_repo
 		export TARGET=TARGET_HOSTNAME
 		./githost_bootstrap.sh
 
-Additional steps:
-
-1. create `10xlabs/metadata.json` with following content
-
-		{
-			"gitolite-admin":{
-				"permissions": [
-					{"tenxgit":"RW+"}
-				]
-			}
-		}
-
-2. Save it and commit
+Private key for the default access is `chef_repo/cookbooks/10xlab-githost/files/default/tenxgit`
