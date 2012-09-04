@@ -12,6 +12,8 @@
     "express": "*",
     "tty.js": "git://github.com/radim/tty.js.git#per_socket",
     "node-uuid": "*",
-    "nconf": "*"
+    "nconf": "*",
+    "log4js": "*",
+    "redis": "*"
   }
 }
