@@ -8,7 +8,7 @@ module TenxEngineer
   SOURCE_AMI = {
     :ubuntu => {
       "ap-northeast-1" => "ami-60c77761",
-      "ap-southeast-1" => "ami-a4ca8df6",
+      "ap-southeast-1" => "ami-acf6b0fe",
       "eu-west-1" => "ami-e1e8d395",
       "sa-east-1" => "ami-8cd80691",
       "us-east-1" => "ami-a29943cb",
