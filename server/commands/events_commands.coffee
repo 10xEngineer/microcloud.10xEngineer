@@ -54,7 +54,12 @@ module.exports.accept = (req, res, next) ->
 	# TODO allow both internal and custom objects
 	# TODO how to handle custom objects? are there any custom objects?
 	#      will be relevant once we got custom components in place
-	query = model.findOne({uuid: uuid})
+
+	# temporary fix - need to standardize all objects to use UUIDs
+	if model_name = 'Hostnode'
+		query = model.findOne({server_id: uuid})
+	else
+		query = model.findOne({uuid: uuid})	
 
 	# get all db-ref 
 	populate = []
