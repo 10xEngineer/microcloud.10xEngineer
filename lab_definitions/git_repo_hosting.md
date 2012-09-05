@@ -31,3 +31,18 @@ GIT hosting bootstrap script is
 		./githost_bootstrap.sh
 
 Private key for the default access is `chef_repo/cookbooks/10xlab-githost/files/default/tenxgit`
+
+For each deployed GIT host you still need to do follow manual setup within `gitolite-admin` repository
+
+1. create 10xlabs/metadata.json with following content
+
+	{
+	    "gitolite-admin":{
+	        "permissions": [
+	            {"tenxgit":"RW+"},
+	            {"mchammer":"RW+"}
+	        ]
+	    }
+	}
+
+2. Add user `mchammer` to conf/gitotline.conf with RW+ access to `gitolite-admin` repository.

@@ -13,7 +13,7 @@ class GitAdmService < Provider
   # FIXME proper security (currently hardcoded)
 
   # FIXME hardcoded hosting/gitolite repository
-  GITOLITE_HOST = "ssh://tenx@bunny.laststation.net:440/"
+  GITOLITE_HOST = "ssh://git@git@git.apac.10xlabs.net/"
   GITOLITE_ADMIN_REPO = GITOLITE_HOST + "gitolite-admin"
   GITOLITE_ADMIN_TMP = "/tmp/tenx-gitolite-admin"
 
@@ -111,7 +111,7 @@ private
 
     repo = {
       # FIXME hardcoded permissions for now
-      "permissions" => [{"radim" => "RW+"},{"mchammer" => "RW+"}],
+      "permissions" => [{"radim" => "RW+"},{"mchammer" => "RW+"},{"tenxgit" => "RW+"}],
       "token" => token,
       # TODO extend as part of owner/domain/user inclusion
       "lab_name" => lab_name
