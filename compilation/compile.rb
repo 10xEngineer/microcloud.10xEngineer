@@ -4,11 +4,16 @@ $LOAD_PATH.unshift File.dirname(__FILE__)
 $stdout.sync = true
 
 require 'grit'
+require 'yajl'
 require 'tmpdir'
 require 'fileutils'
 require 'definition/metadata'
 require 'definition/vm'
 require '10xlabs/microcloud'
+
+# read configuration
+config_file = "/home/compile/.10xlabs-compile.json"
+config = Yajl::Parser.parse(File.open(config_file))
 
 # TODO pre-receive hook is not getting references when using clone from remote repository
 # TODO consider cloning local repository (shared via some kind of networking system)
@@ -81,7 +86,7 @@ Dir.mktmpdir do |repo_dir|
     # push to microcloud
     # TODO handle return code
     # TODO security model
-    @microcloud = TenxLabs::Microcloud.new("http://bunny.laststation.net:8080/")
+    @microcloud = TenxLabs::Microcloud.new(config["endpoint"])
     lab = @microcloud.post_ext("/labs/#{lab_name}/versions", m.to_obj)
   end
 end
