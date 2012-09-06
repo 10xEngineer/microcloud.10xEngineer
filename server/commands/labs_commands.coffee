@@ -108,6 +108,7 @@ module.exports.create = (req, res, next) ->
 		(lab, repo, next) ->
 			# update lab definition
 			lab.repo = repo
+			lab.markModified("pools")
 			lab.save (err) ->
 				if err
 					next 
