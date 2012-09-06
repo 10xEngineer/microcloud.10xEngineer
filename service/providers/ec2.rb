@@ -41,6 +41,7 @@ class Ec2Service < Provider
     # tag newly created server
     connection.tags.create :key => "source", :value => "10xlabs", :resource_id => server.id
     connection.tags.create :key => "provider", :value => provider_name, :resource_id => server.id
+    connection.tags.create :key => "role", :value => "hostnode", :resource_id => server.id
 
     # TODO hostname is nil (might be good idea to create own hostname/DNS provisioning)
     response :ok, :id => server.id, :hostname => server.dns_name
