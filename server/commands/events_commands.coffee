@@ -47,7 +47,7 @@ module.exports.accept = (req, res, next) ->
 	try
 		model = mongoose.model model_name
 	catch error
-		console.log error
+		log.error error
 		log.error "notification for invalid resource=#{resource}"
 		return res.send 500, {reason: "Invalid resource type: '#{resource}'"}
 
