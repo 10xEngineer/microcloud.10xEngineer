@@ -7,13 +7,13 @@ module TenxEngineer
   #
   SOURCE_AMI = {
     :ubuntu => {
-      "ap-northeast-1" => "ami-60c77761",
+      "ap-northeast-1" => "ami-c641f2c7",
       "ap-southeast-1" => "ami-acf6b0fe",
-      "eu-west-1" => "ami-e1e8d395",
-      "sa-east-1" => "ami-8cd80691",
-      "us-east-1" => "ami-a29943cb",
-      "us-west-1" => "ami-87712ac2",
-      "us-west-2" => "ami-20800c10"
+      "eu-west-1" => "ami-ab9491df",
+      "sa-east-1" => "ami-5c03dd41",
+      "us-east-1" => "ami-82fa58e",
+      "us-west-1" => "ami-5965401c",
+      "us-west-2" => "ami-4438b474"
     },
     :windows => {
       "ap-southeast-1" => "ami-70d49222",
