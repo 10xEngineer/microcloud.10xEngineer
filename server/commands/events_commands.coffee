@@ -56,7 +56,7 @@ module.exports.accept = (req, res, next) ->
 	#      will be relevant once we got custom components in place
 
 	# temporary fix - need to standardize all objects to use UUIDs
-	if model_name = 'Hostnode'
+	if model_name == 'Hostnode'
 		query = model.findOne({server_id: uuid})
 	else
 		query = model.findOne({uuid: uuid})	
