@@ -140,7 +140,7 @@ private
   def add_remote(repo, name, url)
     Dir.chdir(repo) do
       # FIXME configurable git location
-      cmd = ["/usr/local/bin/git", "remote", "add", name, url]
+      cmd = ["git", "remote", "add", name, url]
       TenxLabs::External.execute(cmd.join(' ')) do 
         # what to do with output
       end
@@ -150,7 +150,7 @@ private
   def push_to(repo, target = 'origin')
     Dir.chdir(repo) do
       # FIXME configurable git location
-      cmd = ["/usr/local/bin/git", "push", target, "master"]
+      cmd = ["git", "push", target, "master"]
       TenxLabs::External.execute(cmd.join(' ')) do 
         # what to do with output
       end
