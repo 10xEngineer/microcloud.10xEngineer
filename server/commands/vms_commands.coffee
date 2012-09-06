@@ -32,7 +32,7 @@ module.exports.get = (req, res, next) ->
 
   compile_vmdata = (lab, vm) ->
     # TODO hardcoded
-    term_server_url = "http://#{vm.server.hostname}:9000/"
+    term_server_url = "http://#{vm.server.hostname}:9090/"
 
     vm_def = getVMDefinition lab.current_definition.vms, vm.vm_name
 
