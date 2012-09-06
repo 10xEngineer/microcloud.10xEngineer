@@ -47,7 +47,10 @@ module.exports.get = (req, res, next) ->
           repo: lab.repo
           definition:
             version: lab.current_definition.version            
-      term_server_url: term_server_url
+      term_server:
+          host: vm.server.hostname
+          manage_port: 9001
+          client_port: 9090
       vm_name: vm.vm_name
       vm_type: vm.vm_type
 
