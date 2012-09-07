@@ -38,7 +38,17 @@ class LabBuilder
 				puts "Copying roles..."
 
 				roles_target = File.join(lab_dir, "roles/")
-				copy_files(roles_path, roles_target)
+				copy_files(roles, roles_target)
+			end
+
+			# data bags
+			# TODO temporary (to maintain chef-compatability)
+			bags = data_bags_path
+			if bags
+				puts "Copying data bags..."
+
+				data_bags_target = File.join(lab_dir, "data_bags")
+				copy_files(bags, data_bags_target)
 			end
 		end
 	end
@@ -81,6 +91,10 @@ private
 
 	def roles_path
 		expand_path @vagrant_env.config.for_vm(:default).keys[:vm].provisioners[0].config.roles_path
+	end
+
+	def data_bags_path
+		expand_path @vagrant_env.config.for_vm(:default).keys[:vm].provisioners[0].config.data_bags_path
 	end
 
 	def write_file(target, data)
