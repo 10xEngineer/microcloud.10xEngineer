@@ -14,7 +14,7 @@ class Metadata
   # FIXME lookup handler (initially Chef only)
   # FIXME revision must not be specified in metadata directly
 
-  def initialize(metadata_rb, revision = nil)
+  def initialize(metadata_rb, revision = nil, &block)
     @metadata_rb = metadata_rb
 
     @maintainer = nil
@@ -34,9 +34,13 @@ class Metadata
   end
 
   def evaluate
-    self.instance_eval(IO.read(@metadata_rb), @metadata_rb)
+    if metadata_rb
+      self.instance_eval(IO.read(@metadata_rb), @metadata_rb)
 
-    evaluate_vms
+      evaluate_vms
+    elsif block
+      instance_eval &block
+    end
   end
 
   def use(handler_klass)
@@ -66,6 +70,10 @@ class Metadata
 
   def long_description(desc)
     @description = desc
+  end
+
+  def vms(vms)
+    @vms = vms
   end
 
   def vms_path(vms_path)

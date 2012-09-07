@@ -9,6 +9,18 @@ require 'definition/vm'
 
 abort "usage: vaglab.rb path-to-vagrantfile" unless ARGV.length == 1
 
+begin
+	user_name = `git config user.name`
+	user_email = `git config user.email`
+rescue Errno::ENOENT
+	puts "Unable to retrieve GIT configuration! Please make sure GIT is installed and properly configured."
+	puts
+	puts "Resources:"
+	puts "https://help.github.com/articles/setting-your-username-in-git"
+	puts "https://help.github.com/articles/setting-your-email-in-git"
+	abort
+end
+
 root = File.expand_path(ARGV.shift)
 vagrant_file = File.join(root, "Vagrantfile")
 unless File.exists? vagrant_file
@@ -36,6 +48,14 @@ env.vms.each do |vm_name, vagrant_vm|
 	end
 
 	vms << vm
+end
+
+metadata = Metadata.new nil, nil do
+	handler "TenxLabs::ChefHandler"
+	version "0.0.1"
+
+	maintainer user_name
+	maintainer_email user_email
 end
 
 # TODO 
