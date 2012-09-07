@@ -7,29 +7,18 @@ $:.unshift File.join(File.dirname(__FILE__), "../compilation/")
 require 'definition/metadata'
 require 'definition/vm'
 
-abort "usage: vaglab.rb path-to-vagrantfile" unless ARGV.length == 1
+$LOAD_PATH.unshift File.dirname(__FILE__)
+require 'utils/git_target'
 
-begin
-	user_name = `git config user.name`
-	user_email = `git config user.email`
-rescue Errno::ENOENT
-	puts "Unable to retrieve GIT configuration."
-	puts "Please make sure GIT is installed and properly configured."
-	puts
-	puts "Following command has to work:"
-	puts "git config user.name"
-	puts
-	puts "Resources:"
-	puts "https://help.github.com/articles/setting-your-username-in-git"
-	puts "https://help.github.com/articles/setting-your-email-in-git"
-	abort
-end
+abort "usage: vaglab.rb path-to-vagrantfile" unless ARGV.length == 1
 
 root = File.expand_path(ARGV.shift)
 vagrant_file = File.join(root, "Vagrantfile")
 unless File.exists? vagrant_file
 	abort "Unable to open #{vagrant_file}"
 end
+
+git_target = GitTarget.new(root)
 
 # setup environment
 env = Vagrant::Environment.new(:cwd => root)
@@ -59,15 +48,17 @@ metadata.evaluate_block do
 	use "TenxLabs::ChefHandler"
 	version "0.0.1"
 
-	maintainer user_name
-	maintainer_email user_email
+	maintainer git_target.user_name
+	maintainer_email git_target.user_email
 	override_vms vms
 end
 
 # TODO 
-# - load vagrant file from the specified root directory (ie. project folder)
-# - add vagrant local folder deployment as first recipe
-# => detect folder type (none, git)
-# => 
+# * 
+# * root: is it git? -> generate private/public key and ask user to add it to deployment keys
+# * root: otherwise -> package as tar.gz - exclude {cookbooks,roles,data_bag} and 
+#   distribute within cookbook
+# * add it as first recipe
 
 puts metadata.to_obj
+
