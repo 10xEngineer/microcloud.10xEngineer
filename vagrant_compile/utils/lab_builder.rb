@@ -29,10 +29,17 @@ class LabBuilder
 			# copy cookbooks files into <lab>/cookbooks
 			cookbooks_target = File.join(lab_dir, "cookbooks/")
 			cookbook_paths.each do |path|
-				puts path
 				copy_files(path, cookbooks_target)
 			end
 
+			# copy roles
+			roles = roles_path 
+			if roles 
+				puts "Copying roles..."
+
+				roles_target = File.join(lab_dir, "roles/")
+				copy_files(roles_path, roles_target)
+			end
 		end
 	end
 
@@ -66,16 +73,14 @@ private
 		# FIXME handle missing provisioners
 		_paths = @vagrant_env.config.for_vm(:default).keys[:vm].provisioners[0].config.cookbooks_path
 		_paths.each do |path|
-			if path =~ /^(\/|\~\/)/
-				paths << "#File.expand_path(path)}/"
-			else
-				# /. suffix prevents cp_r to create src/dest (ie cookbooks/cookbooks)
-				# http://www.ruby-doc.org/stdlib-1.9.3/libdoc/fileutils/rdoc/FileUtils.html#method-c-cp_r
-				paths << "#{File.join(@vagrant_env.cwd.to_s, path)}/."
-			end
+			paths << expand_path(path)
 		end
 
 		paths
+	end
+
+	def roles_path
+		expand_path @vagrant_env.config.for_vm(:default).keys[:vm].provisioners[0].config.roles_path
 	end
 
 	def write_file(target, data)
@@ -90,9 +95,18 @@ private
 	end
 
 	def copy_files(path, target)
-		puts '---'
-		puts path
-		puts target
 		FileUtils.cp_r(path, target)
 	end	
+
+	def expand_path(path)
+		return nil unless path
+
+		if path =~ /^(\/|\~\/)/
+			return "#File.expand_path(path)}/"
+		else
+			# /. suffix prevents cp_r to create src/dest (ie cookbooks/cookbooks, or roles/roles)
+			# http://www.ruby-doc.org/stdlib-1.9.3/libdoc/fileutils/rdoc/FileUtils.html#method-c-cp_r
+			return "#{File.join(@vagrant_env.cwd.to_s, path)}/."
+		end
+	end
 end
