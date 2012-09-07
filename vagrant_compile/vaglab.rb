@@ -2,8 +2,20 @@
 
 require 'vagrant'
 
-# FIXME hardcoded (ARGV)
-root = "/Users/radim/Projects/10xeng/microcloud.10xEngineer"
+# re-use compilation source code
+$:.unshift File.join(File.dirname(__FILE__), "../compilation/")
+require 'definition/metadata'
+require 'definition/vm'
+
+abort "usage: vaglab.rb path-to-vagrantfile" unless ARGV.length == 1
+
+root = File.expand_path(ARGV.shift)
+vagrant_file = File.join(root, "Vagrantfile")
+unless File.exists? vagrant_file
+	abort "Unable to open #{vagrant_file}"
+end
+
+# setup environment
 env = Vagrant::Environment.new(:cwd => root)
 
 # build VMs
@@ -17,13 +29,11 @@ env.vms.each do |vm_name, vagrant_vm|
 	raise "Multiple provisioners not supported" unless vm_config.provisioners.length == 1
 	raise "Chef-solo is the only supported provisioner at the moment." unless vm_config.provisioners[0].shortcut == :chef_solo
 
-	vm = {
-		:name => "vg_#{vm_name}",
-		# TODO resolve vm_type based on the provided box
-		:vm_type => "ubuntu",
-		:hostname => vm_name,
-		:run_list => env.config.for_vm(:default).keys[:vm].provisioners[0].config.run_list
-	}
+	vm = Vm.new "vg_#{vm_name}" do
+		base_image "ubuntu"
+		run_list env.config.for_vm(:default).keys[:vm].provisioners[0].config.run_list
+		hostname vm_name
+	end
 
 	vms << vm
 end
