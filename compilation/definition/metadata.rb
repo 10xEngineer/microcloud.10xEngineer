@@ -1,5 +1,6 @@
 require 'definition/mixins/transform'
 require 'pathname'
+require 'facets'
 
 class Metadata
   include TenxLabs::Mixin::ObjectTransform
@@ -14,7 +15,7 @@ class Metadata
   # FIXME lookup handler (initially Chef only)
   # FIXME revision must not be specified in metadata directly
 
-  def initialize(metadata_rb, revision = nil, &block)
+  def initialize(metadata_rb, revision = nil)
     @metadata_rb = metadata_rb
 
     @maintainer = nil
@@ -34,13 +35,13 @@ class Metadata
   end
 
   def evaluate
-    if metadata_rb
-      self.instance_eval(IO.read(@metadata_rb), @metadata_rb)
+    self.instance_eval(IO.read(@metadata_rb), @metadata_rb)
 
-      evaluate_vms
-    elsif block
-      instance_eval &block
-    end
+    evaluate_vms
+  end
+
+  def evaluate_block(&block)
+    instance_eval &block
   end
 
   def use(handler_klass)
@@ -72,7 +73,7 @@ class Metadata
     @description = desc
   end
 
-  def vms(vms)
+  def override_vms(vms)
     @vms = vms
   end
 

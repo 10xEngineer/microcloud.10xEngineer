@@ -13,7 +13,11 @@ begin
 	user_name = `git config user.name`
 	user_email = `git config user.email`
 rescue Errno::ENOENT
-	puts "Unable to retrieve GIT configuration! Please make sure GIT is installed and properly configured."
+	puts "Unable to retrieve GIT configuration."
+	puts "Please make sure GIT is installed and properly configured."
+	puts
+	puts "Following command has to work:"
+	puts "git config user.name"
 	puts
 	puts "Resources:"
 	puts "https://help.github.com/articles/setting-your-username-in-git"
@@ -50,12 +54,14 @@ env.vms.each do |vm_name, vagrant_vm|
 	vms << vm
 end
 
-metadata = Metadata.new nil, nil do
-	handler "TenxLabs::ChefHandler"
+metadata = Metadata.new nil, nil
+metadata.evaluate_block do
+	use "TenxLabs::ChefHandler"
 	version "0.0.1"
 
 	maintainer user_name
 	maintainer_email user_email
+	override_vms vms
 end
 
 # TODO 
@@ -64,5 +70,4 @@ end
 # => detect folder type (none, git)
 # => 
 
-puts '--- '
-puts vms.inspect
+puts metadata.to_obj

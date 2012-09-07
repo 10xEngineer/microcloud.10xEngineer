@@ -1,4 +1,5 @@
 require 'definition/mixins/transform'
+require 'facets'
 
 class Vm
   include TenxLabs::Mixin::ObjectTransform
