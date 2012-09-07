@@ -63,5 +63,6 @@ end
 #   distribute within cookbook
 # * add it as first recipe
 
-lab_builder = LabBuilder.new(metadata, git_target)
+lab_builder = LabBuilder.new(env, metadata, git_target)
+
 lab_builder.build
