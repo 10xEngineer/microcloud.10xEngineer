@@ -21,6 +21,16 @@ class GitTarget
 	def user_email
 		@repo.config["user.email"]
 	end
+
+	def origin_url
+		# TODO currently hardcoded to use 'origin' only
+		ref = "origin"
+
+		remotes = @repo.remote_list
+		raise "No origin defined!" unless remotes.include? ref
+
+		@repo.config["remote.#{ref}.url"]
+	end
 end
 
 def git_repo?(dir)

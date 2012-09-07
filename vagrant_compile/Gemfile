@@ -3,3 +3,4 @@ source 'http://rubygems.org'
 gem 'vagrant'
 gem 'grit'
 gem "facets"
+gem "erubis"

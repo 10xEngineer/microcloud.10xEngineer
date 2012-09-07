@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# TODO use project README.* for lab README file
+
 require 'vagrant'
 
 # re-use compilation source code
@@ -8,6 +10,7 @@ require 'definition/metadata'
 require 'definition/vm'
 
 $LOAD_PATH.unshift File.dirname(__FILE__)
+require 'utils/lab_builder'
 require 'utils/git_target'
 
 abort "usage: vaglab.rb path-to-vagrantfile" unless ARGV.length == 1
@@ -60,5 +63,5 @@ end
 #   distribute within cookbook
 # * add it as first recipe
 
-puts metadata.to_obj
-
+lab_builder = LabBuilder.new(metadata, git_target)
+lab_builder.build

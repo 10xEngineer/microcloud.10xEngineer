@@ -34,6 +34,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  erubis
   facets
   grit
   vagrant
