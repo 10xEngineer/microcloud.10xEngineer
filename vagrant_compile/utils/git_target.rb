@@ -31,6 +31,30 @@ class GitTarget
 
 		@repo.config["remote.#{ref}.url"]
 	end
+
+	def mk_temp_repo(location, remote_url)
+		src_repo = Grit::Repo.init(location)
+		index = Grit::Index.new(src_repo)
+
+		# TODO try to add all files at once (*array)
+		Dir.chdir(location) do
+			Dir.glob("**/*").each do |f|
+				src_repo.add(f)
+			end
+		end
+
+		src_repo.commit_index("vaglab initial commit")
+
+		src_repo.remote_add 'origin', remote_url
+	end
+
+	def push_temp(location)
+		Dir.chdir(location) do
+			# FIXME configurable git location
+			cmd = ["git", "push", "origin", "master"]
+			exec cmd.join(' ')
+		end
+	end
 end
 
 def git_repo?(dir)

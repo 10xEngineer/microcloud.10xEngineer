@@ -1,5 +1,6 @@
 require 'erubis'
 require 'tmpdir'
+require '10xlabs/microcloud'
 
 class LabBuilder
 	TEMPLATE_DIR = File.join(File.dirname(__FILE__), "../templates")
@@ -11,10 +12,18 @@ class LabBuilder
 		@vagrant_env = vagrant_env
 		@metadata = metadata
 		@git = git
+
+		endpoint = ENV['MICROCLOUD'] || "http://mc.apac.external.10xlabs.net"
+
+		puts "Using 10xlabs endpoint #{endpoint}"
+
+		@microcloud = TenxLabs::Microcloud.new(endpoint)
 	end
 
 	def build
 		Dir.mktmpdir do |lab_dir|
+			puts "Temporary location: #{lab_dir}"
+
 			# prepare basic layout & files
 			mk_cookbook_dirs(lab_dir)
 
@@ -50,6 +59,25 @@ class LabBuilder
 				data_bags_target = File.join(lab_dir, "data_bags")
 				copy_files(bags, data_bags_target)
 			end
+
+			# create lab
+			# TODO get the lab name from directory name
+			# TODO how to resolve pool
+			data = {
+				:name => "xx4",
+				:pools => {:compute => "xxxtest"}
+			}
+
+			res = @microcloud.post(:labs, nil, data)
+			# res["repo"]
+
+			# init repository
+			puts "Preparing source repository..."
+			@git.mk_temp_repo(lab_dir, res["repo"])
+
+			puts "Pushing to 10xLabs..."
+			@git.push_temp(lab_dir)
+
 		end
 	end
 
