@@ -38,6 +38,7 @@ module.exports.registerRoutes = (server) ->
 	server.get '/vms/:vm', commands.vms.get
 	server.post '/vms/:node_id', commands.vms.create
 	server.post '/vms/:vm/notify', commands.vms.updates
+	server.post '/vms/:vm/stop', commands.vms.stop
 	server.del '/vms/:vm', commands.vms.destroy
 
 	#
@@ -61,6 +62,7 @@ module.exports.registerRoutes = (server) ->
 	# basic commands
 	server.post '/labs', commands.labs.create
 	server.get '/labs/:lab', commands.labs.show
+	#server.del '/labs/:lab', commands.labs.destroy
 	server.get '/labs/:lab/archive', commands.labs.archive
 	server.get '/labs/:lab/vms', commands.labs.get_vms
 	server.get '/labs/:lab/versions', commands.labs.show_versions

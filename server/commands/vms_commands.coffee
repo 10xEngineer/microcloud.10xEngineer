@@ -138,8 +138,28 @@ module.exports.create = (req, res, next) ->
           log.error "#{hostnode.hostname}: Unable to prepare VM(#{message.options.reason})"
           res.send 500, "failed: #{message.options.source}: #{message.options.reason}"
 
-module.exports.allocate = (req, res, next) ->
+module.exports.stop = (req, res, next) ->
+  Vm
+    .findOne({uuid: req.params.vm})
+    .populate("lab")
+    .populate("server")
+    .exec (err, vm) ->
+      if vm
+        options = 
+          id: req.params.vm
+          server: vm.server.hostname
 
+        req = broker.dispatch vm.server.type, 'stop', options
+        req.on 'data', (message) ->
+          vm.fire 'stop', message.options, (err) ->
+          if err
+            console.log err
+
+          # FIXME-events vm :stopped event notification (what about housekeeping initiated VM destroy? notification?)
+          res.send 202
+      else
+        log.error("invalid vm=#{req.params.vm}")
+        res.send 404, {}
 
 module.exports.destroy = (req, res, next) ->
   Vm
@@ -161,7 +181,7 @@ module.exports.destroy = (req, res, next) ->
           # FIXME-events vm :destroy event notification (what about housekeeping initiated VM destroy? notification?)
           res.send 202
       else
-        log.error("Notification for invalid vm=#{req.params.vm}")
+        log.error("invalid vm=#{req.params.vm}")
         res.send 404, {}
 
 
