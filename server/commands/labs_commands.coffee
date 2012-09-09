@@ -121,7 +121,7 @@ module.exports.create = (req, res, next) ->
 	        	reason: err.message
 	    else
 	    	log.info "lab=#{lab.name} created"
-	   		res.send lab
+	   		res.send 201, lab
 
 
 module.exports.show = (req, res, next) ->
