@@ -39,6 +39,9 @@ module.exports.create = (req, res, next) ->
 				fingerprint: key_data.fingerprint
 				identity: message.options.identity
 
+	req.on 'error', (message) ->
+		res.send 500, message
+
 module.exports.show = (req, res, next) ->
 	Keypair
 		.findOne({name: req.params.key})
