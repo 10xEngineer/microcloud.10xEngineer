@@ -1,9 +1,10 @@
 module.exports = ->
 
 log = require("log4js").getLogger()
-pty = require("pty.js")
 Base = require "./base"
 EventEmitter = require('events').EventEmitter
+
+spawn = require('child_process').spawn
 
 class SSHExec extends Base
 	@include EventEmitter
@@ -12,18 +13,26 @@ class SSHExec extends Base
 		@emitter = new EventEmitter()
 
 	exec: () ->
-		@term = pty.spawn("ssh", [@target, @command])
+		# FIXME @($*%&$(%&$(*%)))
+		@term = spawn("ssh", ["-p 2222", @target, @command])
 
-		@term.on 'data', (data) =>
+		@term.stdout.on 'data', (data) =>
+			@emitter.emit 'data', data
+
+		@term.stderr.on 'data', (data) =>
 			@emitter.emit 'data', data
 
 		@term.on 'exit', (data) =>
-			@emitter.emit 'end'
+			if data == 0
+				@emitter.emit 'end'
+			else
+				@emitter.emit 'failed', 
+
+		@term.on 'close', (data) =>
 
 module.exports.ssh_exec = (target, command, options = {}) ->
 	ssh = new SSHExec(target, command, options)
 
 	ssh.exec()
 
-	# TODO exec command
-	ssh.emitter
+	return ssh.emitter
