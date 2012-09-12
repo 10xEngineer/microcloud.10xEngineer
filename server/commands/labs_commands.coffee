@@ -189,10 +189,29 @@ module.exports.get_vms = (req, res, next) ->
 
 			Vm
 				.find({lab: lab._id})
-				.select("uuid vm_name descriptor")
+				.select("uuid vm_name state descriptor")
 				.exec (err, vms) ->
 					res.send vms
 
+module.exports.get_vm = (req, res, next) ->
+	Lab
+		.findOne({name: req.params.lab})
+		.populate("current_definition")
+		.exec (err, lab) ->
+			unless lab
+				return res.send 404, 
+					reason: "Lab not found."
+
+			vms = lab.operational.vms
+			for vm in vms
+				if vm.name == req.params.vm
+					Vm
+						.findOne({_id: vm.vm})
+						.select("uuid vm_name state descriptor")
+						.exec (err, lab_vm) ->
+							return res.send lab_vm if lab_vm?
+
+			res.send 404, "Unknown vm=#{req.params.vm} for lab=#{req.params.lab}"
 
 module.exports.show_versions = (req, res, next) ->
 	versions = []
