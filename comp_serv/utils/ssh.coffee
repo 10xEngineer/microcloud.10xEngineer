@@ -13,8 +13,7 @@ class SSHExec extends Base
 		@emitter = new EventEmitter()
 
 	exec: () ->
-		# FIXME @($*%&$(%&$(*%)))
-		@term = spawn("ssh", ["-p 2222", @target, @command])
+		@term = spawn("ssh", [@target, @command])
 
 		@term.stdout.on 'data', (data) =>
 			@emitter.emit 'data', data
