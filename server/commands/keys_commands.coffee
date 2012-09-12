@@ -36,6 +36,7 @@ module.exports.create = (req, res, next) ->
 					reason: err.message
 
 			res.send 201,
+				name: data.name
 				fingerprint: key_data.fingerprint
 				identity: message.options.identity
 
