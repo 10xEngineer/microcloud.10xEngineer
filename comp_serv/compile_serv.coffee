@@ -7,8 +7,6 @@ ssh_exec = require("./utils/ssh").ssh_exec
 #
 # TODOs (sorted by priority)
 #
-# * configurable compile node (via chef)
-# * mchammer security keys
 # * accept compile request -> put it within async.queue 
 # * cleanup inactive sandboxes (after 30 minutes of inactivity)
 # * compile node LRU load-balancing

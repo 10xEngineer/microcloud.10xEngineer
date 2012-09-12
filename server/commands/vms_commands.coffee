@@ -6,7 +6,7 @@ broker = require("../broker")
 Vm = mongoose.model('Vm')
 Lab = mongoose.model('Lab')
 Hostnode = mongoose.model('Hostnode')
-
+async = require "async"
 
 #
 # VM commands
@@ -172,14 +172,38 @@ module.exports.destroy = (req, res, next) ->
           id: req.params.vm
           server: vm.server.hostname
 
-        req = broker.dispatch vm.server.type, 'destroy', options
-        req.on 'data', (message) ->
-          vm.fire 'destroy', message.options, (err) ->
-          if err
-            console.log err
+        # TODO stop VM is running
+        async.waterfall [
+          (next) -> 
+            if vm.state == 'running' || vm.state == 'available'
+              req = broker.dispatch vm.server.type, 'stop', options
+              req.on 'data', (message) ->
+                next null
 
-          # FIXME-events vm :destroy event notification (what about housekeeping initiated VM destroy? notification?)
-          res.send 202
+              req.on 'error', (message) ->
+                log.error "vm#destroy failed reason=#{message.options.reason}"
+
+                # TODO ignoring all stop errors
+                next null
+            else next null
+          (next) ->
+            req = broker.dispatch vm.server.type, 'destroy', options
+            req.on 'data', (message) ->
+              vm.fire 'destroy', message.options, (err) ->
+              if err
+                console.log err
+
+            req.on 'error', (message) ->
+              next message.options.reason
+        ], (err) ->
+          if err
+            log.error "vm=#{vm.uuid} failed reason=#{err}"
+
+            vm.state = 'error'
+            vm.save (vm_err) ->
+              return res.send 500, err
+
+          else res.send 202
       else
         log.error("invalid vm=#{req.params.vm}")
         res.send 404, {}
