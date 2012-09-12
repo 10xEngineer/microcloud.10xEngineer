@@ -24,7 +24,7 @@ Vagrant::Config.run do |config|
   config.vm.share_folder "10xeng_root", "/var/lib/10xeng", "."
   # use for hostnode CLI tool development
   #config.vm.share_folder "cli", "/cli", "/Users/radim/Projects/10xeng/10xengineer-node"
-  #config.vm.share_folder "gateone", "/tmp/gateone_src", "/Users/radim/Projects/10xeng/GateOne"
+  #config.vm.share_folder "compile", "/compile", "/Users/radim/Projects/10xeng/10xlabs-compile-service"
 
   # 
   # chef-solo provisioner
