@@ -122,14 +122,21 @@ LabSchema.addListener 'vmStateChange', (lab, vm, prev_state) ->
 			else
 				log.debug "vm=#{vm.uuid} added to lab=#{lab.name} operational list"
 
+	findVm = (name, vms) ->
+		for vm in vms
+			index = vms.indexOf(vm)
+			return index if vm.name == name
+
+		return -1
+
 	# TODO test once the VM lifecycle notifications are fixed
 	# https://trello.com/card/lxc-dnsmasq-does-not-maintain-ip-address-lease-based-on-actual-container-state/50067c2712a969ae032917f4/57
-    if vm.state is 'stopped'
-    	index = lab.operational.vms.index(vm._id)
+	if vm.state is 'stopped' || vm.state is 'destroyed'
+    	index = findVm vm.vm_name, lab.operational.vms
 
     	if index >= 0
     		lab.operational.vms.splice(index, 1)
-
+    		lab.markModified("operational")
     		lab.save (err) ->
     			if err
     				log.warn "unable to update(2) lab=#{lab.name} for vm=#{vm.uuid} err=#{err}" 
