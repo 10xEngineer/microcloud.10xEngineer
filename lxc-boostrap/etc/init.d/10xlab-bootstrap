@@ -27,8 +27,8 @@ CHEF_SOLO=/usr/local/bin/chef-solo
 
 function get_metadata()
 {
-	curl -s -o /tmp/bootstrap.meta ${ENDPOINT}/metadata
-	curl -s -o /tmp/repository.tar.gz ${ENDPOINT}/repository
+	curl -o /tmp/bootstrap.meta ${ENDPOINT}/metadata
+	curl -o /tmp/repository.tar.gz ${ENDPOINT}/repository
 }
 
 # bootstrap only the first time
