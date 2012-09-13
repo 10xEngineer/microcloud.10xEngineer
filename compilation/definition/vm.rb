@@ -1,6 +1,11 @@
 require 'definition/mixins/transform'
 require 'facets'
 
+#
+# TODO VM should be based on common AbstractComponent class which provides
+#      shared logic (like depends_on)
+#
+
 class Vm
   include TenxLabs::Mixin::ObjectTransform
 
@@ -13,6 +18,8 @@ class Vm
     @base_image = nil
     @hostname = nil
     @run_list = []
+
+    @dependencies = []
 
     instance_eval &block
   end
@@ -33,13 +40,21 @@ class Vm
     @run_list = list
   end
 
+  def depends_on(component, name)
+    @dependencies << {
+      :component => component,
+      :name => name
+    }
+  end
+
   def to_obj
     {
       :__type__ => self.class.to_s.underscore,
       :name => @name,
       :vm_type => @base_image,
       :hostname => @hostname,
-      :run_list => @run_list
+      :run_list => @run_list,
+      :dependencies => @dependencies
     }
   end
 end
