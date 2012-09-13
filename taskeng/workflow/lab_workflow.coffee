@@ -15,7 +15,7 @@ vm_launch_list = (helper, data, next) ->
 	current_vms = {}
 	for vm in data.lab.operational.vms
 		current_vms[vm.name] = vm if vm?
-		
+
 	for index, vm of data.definition.vms
 		vm_name = vm.name
 		unless current_vms[vm_name]?
@@ -26,7 +26,6 @@ vm_launch_list = (helper, data, next) ->
 	next null, data, get_batch
 
 get_batch = (helper, data, next) ->
-
 	batch = []
 
 	for vm in data.launch_vms
@@ -81,7 +80,7 @@ vms_ready = (helper, data, next) ->
 	data.launch_vms = vm_list
 
 	if data.launch_vms.length == 0
-		next null, data, lab_ready
+		return next null, data, lab_ready
 	
 	next null, data, get_batch
 
@@ -92,38 +91,7 @@ lab_ready = (helper, data, next) ->
 	# TODO return to original lab temporary stats c
 	next null, data, dummy
 
-# --- old workflow ----
-
-# get the current lab's operational state
-get_lab = (helper, data, next) ->
-	lab = data.lab.name
-
-	helper.get "/labs/#{lab}", (err, req, res, lab) ->
-		if err
-			return next err
-
-		data.lab = lab
-		next null, data
-
-verify_vms = (helper, data, next) ->
-	# TODO find the diff in VMs  (run-list, attributes, etc.)
-
-	current_vms = {}
-	for vm in data.lab.operational.vms
-		current_vms[vm.name] = vm if vm?
-
-	launch_vms = []
-	terminate_vms = []
-
-
-	#for vm_name, vm of data.lab.operational.vms
-	#	unless data.definition.vms.vm_name?
-	#		terminate_vms.push(vm)
-
-	data.launch_vms = launch_vms
-	#data.terminate_vms = terminate_vms
-
-	next null, data
+# --- original workflow code
 
 on_expiry_bootstrap = (helper, data, next) ->
 	# FIXME implement
