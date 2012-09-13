@@ -76,8 +76,10 @@ class GitAdmService < Provider
     repo_name = repo.split('/').last
     commit = request["options"]["commit"] || 'master'
 
-    # FIXME proper temp file location
-    filename = "/tmp/#{repo_name}-#{commit}.tar.gz"
+    # FIXME proper temp file location and re-use files
+    #       temporarily adding random hash to prevent files from overwritting 
+    hash = (0...8).map{65.+(rand(25)).chr}.join
+    filename = "/tmp/#{repo_name}-#{commit}_#{hash}.tar.gz"
 
     raise "Repository to archive is required." if repo.nil?
 
