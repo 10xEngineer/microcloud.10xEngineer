@@ -63,9 +63,10 @@ class LabBuilder
 			# create lab
 			# TODO get the lab name from directory name
 			# TODO how to resolve pool
+			# FIXME hardcoded lab details
 			data = {
-				:name => "xx4",
-				:pools => {:compute => "xxxtest"}
+				:name => "xx7",
+				:pools => {:compute => "eng_pool_1"}
 			}
 
 			res = @microcloud.post(:labs, nil, data)

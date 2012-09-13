@@ -29,8 +29,7 @@ module.exports.processDependencies = (vm_list) ->
 	for vm in sorted_vms
 		resolveDependencies(vm, dependencyList)
 
-	console.log '--'
-	console.log dependencyList
+	return dependencyList
 
 findVm = (vm_name, vm_list) ->
 	for vm in vm_list
