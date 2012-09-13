@@ -84,10 +84,15 @@ LabSchema.statics.paths = ->
 			#vm_count = lab.definition.vms.length
 
 			#if vm_count == active_vms.length
-			# TODO doesn't really make sense
+			#
+			# FIXME come up with the lab lifecycle
 			return "pending"
-			#else
-			#	return "pending"
+
+		vm_destroyed: (lab, vms) ->
+			# FIXME implement
+			# FIXME move to other state "pending" is now temporary
+
+			"pending"
 
 		confirm: (lab) ->
 			log.debug "lab=#{lab.name} state=confirmed"

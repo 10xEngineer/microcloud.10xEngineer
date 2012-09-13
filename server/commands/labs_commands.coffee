@@ -329,6 +329,17 @@ module.exports.release_version = (req, res, next) ->
 
 			processor.release(metadata)
 
+module.exports.destroy = (req, res, next) ->
+	Lab
+		.findOne({name: req.params.lab})
+		.populate("current_definition")
+		.exec (err, lab) ->
+			unless lab
+				return res.send 404, 
+					reason: "Lab not found."
+
+	# FIXME continue - not implemented
+
 	# TODO release
 	#      - run down migration (not part of the command itself - async)
 	#      - run up migration (not part of the command itself - async)

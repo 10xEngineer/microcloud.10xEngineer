@@ -62,7 +62,7 @@ module.exports.registerRoutes = (server) ->
 	# basic commands
 	server.post '/labs', commands.labs.create
 	server.get '/labs/:lab', commands.labs.show
-	#server.del '/labs/:lab', commands.labs.destroy
+	server.del '/labs/:lab', commands.labs.destroy
 	server.get '/labs/:lab/archive', commands.labs.archive
 	server.get '/labs/:lab/vms', commands.labs.get_vms
 	server.get '/labs/:lab/vms/:vm', commands.labs.get_vm
