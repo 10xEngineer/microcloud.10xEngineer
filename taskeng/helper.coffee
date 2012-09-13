@@ -13,6 +13,9 @@ class BrokerHelper
 	post: (url, data, cb) ->
 		@client().post(url, data, cb)
 
+	delete: (url, cb) ->
+		@client().del(url, cb)
+
 	createSubJob: (parent_id, data) ->
 		@runner.createJob data, parent_id
 
