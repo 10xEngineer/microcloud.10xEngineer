@@ -39,33 +39,43 @@ class LabBuilder
 			puts 'Copying cookbooks...'
 
 			# copy cookbooks files into <lab>/cookbooks
+			processed_paths = {
+				:cookbooks => [],
+				:roles => [],
+				:bags => []
+			}
+
 			cookbooks_target = File.join(lab_dir, "cookbooks/")
-			cookbook_paths.each do |path|
-				copy_files(path, cookbooks_target)
+			@metadata.to_obj[:vms].each do |vm|	
+				cookbook_paths(vm[:name].to_sym).each do |path|
+					copy_files(path, cookbooks_target) unless processed_paths[:cookbooks].include? path
+
+					processed_paths[:cookbooks] << path
+				end
+
+				roles = roles_path(vm[:name].to_sym)
+				if roles
+					roles_target = File.join(lab_dir, "roles/")
+					copy_files(roles, roles_target) unless processed_paths[:roles].include? roles
+
+					processed_paths[:roles] << roles
+				end
+
+				# TODO temporary (to maintain chef-compatability)
+				bags = data_bags_path(vm[:name].to_sym)
+				if bags
+					puts "Copying data bags..."
+
+					data_bags_target = File.join(lab_dir, "data_bags")
+					copy_files(bags, data_bags_target) unless processed_paths[:bags].include? bags
+
+					processed_paths[:bags] << bags
+				end
 			end
 
 			# copy internal cookbook
 			cookbook_dir = File.join(File.dirname(__FILE__), "../cookbooks/10xlabs-vaglab")
 			copy_files(cookbook_dir, cookbooks_target)
-
-			# copy roles
-			roles = roles_path
-			if roles 
-				puts "Copying roles..."
-
-				roles_target = File.join(lab_dir, "roles/")
-				copy_files(roles, roles_target)
-			end
-
-			# data bags
-			# TODO temporary (to maintain chef-compatability)
-			bags = data_bags_path
-			if bags
-				puts "Copying data bags..."
-
-				data_bags_target = File.join(lab_dir, "data_bags")
-				copy_files(bags, data_bags_target)
-			end
 
 			# create lab
 			# TODO get the lab name from directory name
@@ -118,11 +128,11 @@ class LabBuilder
 
 private
 
-	def cookbook_paths
+	def cookbook_paths(vm_name = :default)
 		paths = []
 
 		# FIXME handle missing provisioners
-		_paths = @vagrant_env.config.for_vm(:default).keys[:vm].provisioners[0].config.cookbooks_path
+		_paths = @vagrant_env.config.for_vm(vm_name).keys[:vm].provisioners[0].config.cookbooks_path
 		_paths.each do |path|
 			paths << expand_path(path)
 		end
@@ -130,12 +140,12 @@ private
 		paths
 	end
 
-	def roles_path
-		expand_path @vagrant_env.config.for_vm(:default).keys[:vm].provisioners[0].config.roles_path
+	def roles_path(vm_name = :default)
+		expand_path @vagrant_env.config.for_vm(vm_name).keys[:vm].provisioners[0].config.roles_path
 	end
 
-	def data_bags_path
-		expand_path @vagrant_env.config.for_vm(:default).keys[:vm].provisioners[0].config.data_bags_path
+	def data_bags_path(vm_name = :default)
+		expand_path @vagrant_env.config.for_vm(vm_name).keys[:vm].provisioners[0].config.data_bags_path
 	end
 
 	def write_file(target, data)

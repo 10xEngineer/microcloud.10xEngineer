@@ -37,9 +37,9 @@ env.vms.each do |vm_name, vagrant_vm|
 	raise "Multiple provisioners not supported" unless vm_config.provisioners.length == 1
 	raise "Chef-solo is the only supported provisioner at the moment." unless vm_config.provisioners[0].shortcut == :chef_solo
 
-	vm = Vm.new "vg_#{vm_name}" do
+	vm = Vm.new "#{vm_name}" do
 		base_image "ubuntu"
-		run_list env.config.for_vm(:default).keys[:vm].provisioners[0].config.run_list
+		run_list env.config.for_vm(vm_name.to_sym).keys[:vm].provisioners[0].config.run_list
 		hostname vm_name
 	end
 
