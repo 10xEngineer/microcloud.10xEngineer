@@ -210,6 +210,13 @@ private
   def gitolite_admin
     git = Grit::Git.new(GITOLITE_ADMIN_TMP)
 
+    # TODO temporary clean-up cache - fixes housekeeping issues on Ubuntu 12.04 TLS
+    # Unable to create GIT repository: Error (1): error: insufficient permission for adding an object to repository database ./objects
+    if File.exists? GITOLITE_ADMIN_TMP
+      FileUtils.rm_rf File.join(GITOLITE_ADMIN_TMP, "/.*")
+      FileUtils.rm_rf GITOLITE_ADMIN_TMP 
+    end
+
     # get the gitolite admin repository
     # FIXME more than a directory exists check (inconsistent repository will stop any further
     #       operations)
