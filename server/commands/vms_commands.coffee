@@ -46,7 +46,10 @@ module.exports.get = (req, res, next) ->
           name: lab.name
           repo: lab.repo
           definition:
-            version: lab.current_definition.version            
+            version: lab.current_definition.version
+          # TODO temporary way how to pass attributes to chef-solo run
+          #      going to be replaced in near future
+          attributes: lab.attrs
       term_server:
           host: vm.server.hostname
           manage_port: 9001
