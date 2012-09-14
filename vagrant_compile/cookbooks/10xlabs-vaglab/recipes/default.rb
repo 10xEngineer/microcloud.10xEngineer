@@ -15,7 +15,7 @@ user "lab" do
 	supports :manage_home => true
 end
 
-if node["lab"]["attributes"]["remote_url"]
+if node["lab"]["attributes"]["origin_url"]
 	git "/home/lab/deploy" do
 		repository node["lab"]["attributes"]["origin_url"]
 		reference "master"
