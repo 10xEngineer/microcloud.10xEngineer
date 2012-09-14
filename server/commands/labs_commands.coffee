@@ -34,6 +34,9 @@ module.exports.create = (req, res, next) ->
 		return res.send 412
 			reason: "Resource pools not provided."
 
+	unless data.attrs?
+		log.warn "no attributes submitted for lab=#{data.name}"
+		
 	lab_attrs = data.attrs || {}
 
 	async.waterfall [
