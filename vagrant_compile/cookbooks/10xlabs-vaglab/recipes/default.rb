@@ -15,6 +15,12 @@ user "lab" do
 	supports :manage_home => true
 end
 
+cookbook_file "/home/lab/wrap-ssh4git.sh" do
+	owner "lab"
+	source "wrap-ssh4git.sh"
+	mode 0755
+end
+
 if node["lab"]["attributes"]["origin_url"]
 	git "/home/lab/deploy" do
 		repository node["lab"]["attributes"]["origin_url"]
@@ -23,5 +29,7 @@ if node["lab"]["attributes"]["origin_url"]
 
 		user "lab"
 		group "lab"
+
+		ssh_wrapper "/home/lab/wrap-ssh4git.sh"
 	end
 end
