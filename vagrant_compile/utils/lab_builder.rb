@@ -73,15 +73,11 @@ class LabBuilder
 			# FIXME hardcoded lab details
 			data = {
 				:name => "vaglab-#{DateTime.now.strftime("%y%m%d%H%M")}",
-				:pools => {:compute => "eng_pool_1"},
-				:attr => {
+				:pools => {:compute => "xxxtest"},
+				:attrs => {
 					:origin_url => @git.origin_url
 				}
 			}
-
-			puts '------'
-			puts lab_dir
-			sleep 300
 
 			res = @microcloud.post(:labs, nil, data)
 			# res["repo"]
