@@ -1,3 +1,4 @@
+require 'date'
 require 'erubis'
 require 'tmpdir'
 require '10xlabs/microcloud'
@@ -30,6 +31,8 @@ class LabBuilder
 			render_metadata_rb(lab_dir)
 
 			@metadata.to_obj[:vms].each do |vm|
+				vm[:run_list] = ["recipe[10xlabs-vaglab]"] + vm[:run_list]
+
 				render_vm_rb(lab_dir, vm)
 			end
 
@@ -41,8 +44,12 @@ class LabBuilder
 				copy_files(path, cookbooks_target)
 			end
 
+			# copy internal cookbook
+			cookbook_dir = File.join(File.dirname(__FILE__), "../cookbooks/10xlabs-vaglab")
+			copy_files(cookbook_dir, cookbooks_target)
+
 			# copy roles
-			roles = roles_path 
+			roles = roles_path
 			if roles 
 				puts "Copying roles..."
 
@@ -65,9 +72,16 @@ class LabBuilder
 			# TODO how to resolve pool
 			# FIXME hardcoded lab details
 			data = {
-				:name => "xx7",
-				:pools => {:compute => "eng_pool_1"}
+				:name => "vaglab-#{DateTime.now.strftime("%y%m%d%H%M")}",
+				:pools => {:compute => "eng_pool_1"},
+				:attr => {
+					:origin_url => @git.origin_url
+				}
 			}
+
+			puts '------'
+			puts lab_dir
+			sleep 300
 
 			res = @microcloud.post(:labs, nil, data)
 			# res["repo"]
@@ -78,6 +92,8 @@ class LabBuilder
 
 			puts "Pushing to 10xLabs..."
 			@git.push_temp(lab_dir)
+
+			puts "Lab '#{data[:name]}' succesfully created..."
 
 		end
 	end
