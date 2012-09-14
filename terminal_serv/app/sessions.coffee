@@ -86,6 +86,8 @@ module.exports.create = (req, res, next) ->
 			if err
 				return callback err
 
+			fs.chmodSync(fname, '600')
+
 			callback(null)
 
 	# get the vm
