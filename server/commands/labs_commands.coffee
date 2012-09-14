@@ -226,12 +226,15 @@ module.exports.show_versions = (req, res, next) ->
 					reason: "Unable to get lab '#{req.params.lab}': #{err}"
 
 			if lab
-				Definition.find {lab: lab}, ['version', 'revision', 'meta'], (err, defs) ->
-					if err
-						return res.send 500,
-							reason: "Unable to get definitions versions: #{err}"
+				Definition
+					.find({lab: lab})
+					.select('version revision meta')
+					.exec (err, defs) ->
+						if err
+							return res.send 500,
+								reason: "Unable to get definitions versions: #{err}"
 
-					return res.send defs
+						return res.send defs
 
 module.exports.submit_version = (req, res, next) ->
 	unless req.body
