@@ -82,7 +82,7 @@ class LabBuilder
 			# TODO how to resolve pool
 			# FIXME hardcoded lab details
 			data = {
-				:name => "vaglab-#{DateTime.now.strftime("%y%m%d%H%M")}",
+				:name => "vaglab-#{DateTime.now.strftime("%y%m%d%H%M%3N")}",
 				:pools => {:compute => "xxxtest"},
 				:attrs => {
 					:origin_url => @git.origin_url

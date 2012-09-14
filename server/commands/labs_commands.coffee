@@ -67,6 +67,7 @@ module.exports.create = (req, res, next) ->
 			lab.markModified('attrs')
 			lab.save (err) ->
 				if err
+					log.warn "Failed to save lab instance; reason=#{err.message}"
 					next 
 						message: "Unable to save lab instance: #{err.message}"
 						code: 500
