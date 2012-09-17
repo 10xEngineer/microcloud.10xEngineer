@@ -13,17 +13,20 @@ class GitAdmService < Provider
   # FIXME proper security (currently hardcoded)
 
   # FIXME hardcoded hosting/gitolite repository
-  #GITOLITE_HOST = "ssh://git@git.apac.10xlabs.net/"
-  GITOLITE_HOST = "ssh://tenx@bunny.laststation.net:440/"
-  GITOLITE_ADMIN_REPO = GITOLITE_HOST + "gitolite-admin"
   GITOLITE_ADMIN_TMP = "/tmp/tenx-gitolite-admin"
-
   GITOLITE_CONFIG = "conf/gitolite.conf"
   TENX_METADATA = "10xlabs/metadata.json"
 
   # FIXME add user management
 
   before_filter :gitolite_admin
+
+  def initialize(config)
+    super(config)
+
+    @gitolite_host = @config["git_repo_base"] || "ssh://git@git.apac.10xlabs.net/"
+    @gitolite_admin_repo = @gitolite_host + "gitolite-admin"
+  end
 
   def create_repo(request)
     lab_name = request["options"]["lab_name"]
@@ -58,7 +61,7 @@ class GitAdmService < Provider
     repo_id = mkrepo(@gitolite, token, lab_name)
 
     # repo is created, return control to microcloud
-    repo_url = GITOLITE_HOST + repo_id
+    repo_url = @gitolite_host + repo_id
 
     response :ok, {:repo => repo_url, :token => token }
 
@@ -230,7 +233,7 @@ private
         :timeout => false
       }
 
-      git.clone(options, GITOLITE_ADMIN_REPO, GITOLITE_ADMIN_TMP)
+      git.clone(options, @gitolite_admin_repo, GITOLITE_ADMIN_TMP)
     end
 
     # FIXME automatically pull latest changes / check repository 

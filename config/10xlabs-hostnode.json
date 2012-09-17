@@ -1,4 +1,5 @@
 {
 	"ssh_key": "security/mchammer-dev",
-	"endpoint": "http://bunny.laststation.net:8080"
+	"endpoint": "http://bunny.laststation.net:8080",
+	"git_repo_base": "ssh://tenx@bunny.laststation.net:440/"
 }
