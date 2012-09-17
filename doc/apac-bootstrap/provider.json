@@ -1,0 +1,13 @@
+{
+	"name": "10xeng_apac",
+	"service": "ec2",
+	"handler": "lxc",
+	"data": {
+		"access_key_id": "AKIAJP7XP2CXAAVP3VHA",
+		"secret_access_key": "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",
+		"region": "ap-southeast-1",
+		"key": "radim-apse1",
+		"ami": "ami-3e13536c",
+		"security_group": "tenxlab_node"
+	}
+}

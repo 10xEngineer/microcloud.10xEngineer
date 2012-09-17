@@ -53,6 +53,4 @@ Lab.definition :lab1_10xeng do
     # notification received each time PgSQL archive command is executed 
     on "postgresql::archive" => CustomLogic.archive_wal
   end
-
-
 end

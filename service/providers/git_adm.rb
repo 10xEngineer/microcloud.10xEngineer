@@ -13,8 +13,8 @@ class GitAdmService < Provider
   # FIXME proper security (currently hardcoded)
 
   # FIXME hardcoded hosting/gitolite repository
-  GITOLITE_HOST = "ssh://git@git.apac.10xlabs.net/"
-  #GITOLITE_HOST = "ssh://tenx@bunny.laststation.net:440/"
+  #GITOLITE_HOST = "ssh://git@git.apac.10xlabs.net/"
+  GITOLITE_HOST = "ssh://tenx@bunny.laststation.net:440/"
   GITOLITE_ADMIN_REPO = GITOLITE_HOST + "gitolite-admin"
   GITOLITE_ADMIN_TMP = "/tmp/tenx-gitolite-admin"
 
