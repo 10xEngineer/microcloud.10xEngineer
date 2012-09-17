@@ -194,25 +194,3 @@ module.exports.registerRoutes = (server) ->
   #server.get '/server/restart/:destination/:server', commands.server.restart
   #server.get '/server/restart/:destination', commands.server.restart
 
-	#
-	# lxc container verbs
-	#server.get '/containers/create', commands.container.create
-	#server.get '/containers/:container/delete', commands.container.delete
-	#server.get '/containers/:container/clone', commands.container.clone
-	#server.get '/containers/:container/start', commands.container.start
-	#server.get '/containers/:container/stop', commands.container.stop
-	#server.get '/containers/:container/info', commands.container.info
-	#server.get '/containers/:container/save', commands.container.save
-	#server.get '/containers/:container/restore', commands.container.restore
-	# build the chef server default config using chef
-	#server.get '/containers/:container/init', commands.container.init
-	# optional?) expose a service in a container through the firewall
-	#server.get '/containers/:container/expose-service', commands.container.exposeservice
-
-	# set resource limits
-	#server.get '/containers/:container/set-cpu-limit', commands.container.setcpulimit
-	#server.get '/containers/:container/set-cpu-affinity', commands.container.setcpuaffinity
-	#server.get '/containers/:container/set-ram-limit', commands.container.setramlimit
-	#server.get '/containers/:container/set-swap-limit', commands.container.setswaplimit
-	#server.get '/containers/:container/set-file-limit', commands.container.setfilelimit
-	#server.get '/containers/:container/set-network-limit', commands.container.setnetworklimit
