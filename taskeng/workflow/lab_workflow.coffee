@@ -70,13 +70,13 @@ validate_vms = (helper, data, next) ->
 
 allocation_failed = (helper, data, next) ->
 	# TODO trigger notification
-	data = 
+	failed_data = 
 		resource: "lab"
 		uuid: data.lab.name
 		event: "failed"
 		lab: {}
 
-	helper.post "/events", data, (err, req, res, obj) ->
+	helper.post "/events", failed_data, (err, req, res, obj) ->
 		if err
 			log.error "Unable to submit event=failed for lab=#{data.lab.name}"
 		
@@ -136,8 +136,17 @@ vms_ready = (helper, data, next) ->
 	next null, data, get_batch
 
 lab_ready = (helper, data, next) ->
-	# FIXME lab should be ready and all vms bootstrapped
-	# CONTINUE
+	confirm_data = 
+		resource: "lab"
+		uuid: data.lab.name
+		event: "confirm"
+		lab: {}
+
+	helper.post "/events", confirm_data, (err, req, res, obj) ->
+		if err
+			log.error "Unable to submit event=confirm for lab=#{data.lab.name}"
+		
+		next null, data	
 
 	# TODO return to original lab temporary stats c
 	next null, data, dummy
@@ -157,8 +166,6 @@ dummy = (helper, data, next) ->
 	console.log "-- stats: completed: #{data.VMAllocateWorkflow.completed.length}"
 	console.log "-- stats: failed: #{data.VMAllocateWorkflow.failed.length}"
 	console.log "-- stats: expired: #{data.VMAllocateWorkflow.expired.length}"
-	console.log "--- expected: #{data.VMAllocateWorkflow.completed.length}"
-	console.log "--- expected: #{data.launch_vms.length}"
 
 	if data.VMAllocateWorkflow.completed.length == data.launch_vms.length
 		next null, data

@@ -99,7 +99,9 @@ LabSchema.statics.paths = ->
 
 		confirm: (lab) ->
 			log.debug "lab=#{lab.name} state=confirmed"
-			"created"
+			"available"
+
+	"available": {}
 
 	"failed": {}
 
