@@ -69,8 +69,18 @@ validate_vms = (helper, data, next) ->
 	next null, data, bootstrap_vms
 
 allocation_failed = (helper, data, next) ->
-	# TODO release succesfully allocated VMs & other resources (if applicable)
-	next null, data
+	# TODO trigger notification
+	data = 
+		resource: "lab"
+		uuid: data.lab.name
+		event: "failed"
+		lab: {}
+
+	helper.post "/events", data, (err, req, res, obj) ->
+		if err
+			log.error "Unable to submit event=failed for lab=#{data.lab.name}"
+		
+		next null, data
 
 findVm = (vm_name, allocated_vm_jobs) ->
 	for subjob in allocated_vm_jobs

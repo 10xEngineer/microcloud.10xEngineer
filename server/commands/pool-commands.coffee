@@ -151,9 +151,6 @@ module.exports.allocate = (req, res, next) ->
       unless vm 
         message = "No resources available (#{err})"
 
-        results.getLab.fire 'vm_failed', 
-          reason: message
-
         next
           msg: message
           code: 406
