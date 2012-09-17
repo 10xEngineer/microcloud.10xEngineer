@@ -66,6 +66,12 @@ LabSchema.statics.paths = ->
 
 			"pending"
 
+		vm_failed: (lab) ->
+			# TODO stop lab workflow
+			# TODO deallocate resource
+			# TODO rollb
+			"failed"
+
 	# TODO pending does not really represent true state
 	"pending":
 		vm_locked: (lab, vms) ->
@@ -77,7 +83,8 @@ LabSchema.statics.paths = ->
 			log.debug "lab=#{lab.name} received vm_running"
 
 			"pending"
-	
+
+
 		vm_available: (lab, active_vms) =>
 			# TODO make re-usable (vm_running, vm_allocated)
 			# FIXME this should be handled by lab workflow
@@ -97,6 +104,11 @@ LabSchema.statics.paths = ->
 		confirm: (lab) ->
 			log.debug "lab=#{lab.name} state=confirmed"
 			"created"
+
+	"failed":
+		vm_failed: (lab) ->
+			"failed"
+
 
 #
 # VM integration

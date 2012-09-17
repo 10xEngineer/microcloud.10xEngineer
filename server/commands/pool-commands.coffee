@@ -148,9 +148,15 @@ module.exports.bootstrap = (req, res, next) ->
       pool: results.findPool._id
 
     Vm.findAndModify query, [], {$set: {state: 'pending', lab: results.getLab._id, vm_name: vm.name}}, {}, (err, vm) ->
-      unless vm then next
-        msg: "No resources available (#{err})"
-        code: 406
+      unless vm 
+        message = "No resources available (#{err})"
+
+        results.getLab.fire 'vm_failed', 
+          reason: message
+
+        next
+          msg: message
+          code: 406
       else
         vm.fire 'lock'
         next null, vm
