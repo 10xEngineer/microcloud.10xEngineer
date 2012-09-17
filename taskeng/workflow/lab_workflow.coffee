@@ -23,30 +23,14 @@ vm_launch_list = (helper, data, next) ->
 
 	data.launch_vms = processDependencies(launch_vms)
 
-	next null, data, get_batch
-
-get_batch = (helper, data, next) ->
-	batch = []
-
-	for vm in data.launch_vms
-		if vm.dependencies.length == 0
-			batch.push(vm)
-		else
-			break
-
-	if batch.length == 0 && data.launch_vms.length > 0
-		return next new Error("Unable to launch lab! Can't satistify dependencies.")
-
-	data.next_batch = batch
-
 	next null, data, allocate_vms
 
 allocate_vms = (helper, data, next) ->
-	for i of data.next_batch
+	for i of data.launch_vms
 		allocate_data = 
 			workflow: "VMAllocateWorkflow"
 			lab: data.lab
-			vm: data.next_batch[i]
+			vm: data.launch_vms[i]
 
 		helper.createSubJob data.id, allocate_data, (err) ->
 			if err
@@ -66,7 +50,7 @@ validate_vms = (helper, data, next) ->
 
 		return next null, data, allocation_failed
 
-	next null, data, bootstrap_vms
+	next null, data, get_batch
 
 allocation_failed = (helper, data, next) ->
 	# TODO trigger notification
@@ -81,6 +65,22 @@ allocation_failed = (helper, data, next) ->
 			log.error "Unable to submit event=failed for lab=#{data.lab.name}"
 		
 		next null, data
+
+get_batch = (helper, data, next) ->
+	batch = []
+
+	for vm in data.launch_vms
+		if vm.dependencies.length == 0
+			batch.push(vm)
+		else
+			break
+
+	if batch.length == 0 && data.launch_vms.length > 0
+		return next new Error("Unable to launch lab! Can't satistify dependencies.")
+
+	data.next_batch = batch
+
+	next null, data, bootstrap_vms
 
 findVm = (vm_name, allocated_vm_jobs) ->
 	for subjob in allocated_vm_jobs
