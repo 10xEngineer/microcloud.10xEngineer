@@ -6,6 +6,7 @@ processDependencies = require("./utils/resolve").processDependencies
 
 on_error = (helper, data, next, err) ->
 	log.error "-- XXX --- lab provisioning failed TODO"
+	console.log err
 
 	next null, data
 
@@ -22,6 +23,7 @@ vm_launch_list = (helper, data, next) ->
 			launch_vms.push(vm)
 
 	data.launch_vms = processDependencies(launch_vms)
+	data.expected_vms_count = data.launch_vms.length
 
 	next null, data, allocate_vms
 
@@ -160,17 +162,13 @@ on_expiry_bootstrap = (helper, data, next) ->
 	next null, data
 
 dummy = (helper, data, next) ->
-	# FIXME failed
+	log.debug "job=#{data.id} launched VMs count=#{data.VMAllocateWorkflow.completed.length}"
+	log.debug "job=#{data.id} failed VMs count=#{data.VMAllocateWorkflow.failed.length}"
 
-	console.log '--- DUMMY'
-	console.log "-- stats: completed: #{data.VMAllocateWorkflow.completed.length}"
-	console.log "-- stats: failed: #{data.VMAllocateWorkflow.failed.length}"
-	console.log "-- stats: expired: #{data.VMAllocateWorkflow.expired.length}"
-
-	if data.VMAllocateWorkflow.completed.length == data.launch_vms.length
+	if data.VMAllocateWorkflow.completed.length == data.expected_vms_count
 		next null, data
 	else 
-		next "XYZ", data
+		next "Invalid number of VMs launched.", data
 
 update_vms = (helper, data,next) ->
 	# FIXME implement
