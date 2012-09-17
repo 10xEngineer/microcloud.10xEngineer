@@ -91,17 +91,20 @@ LabSchema.statics.paths = ->
 			# FIXME come up with the lab lifecycle
 			return "pending"
 
-		vm_destroyed: (lab, vms) ->
-			# FIXME implement
-			# FIXME move to other state "pending" is now temporary
-
-			"pending"
 
 		confirm: (lab) ->
 			log.debug "lab=#{lab.name} state=confirmed"
 			"available"
 
 	"available": {}
+		vm_destroyed: (lab, vms) ->
+			# FIXME implement
+			# FIXME move to other state "pending" is now temporary
+
+			"terminating"
+
+	# TODO in most cases lab does not terminate just because single VM is destroyed
+	"terminating": {}	
 
 	"failed": {}
 

@@ -201,7 +201,7 @@ module.exports.destroy = (req, res, next) ->
           id: req.params.vm
           server: vm.server.hostname
 
-        # TODO stop VM is running
+        # TODO stop VM if running
         async.waterfall [
           (next) -> 
             if vm.state == 'running' || vm.state == 'available'
