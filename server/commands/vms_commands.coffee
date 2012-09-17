@@ -141,6 +141,32 @@ module.exports.create = (req, res, next) ->
           log.error "#{hostnode.hostname}: Unable to prepare VM(#{message.options.reason})"
           res.send 500, "failed: #{message.options.source}: #{message.options.reason}"
 
+module.exports.bootstrap = (req, res, next) ->
+  Vm
+    .findOne({uuid: req.params.vm})
+    .populate("lab")
+    .populate("server")
+    .exec (err, vm) ->
+      if vm
+        if vm.state != 'locked'
+          return res.send 412, 
+            status: "failed"
+            reason: "Unable to bootstrap vm=#{vm.uuid} expected state=locked"
+
+        data = 
+          id: vm.uuid
+          server: vm.server.hostname
+
+        req = broker.dispatch vm.server.type, 'bootstrap', data
+        req.on 'data', (message) ->
+          res.send 200, 
+            status: "ok"
+
+        req.on 'error', (message) ->
+          res.send 500,
+            status: "failed"
+
+
 module.exports.stop = (req, res, next) ->
   Vm
     .findOne({uuid: req.params.vm})

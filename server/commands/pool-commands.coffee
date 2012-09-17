@@ -103,7 +103,7 @@ module.exports.get = (req, res, next) ->
 
       res.send pool_data
 
-module.exports.bootstrap = (req, res, next) ->
+module.exports.allocate = (req, res, next) ->
   # TODO get VMs (lock), or fail
   # TODO dispatch allocate
 
@@ -162,27 +162,11 @@ module.exports.bootstrap = (req, res, next) ->
         next null, vm
   ]
 
-  bootstrapVM = ['getVM', (next, results) ->
-    vm = results.getVM
-
-    data = 
-      id: vm.uuid
-      server: vm.server.hostname
-
-    req = broker.dispatch vm.server.type, 'bootstrap', data
-    req.on 'data', (message) ->
-      next null
-
-    req.on 'error', (message) ->
-      next message.reason
-  ]
-
   async.auto
     checkParams: checkParams
     findPool: findPool
     getLab: getLab
     getVM: getVM
-    bootstrapVM: bootstrapVM
   , (err, results) ->
     if err
       helper.handleErr res, err

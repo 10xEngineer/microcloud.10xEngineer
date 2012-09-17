@@ -39,14 +39,55 @@ get_batch = (helper, data, next) ->
 
 	data.next_batch = batch
 
-	next null, data, bootstrap_vms
+	next null, data, allocate_vms
 
-bootstrap_vms = (helper, data, next) ->
+allocate_vms = (helper, data, next) ->
 	for i of data.next_batch
-		bootstrap_data = 
+		allocate_data = 
 			workflow: "VMAllocateWorkflow"
 			lab: data.lab
 			vm: data.next_batch[i]
+
+		helper.createSubJob data.id, allocate_data, (err) ->
+			if err
+				log.error "job=#{data.id} subJob workflow=#{allocate_data.workflow} failed reason=#{err.message}"
+
+	next null, data,
+		type: 'converge'
+		timeout: 60000
+		callback: validate_vms
+		# TODO is it reusable with bootstrap_vms logic?
+		on_expiry: on_expiry_bootstrap
+
+validate_vms = (helper, data, next) ->
+	# verify allocated VMs
+	if data.VMAllocateWorkflow.failed.length > 0 or data.VMAllocateWorkflow.expired.length > 0
+		log.warn "unable to allocate requested VMs for lab=#{data.lab.name}"
+
+		return next null, data, allocation_failed
+
+	next null, data, bootstrap_vms
+
+allocation_failed = (helper, data, next) ->
+	# TODO release succesfully allocated VMs & other resources (if applicable)
+	next null, data
+
+findVm = (vm_name, allocated_vm_jobs) ->
+	for subjob in allocated_vm_jobs
+		if subjob.vm.name == vm_name
+			return subjob.vm
+
+	return null
+
+bootstrap_vms = (helper, data, next) ->
+	for i of data.next_batch
+		# TODO find VM uuid
+		vm = findVm(data.next_batch[i].name, data.VMAllocateWorkflow.completed)
+
+		bootstrap_data = 
+			workflow: "VMBootstrapWorkflow"
+			lab: data.lab
+			vm: vm
 
 		helper.createSubJob data.id, bootstrap_data, (err) ->
 			if err
@@ -149,7 +190,7 @@ ping = (helper, data, next) ->
 class BalanceLabWorkflow
 	constructor: () ->
 		return {
-			#flow: [verify_vms, bootstrap_vms, update_vms]
+			#flow: [verify_vms, allocate_vms], bootstrap_vms, update_vms]
 			flow: [vm_launch_list]
 			on_error: on_error
 			timeout: 900000

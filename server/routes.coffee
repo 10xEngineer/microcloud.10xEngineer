@@ -38,6 +38,7 @@ module.exports.registerRoutes = (server) ->
 	server.get '/vms/:vm', commands.vms.get
 	server.post '/vms/:node_id', commands.vms.create
 	server.post '/vms/:vm/notify', commands.vms.updates
+	server.post '/vms/:vm/bootstrap', commands.vms.bootstrap
 	server.post '/vms/:vm/stop', commands.vms.stop
 	server.del '/vms/:vm', commands.vms.destroy
 
@@ -182,7 +183,7 @@ module.exports.registerRoutes = (server) ->
 	server.post '/pools/:pool/nodes', commands.pool.addserver
 	server.del '/pools/:pool/nodes/:server_id', commands.pool.removeserver
 	# add/remove an LXC instance to the ec2 server in the pool
-	server.post '/pools/:pool/bootstrap', commands.pool.bootstrap
+	server.post '/pools/:pool/allocate', commands.pool.allocate
 	server.post '/pool/:server/:container/deallocate', commands.pool.deallocate
 
   #server.get '/server/start/:destination', commands.server.start

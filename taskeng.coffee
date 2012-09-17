@@ -46,6 +46,7 @@ runner.register require("./taskeng/workflow/simple_workflow")
 runner.register require("./taskeng/workflow/simple2_workflow")
 runner.register require("./taskeng/workflow/lab_workflow")
 runner.register require("./taskeng/workflow/vm_allocate")
+runner.register require("./taskeng/workflow/vm_bootstrap")
 runner.register require("./taskeng/workflow/vm_destroy")
 
 # initial 0mq is only way how to submit job (using REQ only as it confirm only
