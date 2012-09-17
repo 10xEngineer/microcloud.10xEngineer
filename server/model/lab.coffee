@@ -96,7 +96,7 @@ LabSchema.statics.paths = ->
 			log.debug "lab=#{lab.name} state=confirmed"
 			"available"
 
-	"available": {}
+	"available":
 		vm_destroyed: (lab, vms) ->
 			# FIXME implement
 			# FIXME move to other state "pending" is now temporary
@@ -104,9 +104,13 @@ LabSchema.statics.paths = ->
 			"terminating"
 
 	# TODO in most cases lab does not terminate just because single VM is destroyed
-	"terminating": {}	
+	"terminating":
+		destroy: (lab) ->
+			"destroyed"
 
 	"failed": {}
+
+	"destroyed": {}
 
 #
 # VM integration
@@ -129,6 +133,7 @@ LabSchema.addListener 'vmStateChange', (lab, vm, prev_state) ->
 		allocated_vm = 
 			name: vm.vm_name
 			vm: vm._id
+			uuid: vm.uuid
 
 		lab.operational.vms.push(allocated_vm)
 		lab.save (err) ->
