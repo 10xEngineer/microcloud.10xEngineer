@@ -69,3 +69,19 @@ module.exports = class BasicDefinition extends DefinitionBase
 
 		req.on 'error', (message) =>
 			this.emit 'refused', "Lab definition #{direction} refused: unable to request migration (#{message})"
+
+	destroy: ->
+		unless @lab.state is "available"
+			return this.emit 'refused', "Invalid lab state=#{@lab.state}"
+
+		job_data = 
+			workflow: "LabTeardownWorkflow"
+			lab: @lab
+
+		req = broker.raw_dispatch job_data, config.get('taskeng')
+		req.on 'data', (message) =>
+			this.emit 'accepted', "Lab teardown initiated."
+
+		req.on 'error', (message) =>
+			this.emit 'refused', "Lab teardown refused: #{message}"
+

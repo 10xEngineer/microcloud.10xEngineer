@@ -17,14 +17,19 @@ stop_vms = (helper, data, next) ->
 	next null, data,
 		type: 'converge'
 		timeout: 120000
-		callback: finished
+		callback: vms_destroyed
 		on_expiry: on_expiry
 
-finished = (helper, data, next) ->
+vms_destroyed = (helper, data, next) ->
 	next null, data
 
 on_expiry = (helper, data, next) ->
 	next null, data
+
+on_error = (helper, data, next, err) ->
+  log.error "workflow=lab_teardown failed reason=#{err}"
+  
+  next null, data
 
 class LabTeardownWorkflow
 	constructor: () ->

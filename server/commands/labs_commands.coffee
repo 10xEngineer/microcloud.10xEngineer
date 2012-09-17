@@ -12,6 +12,11 @@ crypto    = require 'crypto'
 BasicDefinition = require "../labs/basic_definition"
 fs = require "fs"
 
+# TODO release
+#      - run down migration (not part of the command itself - async)
+#      - run up migration (not part of the command itself - async)
+# TODO keep history in files (include version information in filename)
+
 module.exports.create = (req, res, next) ->
 	# FIXME not yet finished
 	# FIXME integrate owner/domain/user
@@ -337,6 +342,8 @@ module.exports.release_version = (req, res, next) ->
 			processor.release(metadata)
 
 module.exports.destroy = (req, res, next) ->
+	processor_type = BasicDefinition
+
 	Lab
 		.findOne({name: req.params.lab})
 		.populate("current_definition")
@@ -345,9 +352,14 @@ module.exports.destroy = (req, res, next) ->
 				return res.send 404, 
 					reason: "Lab not found."
 
-	# FIXME continue - not implemented
+			processor = new processor_type(lab, null)
+			processor.on "accepted", (msg) ->
+				res.send 202,
+					message: msg
 
-	# TODO release
-	#      - run down migration (not part of the command itself - async)
-	#      - run up migration (not part of the command itself - async)
-	# TODO keep history in files (include version information in filename)
+			processor.on "refused", (msg) ->
+				res.send 406,
+					message: msg
+
+			processor.destroy()
+			

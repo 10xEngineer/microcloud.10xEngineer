@@ -16,6 +16,7 @@ ObjectId = mongoose.Schema.ObjectId
 AllocatedVMSchema = new mongoose.Schema({
 	name: { type: String }
 	vm: {type: ObjectId, ref: 'Vm'}
+	uuid: { type: String }
 	# TODO attributes
 	# TODO networking details
 })

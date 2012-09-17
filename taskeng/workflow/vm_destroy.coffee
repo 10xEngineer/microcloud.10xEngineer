@@ -6,7 +6,15 @@ log = require("log4js").getLogger()
 
 destroy_vm = (helper, data, next) ->
   helper.delete "/vms/#{data.vm.uuid}", (err, req, res) ->
-      next null, data  
+    if err
+      return next err
+
+    next null, data 
+
+finish = (helper, data, next) ->
+  log.info "YY destroy_vm finished"
+
+  next null, data
 
 on_error = (helper, data, next, err) ->
   log.error "workflow=vm_destroy failed reason=#{err}"
@@ -16,7 +24,7 @@ on_error = (helper, data, next, err) ->
 class VMDestroyWorkflow
   constructor: () ->
     return {
-      flow: [destroy_vm]
+      flow: [destroy_vm, finish]
       on_error: on_error
       timeout: 60000
     }

@@ -41,10 +41,11 @@ client = redis.createClient()
 backend = new Backend("#{os.hostname()}/#{process.pid}")
 runner = new WorkflowRunner(backend)
 
-# TODO load workfloads
+# TODO dynamically load workfloads
 runner.register require("./taskeng/workflow/simple_workflow")
 runner.register require("./taskeng/workflow/simple2_workflow")
 runner.register require("./taskeng/workflow/lab_workflow")
+runner.register require("./taskeng/workflow/lab_teardown")
 runner.register require("./taskeng/workflow/vm_allocate")
 runner.register require("./taskeng/workflow/vm_bootstrap")
 runner.register require("./taskeng/workflow/vm_destroy")

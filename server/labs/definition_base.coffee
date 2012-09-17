@@ -17,3 +17,6 @@ module.exports = class DefinitionBase extends Base
 	release: (metadata = {}) ->
 		# refuse by default; has to be overriden by sub-class implementation
 		@emit 'refused', "DefinitionBase has to be overriden with custom logic."
+
+	destroy: ->
+		@emit 'refused', "DefinitionBase has to be overriden with custom logic."
