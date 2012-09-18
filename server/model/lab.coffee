@@ -104,6 +104,9 @@ LabSchema.statics.paths = ->
 
 			"terminating"
 
+		vm_stopped: (lab, vms) ->
+			"available"
+
 	# TODO in most cases lab does not terminate just because single VM is destroyed
 	"terminating":
 		destroy: (lab) ->

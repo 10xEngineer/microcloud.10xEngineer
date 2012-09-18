@@ -222,6 +222,8 @@ module.exports.destroy = (req, res, next) ->
               if err
                 console.log err
 
+              next null
+
             req.on 'error', (message) ->
               next message.options.reason
         ], (err) ->
