@@ -63,10 +63,13 @@ module.exports.create = (req, res, next) ->
 		hash = "#{session_id}:#{user}@#{vm.descriptor.ip_addr}"
 
 		generate_secret hash, (secret) ->
+			in_24_hours = 24*60*60
+
 			client.multi()
 				.hset(session_id, "secret", secret)
 				.hset(session_id, "user", user)
 				.hset(session_id, "host", vm.descriptor.ip_addr)
+				.expire(session_id, in_24_hours)
 				.exec (err, replies) ->
 					unless err
 						save_key session_id, private_key, (err) ->
