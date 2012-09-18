@@ -5,8 +5,11 @@ commands  = require("./commands")
 mongoose  = require("mongoose")
 Provider  = mongoose.model('Provider')
 Hostnode  = mongoose.model('Hostnode')
+Vm  = mongoose.model('Vm')
 broker    = require("../broker")
 helper    = require("./helper")
+async     = require 'async'
+restify   = require 'restify'
 
 module.exports.index = (req, res, next) ->
   Hostnode.find (err, hostnodes) ->
@@ -71,22 +74,85 @@ module.exports.show = (req, res, next) ->
       res.send 404, 'Node not found.'
   
 module.exports.destroy = (req, res, next) ->
-  Provider.for_server req.params.node_id, (err, provider) ->
+  getHostnode = (next) ->
+    Hostnode
+      .findOne({server_id: req.params.node_id})
+      .exec (err, hostnode) ->
+        unless hostnode
+          return next 
+            code: 404
+            message: "No hostnode '#{req.params.node_id}'"
+
+        next null, hostnode
+
+  allVMs = (next, results) ->
+
+    Vm
+      .find({server: results.getHostnode._id})
+      .exec (err, vms) ->
+        if err
+          return next
+            code: 500
+            messages: "Unable to collect VMs; reason=#{err.message}"
+
+        next null, vms
+
+  verifyVMs = (next, results) ->
+    for vm in results.allVMs
+      if vm.state == 'allocated'
+        return next 
+          code: 406
+          message: "Unable to destroy hostnode=#{req.params.node_id} reason='VMs active'"
+
+    next null
+
+  destroyVMs = (next, results) ->
+    # FIXME universal way how to trigger internal object state changes?
+    client = restify.createJsonClient
+      url: 'http://localhost:8080'
+
+    for vm in results.allVMs
+      client.del "/vms/#{vm.uuid}", (err, req, res) ->
+        if err
+          log.warn "Unable to delete vm=#{vm.uuid} reason=#{err}"
+
+    next null
+
+  destroyNode = (next, results) ->
+    Provider.for_server req.params.node_id, (err, provider) ->
+      if err
+        res.send 500, err
+
+      if provider
+        # TODO better way how to pass arguments (see ec2.rb stop)
+        options = 
+          id: req.params.node_id
+          provider: provider
+
+        req = broker.dispatch provider.service, 'stop', options
+        req.on 'data', (message) ->
+          next null, message
+
+        req.on 'error', (message) ->
+          next 
+            code: 500
+            message: "node destroy failed reason=#{message.reason}"
+      else
+        next 
+          code: 500
+          message: "Unknown provider for node '#{req.params.server}'"
+
+  async.auto
+    getHostnode: getHostnode
+    allVMs: ['getHostnode', allVMs]
+    verifyVMs: ['allVMs', verifyVMs]
+    destroyVMs: ['verifyVMs', destroyVMs]
+    destroyNode: ['destroyVMs', destroyNode]
+  , (err, results) ->
     if err
-      res.send 500, err
+      return res.send err.code, err.message
 
-    if provider
-      # TODO better way how to pass arguments (see ec2.rb stop)
-      options = 
-        server_id: req.params.node_id
-        provider: provider
-
-      req = broker.dispatch provider.service, 'stop', options
-      req.on 'data', (message) ->
-        res.send message
-    else
-      # TODO trigger housekeeping
-      res.send 500, "Unknown provider for node '#{req.params.server}'"
+    res.send 201, "ok"
 
 # TODO move to appropriate module (servers)
 module.exports.notify = (req, res, next) ->

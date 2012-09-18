@@ -29,4 +29,4 @@ class VMDestroyWorkflow
       timeout: 60000
     }
 
-module.exports = VMDestroyWorkflowc
+module.exports = VMDestroyWorkflow

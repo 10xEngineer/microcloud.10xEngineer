@@ -21,7 +21,17 @@ stop_vms = (helper, data, next) ->
 		on_expiry: on_expiry
 
 vms_destroyed = (helper, data, next) ->
-	next null, data
+	confirm_data = 
+		resource: "lab"
+		uuid: data.lab.name
+		event: "destroy"
+		lab: {}
+
+	helper.post "/events", confirm_data, (err, req, res, obj) ->
+		if err
+			log.error "Unable to submit event=destroy for lab=#{data.lab.name}"
+		
+		next null, data	
 
 on_expiry = (helper, data, next) ->
 	next null, data
