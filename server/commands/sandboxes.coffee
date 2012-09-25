@@ -7,6 +7,34 @@ config = require("nconf")
 compile_node = (key = 'compilation') ->
 	return config.get(config.get('NODE_ENV')+':'+key)
 
+module.exports.compile = (req, res, next) ->
+	# TODO validate data
+	#      comp_kit
+	#      source_url
+	#      pub_key
+	data = JSON.parse req.body
+
+	comp_kit = data.comp_kit
+	source_url = data.source_url
+	pub_key = data.pub_key
+
+	exec_cmd = "sudo /opt/10xlabs/compile/bin/compile #{comp_kit} \"#{source_url}\" \"#{pub_key}\""
+	for arg in data.args
+		exec_cmd += " #{arg}"
+
+	console.log '---'
+	console.log exec_cmd
+
+	session = ssh_exec compile_node(), exec_cmd
+	session.on 'data', (data) ->
+		res.write data, 'ascii'
+
+	session.on 'end', () ->
+		res.end()
+
+	session.on 'failed', () ->
+		res.end()
+
 module.exports.index = (req, res, next) ->
 	res.send 500, "NOT IMPLEMENTED"
 
@@ -55,7 +83,8 @@ module.exports.execute = (req, res, next) ->
 
 	# TODO catch-22 as HTTP 200 is sent by default; the problem is the real 
 	#      command status code is known only after the data has been received.
-	res.writeHead(200, "Content-Type: text/plain")
+	res.writeHead 200, 
+		"Content-Type": 'text/plain'
 
 	session = ssh_exec compile_node(), exec_cmd
 	session.on 'data', (data) ->

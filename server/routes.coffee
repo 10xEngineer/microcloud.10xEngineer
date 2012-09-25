@@ -19,6 +19,7 @@ module.exports.registerRoutes = (server) ->
 	server.post '/sandboxes', commands.sandboxes.create
 	server.post '/sandboxes/:sandbox/exec', commands.sandboxes.execute
 	server.del '/sandboxes/:sandbox', commands.sandboxes.destroy
+	server.post '/sandboxes/compile', commands.sandboxes.compile
 
 	# 
 	# provider management
