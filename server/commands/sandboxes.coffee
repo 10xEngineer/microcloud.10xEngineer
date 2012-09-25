@@ -22,9 +22,6 @@ module.exports.compile = (req, res, next) ->
 	for arg in data.args
 		exec_cmd += " #{arg}"
 
-	console.log '---'
-	console.log exec_cmd
-
 	session = ssh_exec compile_node(), exec_cmd
 	session.on 'data', (data) ->
 		res.write data, 'ascii'
