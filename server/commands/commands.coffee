@@ -11,6 +11,7 @@ providers = module.exports.providers = require("./providers_commands")
 vms = module.exports.vms = require("./vms_commands")
 labs = module.exports.labs = require("./labs_commands")
 keys = module.exports.keys = require("./keys_commands")
+sandboxes = module.exports.sandboxes = require("./sandboxes")
 
 events = module.exports.events = require("./events_commands")
 

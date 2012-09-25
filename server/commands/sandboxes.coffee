@@ -1,32 +1,14 @@
+module.exports = ->
+
+# TODO configuration - compile_node()
+
 log = require("log4js").getLogger()
-nconf = require "nconf"
-restify = require "restify"
-mongoose = require "mongoose"
-ssh_exec = require("./utils/ssh").ssh_exec
+ssh_exec = require("./utility/ssh").ssh_exec
 
-#
-# TODOs (sorted by priority)
-#
-# * accept compile request -> put it within async.queue 
-# * cleanup inactive sandboxes (after 30 minutes of inactivity)
-# * compile node LRU load-balancing
+module.exports.index = (req, res, next) ->
+	res.send 500, "NOT IMPLEMENTED"
 
-nconf
-	.argv
-		node:
-			describe: "Compile node"
-			demand: true
-
-compile_node = () ->
-	return "mchammer@#{nconf.get('node')}"
-		
-server = restify.createServer
-	name: "compile_service.10xengineer.me"
-	version: "0.1.0"
-
-server.use(restify.bodyParser())
-
-server.post '/sandboxes', (req, res, next) ->
+module.exports.create = (req, res, next) ->
 	# TODO validate data
 	#      comp_kit
 	#      source_url
@@ -54,7 +36,7 @@ server.post '/sandboxes', (req, res, next) ->
 		console.log 'failed', code
 		res.send code, "failed"
 
-server.post '/sandboxes/:sandbox/exec', (req, res, next) ->
+module.exports.execute = (req, res, next) ->
 	# TODO validate data
 	#      cmd
 	#      [optional] arg1
@@ -82,9 +64,9 @@ server.post '/sandboxes/:sandbox/exec', (req, res, next) ->
 		res.end()
 
 	session.on 'failed', () ->
-		res.end()
+		res.end()	
 
-server.del '/sandboxes/:sandbox', (req, res, next) ->
+module.exports.destroy = (req, res, next) ->
 	sandbox = req.params.sandbox
 
 	output = ""
@@ -101,6 +83,3 @@ server.del '/sandboxes/:sandbox', (req, res, next) ->
 		code = 500 unless code?
 		res.send code, "failed: #{output}"
 
-
-server.listen 8081, () ->
-	log.info "#{server.name} listening at port 8081"

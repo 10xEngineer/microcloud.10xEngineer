@@ -12,6 +12,14 @@ module.exports.registerRoutes = (server) ->
 	server.post '/ping', commands.post_ping
 	server.get '/broker/ping', commands.broker_ping
 
+	#
+	# compilation service
+	#
+	server.get '/sandboxes', commands.sandboxes.index
+	server.post '/sandboxes', commands.sandboxes.create
+	server.post '/sandboxes/:sandbox/exec', commands.sandboxes.execute
+	server.del '/sandboxes/:sandbox', commands.sandboxes.destroy
+
 	# 
 	# provider management
 	#

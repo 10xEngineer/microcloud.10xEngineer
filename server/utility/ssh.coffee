@@ -1,7 +1,7 @@
 module.exports = ->
 
 log = require("log4js").getLogger()
-Base = require "./base"
+Base = require "../labs/base"
 EventEmitter = require('events').EventEmitter
 
 spawn = require('child_process').spawn
