@@ -5,6 +5,8 @@ $stdout.sync = true
 
 require 'open4'
 require 'utils'
+require 'yajl'
+require 'microcloud'
 
 ext_puts "10xLabs receiving push"
 
@@ -34,31 +36,18 @@ begin
   # https://trello.com/card/gitolite-pre-receive-hook/50067c2712a969ae032917f4/21
   repo = "#{repo_prefix}/#{data[:repo]}"
 
-  # TODO use absolute path (need to set location)
-  script_file = File.join(ENV['HOME'], 'compilation/hooks/10xlabs-compile.sh')
-  command = [script_file, repo, lab_name, lab_token, data[:new_rev], data[:ref_name]]
+  # read config
+  config = Yajl::Parser.parse("/home/git/.compile.conf")
 
-  error = nil
+  microcloud = TenxLabs::Microcloud.new(config["endpoint"])
 
-  stat = Open4.popen4(command.join(' ')) do |pid, stdin, stdout, stderr|
-    while line = stdout.gets
-      ext_puts_x line
-    end
-
-    error = stderr.read.strip
-  end
-
-  if stat.exited?
-    if stat.exitstatus > 0
-      error_message = error.empty? ? (output.delete_if {|i| i.strip.empty?}).first : error 
-
-      raise "Compilation failed (#{stat.exitstatus}): #{error_message}"
-    end
-  elsif stat.signaled?
-    raise "Compilated terminated - signal #{stat.termsig}"
-  elsif stat.stopped?
-    raise "Compilated stopped - signal #{stat.termsig}"
-  end
+  compile_data = {
+    :comp_kit => "10xlabs-definition", 
+    :source_url => repo, 
+    :pub_key => "not_defined", 
+    :args => [lab_name, lab_token, data[:new_rev]]
+  }
+  res = microcloud.post_ext "/sandboxes/compile", compile_data
 rescue Exception => e
   # TODO integrate to syslog
   ext_puts "Message: #{e.message}", "Stacktrace:", *e.backtrace
