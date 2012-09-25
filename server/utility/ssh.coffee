@@ -13,7 +13,17 @@ class SSHExec extends Base
 		@emitter = new EventEmitter()
 
 	exec: () ->
-		@term = spawn("ssh", [@target, @command])
+		if typeof @target is 'string'
+			dest = 
+				user: "compile"
+				host: @target
+				port: 22
+		else if typeof @target is 'object'
+			dest = @target
+		else
+			raise "Invalid target specification"
+
+		@term = spawn("ssh", ["#{dest.user}@#{dest.host}", "-p #{dest.port}", @command])
 
 		@term.stdout.on 'data', (data) =>
 			@emitter.emit 'data', data

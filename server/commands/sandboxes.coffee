@@ -1,9 +1,11 @@
 module.exports = ->
 
-# TODO configuration - compile_node()
-
 log = require("log4js").getLogger()
-ssh_exec = require("./utility/ssh").ssh_exec
+ssh_exec = require("../utility/ssh").ssh_exec
+config = require("nconf")
+
+compile_node = (key = 'compilation') ->
+	return config.get(config.get('NODE_ENV')+':'+key)
 
 module.exports.index = (req, res, next) ->
 	res.send 500, "NOT IMPLEMENTED"
@@ -30,7 +32,8 @@ module.exports.create = (req, res, next) ->
 			log.warn "unexpected output: #{data.toString()}"
 
 	session.on 'end', () ->
-		res.send 201, sandbox_id
+		res.send 201, 
+			sandbox: sandbox_id
 
 	session.on 'failed', (code) ->
 		console.log 'failed', code
