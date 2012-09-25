@@ -29,7 +29,7 @@ module.exports.create = (req, res, next) ->
 		if parts[0] == "sandbox_id"
 				sandbox_id = parts[1].replace(/^\s\s*$/, '').replace(/(\r\n|\n|\r)/gm,'')
 		else
-			log.warn "unexpected output: #{data.toString()}"
+			log.warn "unexpected output: '#{data.toString()}'"
 
 	session.on 'end', () ->
 		res.send 201, 
@@ -50,10 +50,8 @@ module.exports.execute = (req, res, next) ->
 	cmd = data.cmd
 
 	exec_cmd = "sudo /opt/10xlabs/compile/bin/exec #{sandbox} #{cmd}"
-	if data.arg1
-		exec_cmd += " #{data.arg1}"
-		if data.arg2
-			exec_cmd += " #{data.arg2}"
+	for arg in data.args
+		exec_cmd += " #{arg}"
 
 	# TODO catch-22 as HTTP 200 is sent by default; the problem is the real 
 	#      command status code is known only after the data has been received.
