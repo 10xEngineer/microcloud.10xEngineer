@@ -48,6 +48,9 @@ begin
     :args => [lab_name, lab_token, data[:new_rev]]
   }
   res = microcloud.post_ext "/sandboxes/compile", compile_data
+  # TODO ^^ need streaming output option
+  
+  ext_puts res
 rescue Exception => e
   # TODO integrate to syslog
   ext_puts "Message: #{e.message}", "Stacktrace:", *e.backtrace
