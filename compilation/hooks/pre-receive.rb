@@ -37,7 +37,7 @@ begin
   repo = "#{repo_prefix}/#{data[:repo]}"
 
   # read config
-  config = Yajl::Parser.parse("/home/git/.compile.conf")
+  config = Yajl::Parser.parse(File.open(File.join(ENV['HOME'], '.compile.conf')))
 
   microcloud = TenxLabs::Microcloud.new(config["endpoint"])
 

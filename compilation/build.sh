@@ -12,6 +12,6 @@ mkdir -p ${target_dir}
 rm -Rf vendor
 cp -R * ${target_dir}
 
-fpm -s dir -t deb -n 10xlabs-compilation -v 0.1 -a all --after-install local/postinst.sh --exclude local/* --exclude build.sh -C $tmpdir .
+fpm -s dir -t deb -n 10xlabs-compilation -v 0.2 -a all --after-install local/postinst.sh --exclude local/* --exclude build.sh -C $tmpdir .
 
 rm -Rf $tmpdir
