@@ -68,7 +68,7 @@ class GitAdmService < Provider
     # push cloned repo to target repository
     if repo
       # FIXME hardcoded repository URL
-      add_remote(temp_dir, "lab_repo", "ssh://git@git.apac.10xlabs.net/#{repo_id}")
+      add_remote(temp_dir, "lab_repo", repo_url)
       push_to temp_dir, "lab_repo"      
 
       # FIXME update microcloud (data ...?)
