@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+cd /home/microcloud/deploy
+
+ssh-add service/security/compilation
+ssh-add service/security/mchammer-dev
+
+/usr/bin/coffee microcloud.coffee
