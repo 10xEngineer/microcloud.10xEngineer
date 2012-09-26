@@ -3,6 +3,7 @@ module.exports = ->
 log = require("log4js").getLogger()
 ssh_exec = require("../utility/ssh").ssh_exec
 config = require("nconf")
+fs = require("fs")
 
 compile_node = (key = 'compilation') ->
 	return config.get(config.get('NODE_ENV')+':'+key)
@@ -11,16 +12,22 @@ module.exports.compile = (req, res, next) ->
 	# TODO validate data
 	#      comp_kit
 	#      source_url
-	#      pub_key
+	#      pub_key (not used at the moment)
 	data = JSON.parse req.body
 
 	comp_kit = data.comp_kit
 	source_url = data.source_url
-	pub_key = data.pub_key
+	#pub_key = data.pub_key
 
-	exec_cmd = "sudo /opt/10xlabs/compile/bin/compile #{comp_kit} \"#{source_url}\" \"#{pub_key}\""
+	# TODO use mchammer-key by default
+	default_key = fs.readFileSync("service/security/mchammer-dev")
+
+	exec_cmd = "sudo /opt/10xlabs/compile/bin/compile #{comp_kit} \"#{source_url}\" \"#{default_key}\""
 	for arg in data.args
 		exec_cmd += " #{arg}"
+
+	console.log '--- exec'
+	console.log exec_cmd
 
 	session = ssh_exec compile_node(), exec_cmd
 	session.on 'data', (data) ->
