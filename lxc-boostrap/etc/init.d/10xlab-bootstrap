@@ -16,6 +16,12 @@
 
 . /lib/lsb/init-functions
 
+case "$1" in
+	stop)
+		# ignore stop command
+		exit 0
+esac
+
 exec > >(tee /var/log/10xlab-bootstrap.log) 2>&1
 
 NAME=10xlab-bootstrap
