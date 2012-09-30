@@ -107,6 +107,7 @@ module.exports.create = (req, res, next) ->
       data = {
         server: hostnode.hostname
         pool: hostnode.pool._id
+        size: options.size
       }
       # TODO
       # options.pool not recognized
