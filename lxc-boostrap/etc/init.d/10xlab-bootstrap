@@ -48,11 +48,13 @@ get_metadata
 mkdir -p /var/10xlab
 tar xvfz /tmp/repository.tar.gz -C /var/10xlab 1>/dev/null
 
-# gem install chef yajl-ruby --no-ri --no-rdoc (now packaged as .deb)
-cd /var/cache/10xlabs/
-dpkg -i --force-depends-version *.deb
+#gem install chef yajl-ruby --no-ri --no-rdoc 
+#gem install /var/cache/10xlabs/10xlabs-bootstrap-handler-0.0.1.gem
+#(now packaged as .deb)
 
-gem install /var/cache/10xlabs/10xlabs-bootstrap-handler-0.0.1.gem
+# TODO replace by 10xlabs apt repository & ubuntu_chef_vm metapackage to pull all dependencies
+cd /var/cache/10xlabs/
+dpkg -i --force-all *.deb
 
 # /etc/10xlab/bootstrap.rb
 $CHEF_SOLO -c /etc/10xlab/bootstrap.rb -j /tmp/bootstrap.meta

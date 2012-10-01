@@ -21,7 +21,7 @@ class LxcService < Provider
   def prepare(request)
     template = request["options"]["template"] || nil
     pool = request["options"]["pool"] || nil
-    size = request["options"]["size"].to_i || nil
+    size = request["options"]["size"].to_i || 0
 
     # TODO better protection from hostname fixing
     # TODO where to get vgname from?
@@ -30,7 +30,7 @@ class LxcService < Provider
     command << "--template #{template}" if template
     command << "--vgname #{@vgname}" if @vgname
     command << "--pool #{pool}" if pool
-    command << "--size #{size}MB" if size
+    command << "--size #{size}MB" if size != 0
 
     begin
       res = ssh_exec('mchammer', @hostname, command.join(' '), @ssh_options)
