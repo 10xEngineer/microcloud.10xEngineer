@@ -32,6 +32,8 @@ config/10xeng.yaml
 
 service/Procfile
 service/.foreman
+lxc-boostrap/var/cache/10xlabs
+lxc-boostrap/local/debs/
 
 # VMs operational data
 data_bags/vms/*.json
