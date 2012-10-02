@@ -51,7 +51,8 @@ labBasicAuth = (callback, realm) ->
 labAuth = (callback, realm) ->
 	return (req, res, next) ->
 		authorization = req.headers.authorization;
-		next() if req.user
+		if req.user
+			if res then next() else next(null, true)
 
 		unless authorization
 			if res then return unauthorized(res, realm) else return next(null, false)
@@ -77,7 +78,7 @@ labAuth = (callback, realm) ->
 				shell: "/opt/10xlabs/term_serv/bin/ssh_connect.sh"
 				shellArgs: [user, lab_data.user, lab_data.host]
 
-			next()
+			if res then next() else next(null, true)
 
 verify = (is_socket, user, pass, next) ->
 	client.hgetall user, (err, data) ->
