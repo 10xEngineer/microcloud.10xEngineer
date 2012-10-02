@@ -53,7 +53,8 @@ labAuth = (callback, realm) ->
 		authorization = req.headers.authorization;
 		next() if req.user
 
-		return unauthorized(res, realm) unless authorization
+		unless authorization
+			if res then return unauthorized(res, realm) else return next(null, false)
 
 		authorization = req.headers.authorization;
 		parts = authorization.split(' ')
@@ -67,7 +68,7 @@ labAuth = (callback, realm) ->
 
 		callback res == null, user, pass, (err, user, lab_data) ->
 			if err || !user?
-				return unauthorized(res, realm)
+				if res then return unauthorized(res, realm) else return next(null, false)
 
 			req.user = req.remoteUser = user
 
