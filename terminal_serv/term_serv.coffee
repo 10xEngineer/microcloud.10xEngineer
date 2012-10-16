@@ -51,9 +51,11 @@ labBasicAuth = (callback, realm) ->
 labAuth = (callback, realm) ->
 	return (req, res, next) ->
 		authorization = req.headers.authorization;
-		next() if req.user
+		if req.user
+			if res then next() else next(null, true)
 
-		return unauthorized(res, realm) unless authorization
+		unless authorization
+			if res then return unauthorized(res, realm) else return next(null, false)
 
 		authorization = req.headers.authorization;
 		parts = authorization.split(' ')
@@ -67,7 +69,7 @@ labAuth = (callback, realm) ->
 
 		callback res == null, user, pass, (err, user, lab_data) ->
 			if err || !user?
-				return unauthorized(res, realm)
+				if res then return unauthorized(res, realm) else return next(null, false)
 
 			req.user = req.remoteUser = user
 
@@ -76,7 +78,7 @@ labAuth = (callback, realm) ->
 				shell: "/opt/10xlabs/term_serv/bin/ssh_connect.sh"
 				shellArgs: [user, lab_data.user, lab_data.host]
 
-			next()
+			if res then next() else next(null, true)
 
 verify = (is_socket, user, pass, next) ->
 	client.hgetall user, (err, data) ->
