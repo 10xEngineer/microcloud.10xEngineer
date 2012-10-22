@@ -1,4 +1,6 @@
-db.users.remove();
+db.users.drop();
+db.access_tokens.drop()
+db.accounts.drop()
 
 // demo@10xengineer.me / lab123
 email = 'demo@10xengineer.me'
@@ -27,3 +29,23 @@ demo_token = {
 }
 
 db.access_tokens.save(demo_token)
+
+// account
+demo_account = {
+	handle: 'demo',
+	owners: [demo._id],
+
+	disabled: false,
+	organization: false,
+
+	meta: {
+		created_at: new Date(),
+		update_at: new Date(),
+		deleted_at: new Date()
+	}
+}
+
+db.accounts.save(demo_account)
+
+account = db.accounts.findOne({handle: 'demo'})
+db.users.update({_id: demo._id}, {$set: {def_account: account._id}})

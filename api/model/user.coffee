@@ -8,6 +8,8 @@ User = new mongoose.Schema
 	cpwd: String
 	salt: String
 
+	def_account: ObjectId
+
 	service: {type: Boolean, default: false}
 	disabled: {type: Boolean, default: false}
 
