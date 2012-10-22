@@ -15,4 +15,13 @@ User = new mongoose.Schema
 
 User.plugin(timestamps)
 
+User.statics.findUserById = (id, callback) ->
+	mongoose.model('User')
+		.findOne({_id: id})
+		.exec (err, user) ->
+			if err
+				return callback(new Error("Unable to retrieve user: #{err}"))
+
+			callback(null, user)
+
 module.exports.register = mongoose.model 'User', User

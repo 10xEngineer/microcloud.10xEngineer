@@ -14,4 +14,13 @@ AccessToken = new mongoose.Schema {
 
 AccessToken.plugin(timestamps)
 
+AccessToken.statics.findToken = (token, callback) ->
+	mongoose.model('AccessToken')
+		.findOne({auth_token: token})
+		.exec (err, token) ->
+			if err
+				return callback(new Error("Unable to retrieve token: #{err}"))
+
+			callback(null, token)
+
 module.exports.register = mongoose.model 'AccessToken', AccessToken
