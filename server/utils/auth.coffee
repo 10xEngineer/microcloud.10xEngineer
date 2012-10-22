@@ -10,10 +10,14 @@
 
 restify = require("restify")
 crypto = require("crypto")
+mgmt_api = require("../api/mgmt/default")
 
 defaultSkew = 600
 
+# enforce HTTP Date header to prevent clock-skew-related problems
 enforce_date = (req, res, next) ->
+	console.log '---'
+	console.log req.headers.date
 	if (!req.headers.date)
 		e = new restify.PreconditionFailedError("HTTP Date header missing")
 
@@ -27,23 +31,26 @@ verifyHMAC = (req, res, next) ->
 
 		return next(e)
 
-	# FIXME lookup
-	secret = 'dummy123'
+	# TODO sanitize headers
+	mgmt_api.getToken req.headers["x-labs-token"], (err, token) ->
+		if err
+			return next(new restify.InternalError("Unable to retrieve authentication token: #{err}"))
 
-	hmac = crypto.createHmac('sha256', secret)
-	hmac.update(req.headers.date)
-	hmac.update(req.headers["x-labs-token"])
-	hmac.update(req.headers.body)
+		hmac = crypto.createHmac('sha256', new Buffer(token["auth_secret"], 'base64'))
+		hmac.update(req.method)
 
-	expected_digest = hmac.digest('base64')
+		hmac.update(req.headers.date)
+		hmac.update(req.headers["x-labs-token"])
+		hmac.update(req.headers.body) if req.headers.body
 
-	if expected_digest != req.headers["x-labs-signature"]
-		return next(new restify.InvalidCredentials("Invalid credentials"))
+		expected_digest = hmac.digest('base64')
 
-	return next()
+		if expected_digest != req.headers["x-labs-signature"]
+			return next(new restify.InvalidCredentialsError("Invalid credentials"))
+
+		next()
 
 module.exports.setup = (server) ->
-	# enforce HTTP Date header to prevent clock-skew-related problems
 	server.use enforce_date
 	server.use restify.dateParser(defaultSkew)
 	server.use verifyHMAC
