@@ -16,12 +16,15 @@ defaultSkew = 600
 
 # enforce HTTP Date header to prevent clock-skew-related problems
 enforce_date = (req, res, next) ->
-	console.log '---'
-	console.log req.headers.date
 	if (!req.headers.date)
 		e = new restify.PreconditionFailedError("HTTP Date header missing")
 
 		return next(e)
+
+	date = new Date(req.headers.date).getTime();
+
+	unless date
+		return next(new restify.PreconditionFailedError("Invalid date specified"))
 
 	return next()
 
