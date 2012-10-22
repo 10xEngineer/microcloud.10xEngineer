@@ -38,4 +38,4 @@ module.exports.show = (req, res, next) ->
 				def_account: results.getUser.def_account
 			auth_secret: results.getToken.auth_secret
 
-		res.send JSON.stringify(data)
+		res.json data
