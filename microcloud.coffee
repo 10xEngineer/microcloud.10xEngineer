@@ -33,7 +33,6 @@ require("./server/model/lab").register
 require("./server/model/definition").register
 require("./server/model/pool").register
 
-auth.setup(server)
 
 # routes
 routes = require("./server/routes")
@@ -41,6 +40,8 @@ routes = require("./server/routes")
 server.use restify.acceptParser(server.acceptable)
 server.use restify.queryParser()
 server.use restify.bodyParser()
+
+auth.setup(server)
 
 # setup routes
 routes.registerRoutes server
