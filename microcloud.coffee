@@ -12,13 +12,13 @@ server = restify.createServer
 	version: "0.1.0"
 
 # model
-require("./server/model/hostnode").register
-require("./server/model/provider").register
-require("./server/model/keypair").register
-require("./server/model/vm").register
-require("./server/model/lab").register
-require("./server/model/definition").register
+require("./server/model/node").register
 require("./server/model/pool").register
+
+#require("./server/model/keypair").register
+#require("./server/model/vm").register
+#require("./server/model/lab").register
+#require("./server/model/definition").register
 
 
 # routes
