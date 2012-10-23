@@ -8,7 +8,7 @@ restify		= require("restify")
 
 version = "v1"
 
-module.exports.getToken = (token, callback) ->
+module.exports.show = (token, callback) ->
 	client = restify.createJsonClient
 		url: 'http://api.labs.dev/'
 
