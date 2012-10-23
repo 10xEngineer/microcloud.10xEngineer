@@ -12,7 +12,7 @@ demo_user = {
 	disabled: false,
 	meta: {
 		created_at: new Date(),
-		update_at: new Date(),
+		updated_at: new Date(),
 		deleted_at: new Date()
 	}
 }
@@ -40,7 +40,7 @@ demo_account = {
 
 	meta: {
 		created_at: new Date(),
-		update_at: new Date(),
+		updated_at: new Date(),
 		deleted_at: new Date()
 	}
 }
