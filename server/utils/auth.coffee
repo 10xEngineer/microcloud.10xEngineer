@@ -34,7 +34,10 @@ verifyHMAC = (req, res, next) ->
 
 		return next(e)
 
-	# TODO sanitize headers
+	# verify headers
+	unless /^([a-z0-9]){28}$/.test(req.headers["x-labs-token"])
+		return next(new restify.PreconditionFailedError("Invalid authentication token"))
+
 	mgmt_api.getToken req.headers["x-labs-token"], (err, token) ->
 		if err
 			return next(new restify.InternalError("Unable to retrieve authentication token: #{err}"))
