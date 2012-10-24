@@ -5,6 +5,8 @@ ObjectId 	= mongoose.Schema.ObjectId
 
 User = new mongoose.Schema
 	email: String
+	name: String
+	
 	cpwd: String
 	salt: String
 
