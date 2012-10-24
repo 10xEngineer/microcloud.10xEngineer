@@ -29,7 +29,11 @@ server.use restify.acceptParser(server.acceptable)
 server.use restify.queryParser()
 server.use restify.bodyParser()
 
-auth.setup(server)
+auth.setup server, 
+	ping: 
+		url_match: new RegExp("^/ping\\?token\=(.*)")
+		schema: "token"
+		token: "pYvf8p3LxFnqoAGn"
 
 # setup routes
 routes.registerRoutes server

@@ -15,52 +15,61 @@ mgmt_api 	= require("../api/mgmt/client")
 
 defaultSkew = 600
 
-# enforce HTTP Date header to prevent clock-skew-related problems
-enforce_date = (req, res, next) ->
-	if (!req.headers.date)
-		e = new restify.PreconditionFailedError("HTTP Date header missing")
+module.exports.setup = (server, rules) ->
+	verifyHMAC = (req, res, next) ->
+		# bypass authentication based on specific rules
+		for rule_name of rules
+			rule = rules[rule_name]
 
-		return next(e)
+			match = req.url.match rule.url_match
+			if match
+				if rule.schema == "token" && rule.token == match[1]
+					log.info "path=#{req.path} bypassed by custom rule=#{rule_name} ip=#{req.connection.remoteAddress}"
+					return next()
 
-	date = new Date(req.headers.date).getTime();
+				return next(new restify.InvalidCredentialsError("Invalid credentials (special rules)"))
 
-	unless date
-		return next(new restify.PreconditionFailedError("Invalid date specified"))
+		# enforce Date header
+		if (!req.headers.date)
+			e = new restify.PreconditionFailedError("HTTP Date header missing")
 
-	return next()
+			return next(e)
 
-verifyHMAC = (req, res, next) ->
-	if (!req.headers["x-labs-token"] | !req.headers["x-labs-signature"])
-		e = new restify.PreconditionFailedError("Missing authentication headers (X-Labs-Token and/or X-Labs-Signature")
+		date = new Date(req.headers.date).getTime();
 
-		return next(e)
+		unless date
+			return next(new restify.PreconditionFailedError("Invalid date specified"))
 
-	# verify headers
-	unless /^([a-z0-9]){28}$/.test(req.headers["x-labs-token"])
-		return next(new restify.PreconditionFailedError("Invalid authentication token"))
 
-	mgmt_api.tokens.show req.headers["x-labs-token"], (err, token) ->
-		if err
-			return next(new restify.InternalError("Unable to retrieve authentication token: #{err}"))
+		if (!req.headers["x-labs-token"] | !req.headers["x-labs-signature"])
+			e = new restify.PreconditionFailedError("Missing authentication headers (X-Labs-Token and/or X-Labs-Signature")
 
-		hmac = crypto.createHmac('sha256', token["auth_secret"])
-		hmac.update(req.method)
-		hmac.update(req.url)
-		hmac.update(req.headers.date)
-		hmac.update(req.headers["x-labs-token"])
-		hmac.update(req.body) if req.body
+			return next(e)
 
-		expected_digest = hmac.digest('base64')
+		# verify headers
+		unless /^([a-z0-9]){28}$/.test(req.headers["x-labs-token"])
+			return next(new restify.PreconditionFailedError("Invalid authentication token"))
 
-		if expected_digest != req.headers["x-labs-signature"]
-			return next(new restify.InvalidCredentialsError("Invalid credentials"))
+		mgmt_api.tokens.show req.headers["x-labs-token"], (err, token) ->
+			if err
+				return next(new restify.InternalError("Unable to retrieve authentication token: #{err}"))
 
-		req.user = token.user
+			hmac = crypto.createHmac('sha256', token["auth_secret"])
+			hmac.update(req.method)
+			hmac.update(req.url)
+			hmac.update(req.headers.date)
+			hmac.update(req.headers["x-labs-token"])
+			hmac.update(req.body) if req.body
 
-		next()
+			expected_digest = hmac.digest('base64')
 
-module.exports.setup = (server) ->
-	server.use enforce_date
+			if expected_digest != req.headers["x-labs-signature"]
+				return next(new restify.InvalidCredentialsError("Invalid credentials"))
+
+			req.user = token.user
+
+			next()	
+
 	server.use restify.dateParser(defaultSkew)
 	server.use verifyHMAC
 
