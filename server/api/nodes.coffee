@@ -1,23 +1,23 @@
 module.exports = ->
 
 log 		= require("log4js").getLogger()
-restify		= require("restify")
 mongoose 	= require("mongoose")
 async 		= require "async"
 Pool		= mongoose.model('Pool')
 Node 		= mongoose.model('Node')
 par_helper  = require "../utils/param_helper"
+restify		= require "restify"
 
 module.exports.create = (req, res, next) ->
 	try
 		data = JSON.parse req.body
 	catch e
-		return next(new restify.BadDigestError("Invalid data"))
+		return next(new restify.BadRequestError("Invalid data"))
 
 	getPool = (callback) ->
 		Pool.find_by_name req.params.pool, (err, pool) ->
 			if err
-				return callback(new restify.ResourceNotFoundError("Pool not found"))
+				return callback(new restify.NotFoundError("Pool not found"))
 
 			callback(null, pool)
 
@@ -30,7 +30,7 @@ module.exports.create = (req, res, next) ->
 				return callback(new restify.InternalError(err))
 
 			if node
-				return callback(new restify.MissingParameterError("Node #{data.hostname} already registered"))
+				return callback(new restify.ConflictError("Node #{data.hostname} already registered"))
 
 			return callback()
 
@@ -58,6 +58,9 @@ module.exports.create = (req, res, next) ->
 		callback()
 
 	# TODO add pool to allocation statistics
+	#
+	# - add node
+	# - remove node
 
 	async.auto
 		pool: getPool
