@@ -17,10 +17,14 @@ class LxcService < Provider
     template = request["options"]["template"] || nil
     size = request["options"]["size"] || 512
     defer = request["options"]["defer"] || false
+    name = request["options"]["name"]
+
+    raise "Lab Machine name required" unless name and !name.empty?
 
     command = ["/usr/bin/sudo", "/usr/local/bin/lab-vm", "-j", "create"]
     command << "--template #{template}" if template
     command << "--size #{size}MB" if size != 0
+    command << "--hostname #{name}"
     command << "--defer" if defer
 
     begin

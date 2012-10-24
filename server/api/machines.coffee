@@ -6,6 +6,7 @@ async 		= require "async"
 param_helper= require "../utils/param_helper"
 broker		= require "../broker"
 restify		= require "restify"
+hostname	= require "../utils/hostname"
 Pool 		= mongoose.model 'Pool'
 Machine 	= mongoose.model 'Machine'
 
@@ -45,12 +46,14 @@ module.exports.create = (req, res, next) ->
 			server: results.node.hostname
 			size: data.size
 			defer: true
+			name: data.name || hostname.generate()
 
 		creq = broker.dispatch 'lxc', 'create', data
 		creq.on 'data', (message) ->
 			machine = 
 				uuid: message.options.uuid
 				state: message.options.state
+				name: message.options.name
 
 			log.info "machine=#{machine.uuid} state=#{machine.state}"
 
@@ -64,8 +67,9 @@ module.exports.create = (req, res, next) ->
 	saveMachine = (callback, results) ->
 		data = 
 			uuid: results.raw_machine.uuid
-			account: req.user.account_id
+			name: results.raw_machine.name
 
+			account: req.user.account_id
 			node: results.node._id
 			lab: null
 
