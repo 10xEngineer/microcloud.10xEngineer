@@ -16,6 +16,8 @@ Machine = new Schema
 	state: String
 	template: String
 
+	archived: {type: Boolean, default: false}
+
 Machine.plugin(timestamps)
 
 module.exports.register = mongoose.model 'Machine', Machine

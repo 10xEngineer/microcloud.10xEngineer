@@ -14,8 +14,18 @@ Machine 	= mongoose.model 'Machine'
 # Lab Machine commands
 #
 module.exports.index = (req, res, next) ->
-	# FIXME not yet migrated
-	res.send 500, {}
+	# TODO temporarily hidden labs
+
+	Machine
+		.find({account: req.user.account_id})
+		# TODO schema initially didn't have archived field 
+		.or([{archived: false}, {archived: null}])
+		.select({_id:0, lab:0, node: 0, account: 0 })
+		.exec (err, machines) ->
+			if err
+				return callback(new restify.InternalError("Unable to retrieve the list of machines: #{err}"))
+
+			res.send machines
 
 module.exports.create = (req, res, next) ->
 	# TODO validate limits
