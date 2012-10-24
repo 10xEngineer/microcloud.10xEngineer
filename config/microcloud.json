@@ -11,13 +11,17 @@
             "host" : "127.0.0.1",
             "dbName" : "microcloud_dev"
         },
+        "redis" : {
+            "host": "127.0.0.1",
+            "dbName": 0
+        },
         "broker": "ipc:///tmp/mc.broker",
         "taskeng": "ipc:///tmp/taskeng",
         "compilation": {
                 "user": "compile",
                 "host": "176.34.236.201",
                 "port": 22
-            }            
+            }  
     },
     "test": {
         "server" : {
