@@ -44,9 +44,10 @@ module.exports.create = (req, res, next) ->
 			template: data.template
 			server: results.node.hostname
 			size: data.size
+			defer: true
 
-		req = broker.dispatch 'lxc', 'create', data
-		req.on 'data', (message) ->
+		creq = broker.dispatch 'lxc', 'create', data
+		creq.on 'data', (message) ->
 			machine = 
 				uuid: message.options.uuid
 				state: message.options.state
@@ -55,7 +56,7 @@ module.exports.create = (req, res, next) ->
 
 			return callback(null, machine)
 
-		req.on 'error', (message) ->
+		creq.on 'error', (message) ->
 			log.error "unable to create machine reason='#{message.options.reason}'"
 
 			return callback(new restify.InternalError(message.options.reason))
@@ -63,7 +64,6 @@ module.exports.create = (req, res, next) ->
 	saveMachine = (callback, results) ->
 		data = 
 			uuid: results.raw_machine.uuid
-			# FIXME current_user.account
 			account: req.user.account_id
 
 			node: results.node._id
@@ -77,7 +77,7 @@ module.exports.create = (req, res, next) ->
 			if err
 				return next(new restify.InternalError("Unable to retrieve pools: #{err}"))
 
-			callback(machine)
+			callback(null, machine)
 
 	# TODO LRU for pool allocation
 
@@ -92,7 +92,7 @@ module.exports.create = (req, res, next) ->
 		if err
 			return next(err)
 
-		res.json 200, results.machine
+		res.send 201, results.machine
 
 module.exports.show = (req, res, next) ->
 	# FIXME not yet migrated
