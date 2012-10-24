@@ -96,5 +96,7 @@ internal_account = {
 	}
 }
 
+db.accounts.save(internal_account)
+
 account = db.accounts.findOne({handle: 'demo'})
 db.users.update({_id: demo._id}, {$set: {def_account: account._id}})

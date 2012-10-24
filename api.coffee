@@ -8,6 +8,7 @@ auth 		= require("./server/utils/auth")
 mongoose.connect('mongo://localhost/labs_dev')
 
 require("./api/model/user").register()
+require("./api/model/account").register()
 require("./api/model/access_token").register()
 
 AccessToken = mongoose.model('AccessToken')

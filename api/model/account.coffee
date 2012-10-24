@@ -40,3 +40,5 @@ Account = new mongoose.Schema
 	organization: {type: Boolean, default: false}
 
 Account.plugin(timestamps)
+
+module.exports.register = mongoose.model 'Account', Account
