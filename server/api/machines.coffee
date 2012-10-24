@@ -19,6 +19,7 @@ module.exports.index = (req, res, next) ->
 module.exports.create = (req, res, next) ->
 	# TODO validate limits
 	# TODO optional account_id to create VM under another account (RBAC needed)
+	# TODO ability to defer machine start
 
 	try
 		data = JSON.parse req.body
@@ -43,7 +44,6 @@ module.exports.create = (req, res, next) ->
 			template: data.template
 			server: results.node.hostname
 			size: data.size
-			defer: true
 
 		req = broker.dispatch 'lxc', 'create', data
 		req.on 'data', (message) ->
@@ -53,12 +53,12 @@ module.exports.create = (req, res, next) ->
 
 			log.info "machine=#{machine.uuid} state=#{machine.state}"
 
-			callback(machine)
+			return callback(null, machine)
 
 		req.on 'error', (message) ->
 			log.error "unable to create machine reason='#{message.options.reason}'"
 
-			callback(new restify.InternalError(message.options.reason))
+			return callback(new restify.InternalError(message.options.reason))
 
 	saveMachine = (callback, results) ->
 		data = 
@@ -86,7 +86,7 @@ module.exports.create = (req, res, next) ->
 		pool: ['checkParams', getPool]
 		node: ['pool', getNode]
 		raw_machine: ['node', createMachine]
-		machine: ['machine_uuid', saveMachine]
+		machine: ['raw_machine', saveMachine]
 
 	, (err, results) ->
 		if err

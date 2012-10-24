@@ -7,6 +7,7 @@ timestamps 	= require "../utility/timestamp_plugin"
 
 Machine = new Schema
 	uuid: String
+	name: String
 
 	account: ObjectId
 	node: ObjectId
