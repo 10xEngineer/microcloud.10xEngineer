@@ -23,7 +23,7 @@ Vagrant::Config.run do |config|
   # microcloud root for hostnode
   config.vm.share_folder "10xeng_root", "/var/lib/10xeng", "."
   # use for hostnode CLI tool development
-  #config.vm.share_folder "cli", "/cli", "/Users/radim/Projects/10xeng/10xengineer-node"
+  config.vm.share_folder "cli", "/cli", "/Users/radim/Projects/10xeng/10xlabs-hostnode"
   #config.vm.share_folder "compile", "/compile", "/Users/radim/Projects/10xeng/10xlabs-compile-service"
 
   # 

@@ -301,7 +301,7 @@ post_process()
 
 create_archive()
 {
-    rootfs=$1
+    tmpl_root=$1
     release=$2
     arch=$3
 
@@ -310,7 +310,7 @@ create_archive()
     archive_name="tmpl_ubuntu-${release}-${arch}-${date}.tar.gz"
 
     cwd=`pwd`
-    cd $rootfs
+    cd $tmpl_root
 
     tar -cz -f ${cwd}/$archive_name ./
 
@@ -403,7 +403,12 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 # setup temporary path for rootfs
-rootfs=`/bin/mktemp -d`
+tmpl_root=`/bin/mktemp -d`
+rootfs=${tmpl_root}/rootfs
+
+mkdir -p rootfs
+
+cp -R templates/ubuntu-precise/* $tmpl_root/
 
 install_ubuntu $rootfs $release $flushcache
 if [ $? -ne 0 ]; then
@@ -412,6 +417,6 @@ if [ $? -ne 0 ]; then
 fi
 
 post_process $rootfs $release 
-create_archive $rootfs $release $arch
+create_archive $tmpl_root $release $arch
 
 rm -Rf $rootfs
