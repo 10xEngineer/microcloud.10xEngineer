@@ -54,6 +54,8 @@ verifyHMAC = (req, res, next) ->
 		if expected_digest != req.headers["x-labs-signature"]
 			return next(new restify.InvalidCredentialsError("Invalid credentials"))
 
+		req.user = token.user
+
 		next()
 
 module.exports.setup = (server) ->

@@ -14,28 +14,31 @@ module.exports.show = (req, res, next) ->
 		AccessToken.findToken(req.params.token, callback)
 
 	getUser = (callback, results) ->
-		User.findUserById(results.getToken.user, callback)
+		User.findUserById(results.token.user, callback)
 
 	validate = (callback, results) ->
-		unless results.getUser
+		unless results.user
+			log.warn "invalid token=#{req.params.token}"
 			return callback(new Error("Invalid token: unable to find associated user"))
 
 		callback()
 
 	async.auto
-		getToken: [getToken]
-		getUser: ['getToken', getUser]
-		validate: ['getUser', validate]
+		token: [getToken]
+		user: ['token', getUser]
+		validate: ['user', validate]
 	, (err, results) ->
 		if err
 			return next(new restify.InternalError(err))
 
-		unless results.getToken
+		unless results.token
 			return next(new restify.ResourceNotFoundError("Token not found."))
 
 		data = 
 			user:
-				def_account: results.getUser.def_account
-			auth_secret: results.getToken.auth_secret
+				id: results.user._id	
+				account_id: results.user.def_account
+
+			auth_secret: results.token.auth_secret
 
 		res.json data

@@ -64,7 +64,7 @@ module.exports.create = (req, res, next) ->
 		data = 
 			uuid: results.raw_machine.uuid
 			# FIXME current_user.account
-			account: null
+			account: req.user.account_id
 
 			node: results.node._id
 			lab: null
