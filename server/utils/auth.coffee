@@ -48,7 +48,7 @@ verifyHMAC = (req, res, next) ->
 		hmac.update(req.url)
 		hmac.update(req.headers.date)
 		hmac.update(req.headers["x-labs-token"])
-		#hmac.update(req.headers.body) if req.headers.body
+		hmac.update(req.body) if req.body
 
 		expected_digest = hmac.digest('base64')
 
