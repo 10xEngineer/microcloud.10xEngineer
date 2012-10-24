@@ -14,10 +14,10 @@ socket = context.socket ZMQ::REQ
 #poller.register(socket, ZMQ::POLLOUT)
 
 # sample message
-request = {
-  :service => :dummy,
-  :action => :ping
-}
+#request = {
+#  :service => :lxc,
+#  :action => :ping
+#}
 
 #request = {
 #  :service => :key,
@@ -33,14 +33,15 @@ request = {
 #}
 
 #
-#request = {
-#  :service => :lxc,
-#  :action => :prepare,
-#  :options => {
-#    :server => "tenxeng-precise32",
-#    :id => "bc3cd5c0-a335-012f-b623-0800272cf3a1",
-#  }
-#}
+request = {
+  :service => :lxc,
+  :action => :create,
+  :options => {
+    :server => "tenxeng-precise32",
+    :template => "ubuntu-precise64",
+    :defer => true
+  }
+}
 
 #request = {
 #  :service => :loop,
@@ -76,8 +77,8 @@ message = Yajl::Encoder.encode(request)
 
 # local unix domain used for connection
 # should be configurable (as it might change once we got further deployment details)
-socket.connect "ipc:///tmp/taskeng"
-#socket.connect "ipc:///tmp/mc.broker"
+#socket.connect "ipc:///tmp/taskeng"
+socket.connect "ipc:///tmp/mc.broker"
 
 1.times do 
   # send message

@@ -4,37 +4,95 @@ log 		= require("log4js").getLogger()
 mongoose 	= require("mongoose")
 async 		= require "async"
 param_helper= require "../utils/param_helper"
+broker		= require "../broker"
+restify		= require "restify"
+Pool 		= mongoose.model 'Pool'
+Machine 	= mongoose.model 'Machine'
 
 #
-# VM commands
+# Lab Machine commands
 #
 module.exports.index = (req, res, next) ->
 	# FIXME not yet migrated
 	res.send 500, {}
 
 module.exports.create = (req, res, next) ->
+	# TODO validate limits
+	# TODO optional account_id to create VM under another account (RBAC needed)
+
 	try
 		data = JSON.parse req.body
 	catch e
-		return next(new restify.BadDigestError("Invalid data"))
-
+		return next(new restify.BadRequestError("Invalid data"))
 
 	checkParams = (callback, results) -> 
 		param_helper.checkPresenceOf data, ['template','size','pool'], callback
 
 	getPool = (callback, results) ->
-		# TODO continue
+		Pool.find_by_name data.pool, (err, pool) ->
+			if err
+				return callback(new restify.NotFoundError("Pool not found"))
+
+			callback(null, pool)
+
+	getNode = (callback, results) ->
+		results.pool.selectNode(callback)
+
+	createMachine = (callback, results) ->
+		data = 
+			template: data.template
+			server: results.node.hostname
+			size: data.size
+			defer: true
+
+		req = broker.dispatch 'lxc', 'create', data
+		req.on 'data', (message) ->
+			machine = 
+				uuid: message.options.uuid
+				state: message.options.state
+
+			log.info "machine=#{machine.uuid} state=#{machine.state}"
+
+			callback(machine)
+
+		req.on 'error', (message) ->
+			log.error "unable to create machine reason='#{message.options.reason}'"
+
+			callback(new restify.InternalError(message.options.reason))
+
+	saveMachine = (callback, results) ->
+		data = 
+			uuid: results.raw_machine.uuid
+			# FIXME current_user.account
+			account: null
+
+			node: results.node._id
+			lab: null
+
+			state: results.raw_machine.state
+			template: data.template
+
+		machine = new Machine(data)
+		machine.save (err) ->
+			if err
+				return next(new restify.InternalError("Unable to retrieve pools: #{err}"))
+
+			callback(machine)
 
 	# TODO LRU for pool allocation
 
 	async.auto
 		checkParams: checkParams 
-		pool: getPool
+		pool: ['checkParams', getPool]
+		node: ['pool', getNode]
+		raw_machine: ['node', createMachine]
+		machine: ['machine_uuid', saveMachine]
+
 	, (err, results) ->
 		if err
 			return next(err)
 
-		res.json 200, {}
+		res.json 200, results.machine
 
 module.exports.show = (req, res, next) ->
 	# FIXME not yet migrated

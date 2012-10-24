@@ -39,6 +39,6 @@ Pool.methods.selectNode = (callback) ->
   # For now using random selection
   node_index = Math.floor(Math.random()*(new Date().getTime()) % this.nodes.length)
 
-  callback(null, this.nodes[node_index].hostname)
+  callback(null, this.nodes[node_index])
 
 module.exports.register = mongoose.model 'Pool', Pool

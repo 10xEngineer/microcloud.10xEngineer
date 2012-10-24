@@ -14,6 +14,7 @@ server = restify.createServer
 # model
 require("./server/model/node").register
 require("./server/model/pool").register
+require("./server/model/machine").register
 
 #require("./server/model/keypair").register
 #require("./server/model/vm").register

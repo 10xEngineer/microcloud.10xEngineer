@@ -13,6 +13,34 @@ class LxcService < Provider
   before_filter :validate_vm, :only => [:bootstrap, :start, :stop, :status, :destroy]
   before_filter :setup_ssh
 
+  def create(request)
+    template = request["options"]["template"] || nil
+    size = request["options"]["size"] || 512
+    defer = request["options"]["defer"] || false
+
+    command = ["/usr/bin/sudo", "/usr/local/bin/lab-vm", "-j", "create"]
+    command << "--template #{template}" if template
+    command << "--size #{size}MB" if size != 0
+    command << "--defer" if defer
+
+    begin
+      res = ssh_exec('mchammer', @hostname, command.join(' '), @ssh_options)
+
+      options = Yajl::Parser.parse(res)
+
+      response :ok, options
+    rescue Net::SSH::AuthenticationFailed => e
+      response :fail, {:reason => "Hostnode authentication failed"}
+    rescue Exception => e
+      error = json_message(e.message)
+      error[:source] = "lab-vm"
+
+      response :fail, error
+    end    
+  end
+
+  # ---- original code
+
   # ssh stub
   # 
   # TODO SSH Key needs to be loaded to agent!
