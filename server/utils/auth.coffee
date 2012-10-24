@@ -8,9 +8,10 @@
 # TODO add caching layer
 #
 
-restify = require("restify")
-crypto = require("crypto")
-mgmt_api = require("../api/mgmt/client")
+log 		= require("log4js").getLogger()
+restify 	= require("restify")
+crypto 		= require("crypto")
+mgmt_api 	= require("../api/mgmt/client")
 
 defaultSkew = 600
 
@@ -63,9 +64,21 @@ module.exports.setup = (server) ->
 	server.use restify.dateParser(defaultSkew)
 	server.use verifyHMAC
 
-	# TODO upstream key request/local cache (TTL ~300 seconds)
-	# Date: Date
-	# X-Labs-token:
-	# X-Labs-signature:	
+module.exports.verify = (account_handle, callback) ->
+	return (req, res, next) ->
+		mgmt_api.accounts.show account_handle, (err, account) ->
+			if err
+				return (req, res, next) ->
+					next(new restify.InternalError("Unable to retrieve account '#{account_handle}': #{err}"))
 
-	# TODO HMAC
+			unless account
+				return (req, res, next) ->
+					next(new restify.InternalError("Account '#{account_handle}' missing"))
+
+			# Simple RBAC based on account ownership
+			if req.user.id in account.owners
+				return callback(req, res, next)
+
+			log.warn("user=#{req.user.id} access denied to url=#{req.url}")
+
+			return next(new restify.ForbiddenError("Forbidden"))
