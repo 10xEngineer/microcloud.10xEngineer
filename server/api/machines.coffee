@@ -7,6 +7,7 @@ param_helper= require "../utils/param_helper"
 broker		= require "../broker"
 restify		= require "restify"
 hostname	= require "../utils/hostname"
+Node 		= mongoose.model 'Node'
 Pool 		= mongoose.model 'Pool'
 Machine 	= mongoose.model 'Machine'
 
@@ -80,7 +81,8 @@ module.exports.create = (req, res, next) ->
 			name: results.raw_machine.name
 
 			account: req.user.account_id
-			node: results.node._id
+			# TODO why results.node.node_ref doesn't work
+			node: results.node["node_ref"]
 			lab: null
 
 			state: results.raw_machine.state
@@ -111,3 +113,59 @@ module.exports.create = (req, res, next) ->
 module.exports.show = (req, res, next) ->
 	# FIXME not yet migrated
 	res.send 500, {}
+
+module.exports.destroy = (req, res, next) ->
+	getMachine = (callback, results) ->
+		Machine
+			.findOne({account: req.user.account_id, name: req.params.machine})
+			.or([{archived: false}, {archived: null}])
+			.exec (err, machine) ->
+				if err
+					return callback(new restify.InternalError("Unable to retrieve the list of machines: #{err}"))
+
+				return callback(null, machine)
+
+	getNode = (callback, results) ->
+		Node
+			.findOne({_id: results.machine.node})
+			.exec (err, node) ->
+				if err
+					return callback(new restify.InternalError("Unable to retrieve machine's node: #{err}"))
+
+				return callback(null, node)
+
+	destroyMachine = (callback, results) ->
+		data = 
+			server: results.node.hostname
+			uuid: results.machine.uuid
+
+		creq = broker.dispatch 'lxc', 'destroy', data
+		creq.on 'data', (message) ->
+			log.info "machine=#{results.machine.uuid} state=destroyed"
+
+			return callback(null)
+
+		creq.on 'error', (message) ->
+			log.error "unable to destroy machine reason='#{message.options.reason}'"
+
+			return callback(new restify.InternalError(message.options.reason))
+
+	updateMachine = (callback, results) ->
+		results.machine.state = "destroyed"
+		results.machine.save (err) ->
+			if err
+				return next(new restify.InternalError("Unable to update machine: #{err}"))
+
+			callback(null)
+
+	async.auto
+		machine: getMachine
+		node: ['machine', getNode]
+		destroy: ['node', destroyMachine]
+		update: ['destroy', updateMachine]
+
+	, (err, results) ->
+		if err
+			return next(err)
+
+		res.send 200

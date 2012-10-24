@@ -148,8 +148,8 @@ class LxcService < Provider
   end
 
   def destroy(request)
-    command = ["/usr/bin/sudo", "/usr/local/bin/10xeng-vm", "-j", "destroy"]
-    command << "--id #{@id}"
+    command = ["/usr/bin/sudo", "/usr/local/bin/lab-vm", "-j", "destroy"]
+    command << "--id #{@uuid}"
 
     begin
       res = ssh_exec('mchammer', @hostname, command.join(' '), @ssh_options)
@@ -179,9 +179,9 @@ class LxcService < Provider
   end
 
   def validate_vm(request)
-    raise "No VM ID provided." unless request["options"].include?("id")
+    raise "No VM ID provided." unless request["options"].include?("uuid")
 
-    @id = request["options"]["id"].strip
+    @uuid = request["options"]["uuid"].strip
   end
 
   def validate_hostname(request)
