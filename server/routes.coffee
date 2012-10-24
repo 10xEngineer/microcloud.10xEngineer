@@ -2,7 +2,7 @@ api = require './api/index'
 auth = require("./utils/auth")
 
 module.exports.registerRoutes = (server) ->	
-	#server.get '/ping', commands.get_ping
+	server.get '/ping', api.status.ping
 
 	# Lab Templates
 

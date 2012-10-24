@@ -1,3 +1,4 @@
+module.exports.status = require("./status")
 module.exports.pools = require("./pools")
 module.exports.nodes = require("./nodes")
 module.exports.machines = require("./machines")
