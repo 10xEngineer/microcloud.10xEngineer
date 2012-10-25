@@ -12,6 +12,7 @@ Key = new Schema
 	fingerprint: String
 	public_key: String
 
+	# TODO consider String instead of ObjectId as it's not present in the microcloud database
 	account: ObjectId
 	user: ObjectId
 

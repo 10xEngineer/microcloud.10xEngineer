@@ -7,6 +7,7 @@ param_helper= require "../utils/param_helper"
 broker		= require "../broker"
 restify		= require "restify"
 hostname	= require "../utils/hostname"
+Key 		= mongoose.model 'Key'
 Node 		= mongoose.model 'Node'
 Pool 		= mongoose.model 'Pool'
 Machine 	= mongoose.model 'Machine'
@@ -48,6 +49,20 @@ module.exports.create = (req, res, next) ->
 
 			callback(null, pool)
 
+	getKey = (callback, results) ->
+		key_name = data.key || "default"
+		Key
+			.findOne({name: key_name, user: req.user.id})
+			.where("meta.deleted_at").equals(null)
+			.exec (err, key) ->
+				if err
+					return callback(new restify.InternalError("Unable to retrieve SSH key: #{err}"))
+
+				unless key
+					return callback(new restify.NotFoundError("Specified key '#{key_name}' not found"))
+
+				return callback(null, key)
+
 	getNode = (callback, results) ->
 		results.pool.selectNode(callback)
 
@@ -58,8 +73,7 @@ module.exports.create = (req, res, next) ->
 			size: data.size
 			defer: true
 			name: data.name || hostname.generate()
-			# TODO
-			#authorized_keys: "abc\ntest\nanother"
+			authorized_keys: results.key.public_key
 
 		creq = broker.dispatch 'lxc', 'create', broker_data
 		creq.on 'data', (message) ->
@@ -102,7 +116,8 @@ module.exports.create = (req, res, next) ->
 	async.auto
 		checkParams: checkParams 
 		pool: ['checkParams', getPool]
-		node: ['pool', getNode]
+		key: ['pool', getKey]
+		node: ['key', getNode]
 		raw_machine: ['node', createMachine]
 		machine: ['raw_machine', saveMachine]
 
