@@ -32,16 +32,24 @@ socket = context.socket ZMQ::REQ
 #	}
 #}
 
-#
 request = {
-  :service => :lxc,
-  :action => :create,
+  :service => :key,
+  :action => :validate,
   :options => {
-    :server => "tenxeng-precise32",
-    :template => "ubuntu-precise64",
-    :defer => true
+    :key => "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAYEAvv0rqbFbirX3wHlQE0d/c1zR+mEG4B0nGynBjvHbG0jwQuUSIHu2ZyQaveqiqoEsOMT1HdyoHZw9cHNI2VA9xNb0Ou4n7xUKYRYJwEGWHTSlB1r5ScVw4GIK8lkd2GMmQVzBYWIbY2EmfpT/s6Cmqn4SgmfbCJXxhkA9lO0Dixd2hlSlmEvG1ar/3Zfzg/Xsaf14y2tC8qh5Y1moGYOH4DHIQjhcnicgDBTa5RUQny7wcmVE2i4RdNSd4uGYTJ1Cnu397Go5ANdt5eAuOZnR2hOIUDSeGXKgqcUyG8ERVCmwJ3NXf9nfLH15jrZpahqVcOmmy+FaaKTXyTHwkj47KBRf9kGrq5S7KyLX+JsXvoVnYoqFA3aOmq0QuFXVqF89oJ2qj8oRBuZuuSALQo1Uv7J2qd1/7CsvdCTJ6crSZaD08T/dJkbH++ORCV6BWTPN9nPlHbLatShXiwrZYAW3gxNxggjYuz2g48Xdz4pSpovg5ASJXBRLOlcRyiWgfqQT"
   }
 }
+
+#
+#request = {
+#  :service => :lxc,
+#  :action => :create,
+#  :options => {
+#    :server => "tenxeng-precise32",
+#    :template => "ubuntu-precise64",
+#    :defer => true
+#  }
+#}
 
 #request = {
 #  :service => :loop,

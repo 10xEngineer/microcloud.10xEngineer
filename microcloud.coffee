@@ -12,6 +12,7 @@ server = restify.createServer
 	version: "0.1.0"
 
 # model
+require("./server/model/key").register
 require("./server/model/node").register
 require("./server/model/pool").register
 require("./server/model/machine").register

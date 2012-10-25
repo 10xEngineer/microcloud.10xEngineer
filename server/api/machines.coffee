@@ -52,14 +52,14 @@ module.exports.create = (req, res, next) ->
 		results.pool.selectNode(callback)
 
 	createMachine = (callback, results) ->
-		data = 
+		broker_data = 
 			template: data.template
 			server: results.node.hostname
 			size: data.size
 			defer: true
 			name: data.name || hostname.generate()
 
-		creq = broker.dispatch 'lxc', 'create', data
+		creq = broker.dispatch 'lxc', 'create', broker_data
 		creq.on 'data', (message) ->
 			machine = 
 				uuid: message.options.uuid
@@ -152,6 +152,7 @@ module.exports.destroy = (req, res, next) ->
 
 	updateMachine = (callback, results) ->
 		results.machine.state = "destroyed"
+		results.machine.meta.deleted_at = Date.now()
 		results.machine.save (err) ->
 			if err
 				return next(new restify.InternalError("Unable to update machine: #{err}"))
