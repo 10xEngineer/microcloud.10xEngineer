@@ -12,6 +12,8 @@ server = restify.createServer
 	version: "0.1.0"
 
 # model
+require("./server/model/proxy_user").register
+require("./server/model/ssh_proxy").register
 require("./server/model/key").register
 require("./server/model/node").register
 require("./server/model/pool").register
