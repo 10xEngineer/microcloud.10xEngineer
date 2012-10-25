@@ -64,9 +64,12 @@ module.exports.setup = (server, rules) ->
 			expected_digest = hmac.digest('base64')
 
 			if expected_digest != req.headers["x-labs-signature"]
-				return next(new restify.InvalidCredentialsError("Invalid credentials"))
+				return next(new restify.UnauthorizedError("Invalid credentials"))
 
 			req.user = token.user
+
+			unless req.user
+				return next(new restify.UnauthorizedError("Principal missing"))
 
 			next()	
 
