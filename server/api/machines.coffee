@@ -206,6 +206,20 @@ module.exports.destroy = (req, res, next) ->
 
 			callback(null)
 
+	removeProxy = (results) ->
+		SSHProxy.findById results.machine.ssh_proxy, (err, proxy) ->
+			if err
+				log.warn("Unable to retrieve proxy=#{proxy._id}")
+				return
+
+			proxy.meta.deleted_at = Date.now()
+			proxy.save (err) ->
+				if err
+					log.warn("Unable to remove proxy=#{proxy._id}")
+				
+				log.debug("proxy=#{proxy._id} removed")
+				return
+
 	async.auto
 		machine: getMachine
 		node: ['machine', getNode]
@@ -217,3 +231,5 @@ module.exports.destroy = (req, res, next) ->
 			return next(err)
 
 		res.send 200
+
+		removeProxy(results)

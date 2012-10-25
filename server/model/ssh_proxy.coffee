@@ -9,7 +9,6 @@ timestamps = require "../utility/timestamp_plugin"
 
 ProxiedMachine = new Schema
 
-
 SSHProxy = new Schema {
 	proxy_user: String
 	key: String
