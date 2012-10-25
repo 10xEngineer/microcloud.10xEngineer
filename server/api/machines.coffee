@@ -33,8 +33,6 @@ module.exports.create = (req, res, next) ->
 	# TODO optional account_id to create VM under another account (RBAC needed)
 	# TODO ability to defer machine start
 
-	console.log '--'
-
 	try
 		data = JSON.parse req.body
 	catch e
@@ -60,6 +58,8 @@ module.exports.create = (req, res, next) ->
 			size: data.size
 			defer: true
 			name: data.name || hostname.generate()
+			# TODO
+			#authorized_keys: "abc\ntest\nanother"
 
 		creq = broker.dispatch 'lxc', 'create', broker_data
 		creq.on 'data', (message) ->
