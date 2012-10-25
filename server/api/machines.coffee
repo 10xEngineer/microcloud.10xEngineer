@@ -154,6 +154,9 @@ module.exports.destroy = (req, res, next) ->
 				if err
 					return callback(new restify.InternalError("Unable to retrieve the list of machines: #{err}"))
 
+				unless machine
+					return callback(new restify.NotFoundError("Machine not found"))
+
 				return callback(null, machine)
 
 	getNode = (callback, results) ->
@@ -179,7 +182,7 @@ module.exports.destroy = (req, res, next) ->
 		creq.on 'error', (message) ->
 			log.error "unable to destroy machine reason='#{message.options.reason}'"
 
-			return callback(new restify.InternalError(message.options.reason))
+			return callback(new restify.InternalError("Unable to remove machine."))
 
 	updateMachine = (callback, results) ->
 		results.machine.state = "destroyed"
