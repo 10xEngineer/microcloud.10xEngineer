@@ -16,6 +16,8 @@ Machine = new Schema
 	state: String
 	template: String
 
+	ssh_proxy: ObjectId
+
 	archived: {type: Boolean, default: false}
 
 Machine.plugin(timestamps)

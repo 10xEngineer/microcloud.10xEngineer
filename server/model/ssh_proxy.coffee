@@ -14,8 +14,6 @@ SSHProxy = new Schema {
 	proxy_user: String
 	key: String
 
-	machine: ObjectId	
-
 	user: String
 	account: String
 }, {
@@ -24,7 +22,7 @@ SSHProxy = new Schema {
 
 SSHProxy.plugin(timestamps)
 
-SSHProxy.statics.create_proxy = (machine, key, user, callback) ->
+SSHProxy.statics.create_proxy = (key, user, callback) ->
 	getProxyUser = (callback, results) ->
 		ProxyUser
 			.find({disabled: false})
@@ -44,7 +42,6 @@ SSHProxy.statics.create_proxy = (machine, key, user, callback) ->
 		proxy_data = 
 			proxy_user: results.proxy_user.name
 			key: key.public_key
-			machine: machine._id
 
 			user: user.id
 			account: user.account_id

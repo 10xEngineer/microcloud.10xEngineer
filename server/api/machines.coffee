@@ -118,6 +118,8 @@ module.exports.create = (req, res, next) ->
 			state: results.raw_machine.state
 			template: data.template
 
+			ssh_proxy: results.proxy._id
+
 		machine = new Machine(data)
 		machine.save (err) ->
 			if err
@@ -126,11 +128,11 @@ module.exports.create = (req, res, next) ->
 			callback(null, machine)
 
 	createProxy = (callback, results) ->
-		SSHProxy.create_proxy results.machine, results.key, req.user, (err, proxy) ->
+		SSHProxy.create_proxy results.key, req.user, (err, proxy) ->
 			if err
 				return callback(new restify.InternalError(err.message))
 
-			log.info "ssh_proxy=#{proxy._id} user=#{proxy.proxy_user} created for machine=#{results.machine._id}"
+			log.info "ssh_proxy=#{proxy._id} user=#{proxy.proxy_user}"
 
 			return callback(null, proxy)
 
@@ -141,11 +143,10 @@ module.exports.create = (req, res, next) ->
 		pool: ['checkParams', getPool]
 		key: ['pool', getKey]
 		node: ['key', getNode]
-		validate: ['node', validateMachine]
+		proxy: ['key', createProxy]
+		validate: ['proxy', validateMachine]
 		raw_machine: ['validate', createMachine]
 		machine: ['raw_machine', saveMachine]
-		proxy: ['machine', createProxy]
-		# TODO add ssh proxy
 
 	, (err, results) ->
 		if err
