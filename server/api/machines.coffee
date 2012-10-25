@@ -66,6 +66,19 @@ module.exports.create = (req, res, next) ->
 	getNode = (callback, results) ->
 		results.pool.selectNode(callback)
 
+	validateMachine = (callback, results) ->
+		unless data.name
+			return callback(null)
+
+		Machine
+			.findOne({name: data.name, account: req.user.account_id, archived: false})
+			.where("meta.deleted_at").equals(null)
+			.exec (err, machine) ->
+				if machine
+					return callback(new restify.ConflictError("Machine '#{data.name}' already exists!"))
+
+				return callback(null)
+
 	createMachine = (callback, results) ->
 		broker_data = 
 			template: data.template
@@ -118,7 +131,8 @@ module.exports.create = (req, res, next) ->
 		pool: ['checkParams', getPool]
 		key: ['pool', getKey]
 		node: ['key', getNode]
-		raw_machine: ['node', createMachine]
+		validate: ['node', validateMachine]
+		raw_machine: ['validate', createMachine]
 		machine: ['raw_machine', saveMachine]
 
 	, (err, results) ->
