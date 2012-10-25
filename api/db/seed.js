@@ -14,7 +14,7 @@ demo_user = {
 	meta: {
 		created_at: new Date(),
 		updated_at: new Date(),
-		deleted_at: new Date()
+		deleted_at: null
 	}
 }
 
@@ -33,7 +33,7 @@ radim_user = {
 	meta: {
 		created_at: new Date(),
 		updated_at: new Date(),
-		deleted_at: new Date()
+		deleted_at: null
 	}	
 }
 
@@ -75,7 +75,7 @@ demo_account = {
 	meta: {
 		created_at: new Date(),
 		updated_at: new Date(),
-		deleted_at: new Date()
+		deleted_at: null
 	}
 }
 
@@ -92,7 +92,7 @@ internal_account = {
 	meta: {
 		created_at: new Date(),
 		updated_at: new Date(),
-		deleted_at: new Date()		
+		deleted_at: null
 	}
 }
 

@@ -3,6 +3,8 @@ mongoose 	= require 'mongoose'
 Schema 		= mongoose.Schema
 ObjectId 	= Schema.ObjectId
 
+timestamps = require "../utility/timestamp_plugin"
+
 ProxyUser = new Schema {
 	name: String
 	disabled: {type: Boolean, default: false}
