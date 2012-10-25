@@ -33,6 +33,8 @@ module.exports.create = (req, res, next) ->
 	# TODO optional account_id to create VM under another account (RBAC needed)
 	# TODO ability to defer machine start
 
+	console.log '--'
+
 	try
 		data = JSON.parse req.body
 	catch e
