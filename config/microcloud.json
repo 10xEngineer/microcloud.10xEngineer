@@ -21,7 +21,13 @@
                 "user": "compile",
                 "host": "176.34.236.201",
                 "port": 22
-            }  
+            },
+        "microcloud": {
+            "gateway": {
+                "host": "localhost",
+                "port": 2222
+            }
+        }
     },
     "test": {
         "server" : {

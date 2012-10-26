@@ -17,6 +17,7 @@ module.exports.registerRoutes = (server) ->
 	# Lab Machines
 	server.post '/machines', api.machines.create
 	server.get '/machines', api.machines.index
+	server.get '/machines/:machine', api.machines.show
 	server.del '/machines/:machine', api.machines.destroy
 
 

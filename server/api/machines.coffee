@@ -153,8 +153,44 @@ module.exports.create = (req, res, next) ->
 		res.send 201, results.machine
 
 module.exports.show = (req, res, next) ->
-	# FIXME not yet migrated
-	res.send 500, {}
+	gateway = config.get "microcloud:gateway"
+
+	getMachine = (callback, results) ->
+		Machine
+			.findOne({account: req.user.account_id, name: req.params.machine, archived: false})
+			.select({_id: 0, account: 0, node: 0, archived: 0, __v: 0})
+			.exec (err, machine) ->
+				if err
+					return callback(new restify.InternalError("Unable to retrieve machine: #{err}"))
+
+				return callback(null, machine.toObject())
+
+	buildMachineData = (callback, results) ->
+		machine = results.machine
+
+		# replace ssh_proxy 
+		proxies = []
+		for proxy in machine.ssh_proxy
+
+			if proxy.user == req.user.id
+				delete proxy.user
+				delete proxy._id
+
+				proxy["gateway"] = gateway
+
+				proxies.push(proxy)
+
+		delete machine.ssh_proxy
+
+		machine["ssh_proxy"] = proxies[0]
+
+		return callback(null, machine)
+
+	async.auto
+		machine: getMachine
+		data: ['machine', buildMachineData]
+	, (err, results) ->
+		res.send 200, results.data
 
 module.exports.destroy = (req, res, next) ->
 	getMachine = (callback, results) ->
