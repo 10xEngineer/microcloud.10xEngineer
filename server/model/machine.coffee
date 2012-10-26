@@ -27,9 +27,14 @@ Machine = new Schema
 
 	ssh_proxy: [SSHProxy]
 
+	# TODO statistics - update periodically
+	snapshots_count: Number
+	total_storage: Number
+
 	archived: {type: Boolean, default: false}
 
 Machine.plugin(timestamps)
+Machine.index({name: 1, account: 1, archived:1}, {unique: true})
 
 Machine.statics.create_proxy = (key, user, callback) ->
 	getProxyUser = (callback, results) ->

@@ -17,6 +17,7 @@ Key = new Schema
 	user: ObjectId
 
 Key.plugin(timestamps)
+Key.index({name: 1, user: 1}, {unique: true})
 
 Key.statics.find_by_fingerprint = (fingerprint, user_id, callback) ->
 	# TODO include support for shared keys (ie. with account != null)

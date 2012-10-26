@@ -11,7 +11,6 @@ TemplateUpdates = new Schema
 
 	created_at: Date
 
-
 Template = new Schema
 	name: String
 	version: String
