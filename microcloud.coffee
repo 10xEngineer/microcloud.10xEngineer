@@ -13,7 +13,6 @@ server = restify.createServer
 
 # model
 require("./server/model/proxy_user").register
-require("./server/model/ssh_proxy").register
 require("./server/model/key").register
 require("./server/model/template").register
 require("./server/model/node").register

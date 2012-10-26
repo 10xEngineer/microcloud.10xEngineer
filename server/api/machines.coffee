@@ -7,11 +7,11 @@ param_helper= require "../utils/param_helper"
 broker		= require "../broker"
 restify		= require "restify"
 hostname	= require "../utils/hostname"
+config 		= require("../config")
 Key 		= mongoose.model 'Key'
 Node 		= mongoose.model 'Node'
 Pool 		= mongoose.model 'Pool'
 Machine 	= mongoose.model 'Machine'
-SSHProxy 	= mongoose.model 'SSHProxy'
 
 #
 # Lab Machine commands
@@ -118,7 +118,7 @@ module.exports.create = (req, res, next) ->
 			state: results.raw_machine.state
 			template: data.template
 
-			ssh_proxy: results.proxy._id
+			ssh_proxy: [results.proxy]
 
 		machine = new Machine(data)
 		machine.save (err) ->
@@ -128,11 +128,9 @@ module.exports.create = (req, res, next) ->
 			callback(null, machine)
 
 	createProxy = (callback, results) ->
-		SSHProxy.create_proxy results.key, req.user, (err, proxy) ->
+		Machine.create_proxy results.key, req.user, (err, proxy) ->
 			if err
 				return callback(new restify.InternalError(err.message))
-
-			log.info "ssh_proxy=#{proxy._id} user=#{proxy.proxy_user}"
 
 			return callback(null, proxy)
 
