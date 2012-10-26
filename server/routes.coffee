@@ -7,6 +7,7 @@ module.exports.registerRoutes = (server) ->
 	server.get '/ping', api.status.ping
 
 	# Lab Templates
+	server.get '/templates', api.templates.index
 
 	# Lab Pools
 	server.get '/pools', api.pools.index
