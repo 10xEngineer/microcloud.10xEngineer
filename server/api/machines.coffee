@@ -8,7 +8,7 @@ broker		= require "../broker"
 restify		= require "restify"
 hostname	= require "../utils/hostname"
 config 		= require("../config")
-Key 		= mongoose.model 'Key'
+mgmt_api 	= require("../api/mgmt/client")
 Node 		= mongoose.model 'Node'
 Pool 		= mongoose.model 'Pool'
 Machine 	= mongoose.model 'Machine'
@@ -52,18 +52,15 @@ module.exports.create = (req, res, next) ->
 
 	getKey = (callback, results) ->
 		key_name = data.key || "default"
-		Key
-			.findOne({name: key_name, user: req.user.id})
-			.where("meta.deleted_at").equals(null)
-			.exec (err, key) ->
-				if err
-					return callback(new restify.InternalError("Unable to retrieve SSH key: #{err}"))
+		mgmt_api.keys.show key_name, req.user.id, (err, key) ->
+			if err 
+				return callback(new restify.InternalError("Unable to retrieve SSH key: #{err}"))
 
-				unless key
-					return callback(new restify.NotFoundError("Specified key '#{key_name}' not found"))
+			unless key
+				return callback(new restify.NotFoundError("Specified key '#{key_name}' not found"))
 
-				return callback(null, key)
-
+			return callback(null, key)
+				
 	getNode = (callback, results) ->
 		results.pool.selectNode(callback)
 

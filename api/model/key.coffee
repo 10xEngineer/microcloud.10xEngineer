@@ -3,7 +3,7 @@ mongoose 	= require 'mongoose'
 Schema 		= mongoose.Schema
 ObjectId 	= Schema.ObjectId
 
-timestamps = require "../utility/timestamp_plugin"
+timestamps = require "../../server/utility/timestamp_plugin"
 
 Key = new Schema
 	# TODO name should be unique (within user/account if shared)

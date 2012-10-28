@@ -6,6 +6,7 @@ auth = require("./utils/auth")
 module.exports.registerRoutes = (server) ->	
 	server.get '/ping', api.status.ping
 
+
 	# Lab Templates
 	server.get '/templates', api.templates.index
 
@@ -21,8 +22,3 @@ module.exports.registerRoutes = (server) ->
 	server.del '/machines/:machine', api.machines.destroy
 
 
-	# Keys
-	server.get '/keys', api.keys.index
-	server.post '/keys', api.keys.create
-	server.del '/keys/:key', api.keys.destroy
-	

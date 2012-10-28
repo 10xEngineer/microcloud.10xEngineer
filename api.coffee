@@ -10,6 +10,7 @@ mongoose.connect('mongo://localhost/labs_dev')
 require("./api/model/user").register()
 require("./api/model/account").register()
 require("./api/model/access_token").register()
+require("./api/model/key").register()
 
 AccessToken = mongoose.model('AccessToken')
 token = new AccessToken

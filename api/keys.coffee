@@ -3,8 +3,8 @@ module.exports = ->
 log 		= require("log4js").getLogger()
 restify 	= require "restify"
 mongoose 	= require "mongoose"
-broker 		= require "../broker"
-param_helper= require "../utils/param_helper"
+broker 		= require "../server/broker"
+param_helper= require "../server/utils/param_helper"
 async 		= require "async"
 Key 		= mongoose.model 'Key'
 
@@ -12,8 +12,8 @@ Key 		= mongoose.model 'Key'
 # Key management
 #
 module.exports.index = (req, res, next) ->
-	mongoose.model('Key')
-		.find({user: req.user.id})
+	Key
+		.find(user: req.params.user)
 		.where("meta.deleted_at").equals(null)
 		.select({_id: 0})
 		.exec (err, keys) ->
@@ -21,6 +21,19 @@ module.exports.index = (req, res, next) ->
 				return callback(new restify.InternalError("Unable to retrieve keys: #{err}"))
 
 			res.send keys
+
+module.exports.show = (req, res, next) ->
+	Key
+		.findOne({name: req.params.key, user: req.params.user})
+		.where("meta.deleted_at").equals(null)
+		.exec (err, key) ->
+			if err
+				return callback(new restify.InternalError("Unable to retrieve key: #{err}"))
+
+			unless key
+				return callback(new restify.NotFoundError("Key not found"))
+
+			res.send key
 
 module.exports.create = (req, res, next) ->
 	try
@@ -43,7 +56,7 @@ module.exports.create = (req, res, next) ->
 			return callback(new restify.BadRequestError(message.options.reason))
 
 	uniqueKey = (callback, results) ->
-		key = Key.find_by_fingerprint results.fingerprint, req.user.id, (err, other_key) ->
+		key = Key.find_by_fingerprint results.fingerprint, req.params.user, (err, other_key) ->
 			if err
 				return callback(new restify.InternalError("Unable to verify key: #{err}"))
 
@@ -58,7 +71,7 @@ module.exports.create = (req, res, next) ->
 			fingerprint: results.fingerprint
 			public_key: data.key
 
-			user: req.user.id
+			user: req.params.user
 
 		key = new Key(key_data)
 		key.save (err) ->
@@ -81,7 +94,7 @@ module.exports.create = (req, res, next) ->
 module.exports.destroy = (req, res, next) ->
 	getKey = (callback, results) ->
 		Key
-			.findOne({name: req.params.key, user: req.user.id})
+			.findOne({name: req.params.key, user: req.params.user})
 			.where("meta.deleted_at").equals(null)
 			.exec (err, key) ->
 				if err

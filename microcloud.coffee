@@ -13,7 +13,6 @@ server = restify.createServer
 
 # model
 require("./server/model/proxy_user").register
-require("./server/model/key").register
 require("./server/model/template").register
 require("./server/model/node").register
 require("./server/model/pool").register
@@ -23,7 +22,6 @@ require("./server/model/machine").register
 #require("./server/model/vm").register
 #require("./server/model/lab").register
 #require("./server/model/definition").register
-
 
 # routes
 routes = require("./server/routes")
