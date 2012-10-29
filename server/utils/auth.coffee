@@ -23,6 +23,9 @@ module.exports.setup = (server, rules) ->
 
 			match = req.url.match rule.url_match
 			if match
+				if rule.schema == "none"
+					return next()
+					
 				if rule.schema == "token" && rule.token == match[1]
 					log.info "path=#{req.path} bypassed by custom rule=#{rule_name} ip=#{req.connection.remoteAddress}"
 					return next()
