@@ -1,17 +1,17 @@
 module.exports = ->
 
-log 		= require("log4js").getLogger()
-mongoose 	= require("mongoose")
-async 		= require "async"
-param_helper= require "../utils/param_helper"
-broker		= require "../broker"
-restify		= require "restify"
-hostname	= require "../utils/hostname"
-config 		= require("../config")
-mgmt_api 	= require("../api/mgmt/client")
-Node 		= mongoose.model 'Node'
-Pool 		= mongoose.model 'Pool'
-Machine 	= mongoose.model 'Machine'
+log 			= require("log4js").getLogger()
+mongoose 		= require("mongoose")
+async 			= require "async"
+param_helper	= require "../utils/param_helper"
+broker			= require "../broker"
+restify			= require "restify"
+hostname		= require "../utils/hostname"
+config 			= require("../config")
+platform_api	= require("../api/platform")
+Node 			= mongoose.model 'Node'
+Pool 			= mongoose.model 'Pool'
+Machine 		= mongoose.model 'Machine'
 
 #
 # Lab Machine commands
@@ -52,7 +52,7 @@ module.exports.create = (req, res, next) ->
 
 	getKey = (callback, results) ->
 		key_name = data.key || "default"
-		mgmt_api.keys.show key_name, req.user.id, (err, key) ->
+		platform_api.keys.show key_name, req.user.id, (err, key) ->
 			if err 
 				return callback(new restify.InternalError("Unable to retrieve SSH key: #{err}"))
 

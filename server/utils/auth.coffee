@@ -8,10 +8,10 @@
 # TODO add caching layer
 #
 
-log 		= require("log4js").getLogger()
-restify 	= require("restify")
-crypto 		= require("crypto")
-mgmt_api 	= require("../api/mgmt/client")
+log 			= require("log4js").getLogger()
+restify 		= require("restify")
+crypto 			= require("crypto")
+platform_api	= require("../api/platform")
 
 defaultSkew = 600
 
@@ -50,7 +50,7 @@ module.exports.setup = (server, rules) ->
 		unless /^([a-z0-9]){28}$/.test(req.headers["x-labs-token"])
 			return next(new restify.PreconditionFailedError("Invalid authentication token"))
 
-		mgmt_api.tokens.show req.headers["x-labs-token"], (err, token) ->
+		platform_api.tokens.show req.headers["x-labs-token"], (err, token) ->
 			if err
 				return next(new restify.InternalError("Unable to retrieve authentication token: #{err}"))
 
@@ -78,7 +78,7 @@ module.exports.setup = (server, rules) ->
 
 module.exports.verify = (account_handle, callback) ->
 	return (req, res, next) ->
-		mgmt_api.accounts.show account_handle, (err, account) ->
+		platform_api.accounts.show account_handle, (err, account) ->
 			if err
 				return (req, res, next) ->
 					next(new restify.InternalError("Unable to retrieve account '#{account_handle}': #{err}"))

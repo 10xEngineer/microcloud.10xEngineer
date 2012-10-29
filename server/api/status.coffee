@@ -1,16 +1,16 @@
 module.exports = ->
 
-log 		= require("log4js").getLogger()
-mongoose 	= require("mongoose")
-async 		= require "async"
-broker		= require "../broker"
-restify		= require "restify"
-mgmt_api 	= require("../api/mgmt/client")
+log 			= require("log4js").getLogger()
+mongoose 		= require("mongoose")
+async 			= require "async"
+broker			= require "../broker"
+restify			= require "restify"
+platform_api 	= require("../api/platform")
 
 module.exports.ping = (req, res, next) ->
 
 	pingAPI = (callback) ->
-		mgmt_api.status.ping (err, api) ->
+		platform_api.status.ping (err, api) ->
 			unless api and api["status"] == "ok"
 				return callback(null, "failed")
 
@@ -33,7 +33,7 @@ module.exports.ping = (req, res, next) ->
 			return callback(null, "failed")
 
 	async.auto
-		mgmt_api: pingAPI
+		platform_api: pingAPI
 		broker: pingBroker
 		data_store: pingDataStore
 	, (err, results) ->
