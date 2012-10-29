@@ -2,8 +2,9 @@ mongoose 		= require("mongoose")
 log 			= require("log4js").getLogger()
 restify 		= require("restify")
 config 			= require("./server/config")
-auth 			= require("./server/utils/auth")
-platform_api 	= require("./server/api/mgmt/platform_client")
+auth 			= require("./utils/auth")
+auth_helper 	= require("./server/utils/auth_helper")
+platform_api 	= require("./server/api/platform/client")
 
 # TODO configure mongodb
 mongoose.connect('mongodb://'+config.get('mongodb:host')+'/'+config.get('mongodb:dbName'))
@@ -21,11 +22,6 @@ require("./server/model/template").register
 require("./server/model/node").register
 require("./server/model/pool").register
 require("./server/model/machine").register
-
-#require("./server/model/keypair").register
-#require("./server/model/vm").register
-#require("./server/model/lab").register
-#require("./server/model/definition").register
 
 # routes
 routes = require("./server/routes")

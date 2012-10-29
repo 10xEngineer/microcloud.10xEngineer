@@ -1,7 +1,7 @@
 log 		= require("log4js").getLogger()
 restify 	= require("restify")
 mongoose 	= require("mongoose")
-auth 		= require("./server/utils/auth")
+auth 		= require("./utils/auth")
 
 # mongoose
 # FIXME configurable
@@ -21,7 +21,13 @@ token = new AccessToken
 server = restify.createServer
 	name: "api.10xlabs.net"
 
-#auth.setup(server)
+auth.setup server, require("./api/utils/auth_helper"),
+	debug:
+		url_match: new RegExp("^/")
+		schema: "none"
+	microclouds: 
+		url_match: new RegExp("^/microclouds$")
+		schema: "none"
 
 server.use restify.acceptParser(server.acceptable)
 server.use restify.queryParser()

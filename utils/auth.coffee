@@ -4,18 +4,16 @@
 #
 # Digest: SHA256
 # 
-# TODO link to upstream identity server
 # TODO add caching layer
 #
 
 log 			= require("log4js").getLogger()
 restify 		= require("restify")
 crypto 			= require("crypto")
-platform_api	= require("../api/platform")
 
 defaultSkew = 600
 
-module.exports.setup = (server, rules) ->
+module.exports.setup = (server, auth_helper, rules) ->
 	verifyHMAC = (req, res, next) ->
 		# bypass authentication based on specific rules
 		for rule_name of rules
@@ -24,10 +22,11 @@ module.exports.setup = (server, rules) ->
 			match = req.url.match rule.url_match
 			if match
 				if rule.schema == "none"
+					log.info "path=#{req.path} bypassed by custom rule=#{rule_name} schema=none ip=#{req.connection.remoteAddress}"
 					return next()
 					
 				if rule.schema == "token" && rule.token == match[1]
-					log.info "path=#{req.path} bypassed by custom rule=#{rule_name} ip=#{req.connection.remoteAddress}"
+					log.info "path=#{req.path} bypassed by custom rule=#{rule_name} schema=token ip=#{req.connection.remoteAddress}"
 					return next()
 
 				return next(new restify.InvalidCredentialsError("Invalid credentials (special rules)"))
@@ -53,7 +52,7 @@ module.exports.setup = (server, rules) ->
 		unless /^([a-z0-9]){28}$/.test(req.headers["x-labs-token"])
 			return next(new restify.PreconditionFailedError("Invalid authentication token"))
 
-		platform_api.tokens.show req.headers["x-labs-token"], (err, token) ->
+		auth_helper.get_token req.headers["x-labs-token"], (err, token) ->
 			if err
 				return next(new restify.InternalError("Unable to retrieve authentication token: #{err}"))
 
@@ -79,9 +78,9 @@ module.exports.setup = (server, rules) ->
 	server.use restify.dateParser(defaultSkew)
 	server.use verifyHMAC
 
-module.exports.verify = (account_handle, callback) ->
+module.exports.verify = (account_handle, auth_helper, callback) ->
 	return (req, res, next) ->
-		platform_api.accounts.show account_handle, (err, account) ->
+		auth_helper.get_account account_handle, (err, account) ->
 			if err
 				return (req, res, next) ->
 					next(new restify.InternalError("Unable to retrieve account '#{account_handle}': #{err}"))
