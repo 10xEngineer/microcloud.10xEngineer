@@ -4,12 +4,15 @@ status 			= require('./status')
 tokens 			= require('./tokens')
 accounts 		= require('./accounts')
 keys 			= require('./keys')
-#microclouds 	= require('./microclouds')
+microclouds 	= require('./microclouds')
 
 module.exports.register = (server) ->	
 	server.get 	'/ping', 				status.ping
-	server.get 	'/tokens/:token', 		tokens.show
 
+	# Microclouds
+	server.get	'/microclouds',			microclouds.index
+
+	server.get 	'/tokens/:token', 		tokens.show
 	server.get 	'/accounts/:account', 	accounts.show
 
 	# Keys

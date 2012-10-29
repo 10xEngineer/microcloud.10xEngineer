@@ -1,70 +1,89 @@
+// === Microclouds
+db.microclouds.drop();
+
+mc_default = {
+	name: "dev-1",
+	endpoint_url: "mc.default.labs.dev",
+	disabled: false,
+	meta: {created_at: new Date(), updated_at: new Date(), deleted_at: null}
+}
+db.microclouds.save(mc_default);
+
+// === Users - default password is 'lab123'
 db.users.drop();
-db.access_tokens.drop()
-db.accounts.drop()
 
-// demo@10xengineer.me / lab123
-email = 'demo@10xengineer.me'
-
-demo_user = {
-	email: email,
+demo = {
+	email: "demo@10xengineer.me",
 	name: "Demo Lab User",
 	cpwd: '$2a$10$Jkr42F/TxB/kLxhGW3oSh.Z4fK57WTCbW5qmjYNG.VtBcjtb7tDvu',
 	service: false,
 	disabled: false,
-	meta: {
-		created_at: new Date(),
-		updated_at: new Date(),
-		deleted_at: null
-	}
+	meta: {created_at: new Date(), updated_at: new Date(), deleted_at: null}
 }
+db.users.save(demo);
 
-db.users.save(demo_user)
-demo = db.users.findOne({email: email})
-
-// radim@laststation.net / lab123
-email = 'radim@laststation.net'
-
-radim_user = {
-	email: email,
+radim = {
+	email: "radim@10xengineer.me",
 	name: "Radim Marek",
 	cpwd: '$2a$10$Jkr42F/TxB/kLxhGW3oSh.Z4fK57WTCbW5qmjYNG.VtBcjtb7tDvu',
 	service: false,
 	disabled: false,
-	meta: {
-		created_at: new Date(),
-		updated_at: new Date(),
-		deleted_at: null
-	}	
+	meta: {created_at: new Date(), updated_at: new Date(), deleted_at: null}
 }
 
-db.users.save(radim_user)
-radim = db.users.findOne({email: email})
+db.users.save(radim);
 
-// demo access token
-// 
-// token:14, secret:24
+dev_1 = {
+	email: "support+dev-1@10xengineer.me",
+	name: "dev-1",
+	cpwd: '$2a$10$Jkr42F/TxB/kLxhGW3oSh.Z4fK57WTCbW5qmjYNG.VtBcjtb7tDvu',
+	service: true,
+	disabled: false,
+	meta: {created_at: new Date(), updated_at: new Date(), deleted_at: null}
+}
+
+db.users.save(dev_1);
+
+// === Access Tokens
+//
 // require('crypto').randomBytes(14, function(ex, buf) {
 // 	console.log(buf.toString('hex').replace(/\//g,'_').replace(/\+/g,'-'));
 // });
+//
+// token:14, secret:24
+
+db.access_tokens.drop()
+
 demo_token = {
 	user: demo._id,
 	alias: 'default',
 	auth_token: 'a7b59762d8d7523f797b1ca83e33',
-	auth_secret: '0ec6bc855e719fc0638429c1fa04226fa7931f90ea6339af'	 
+	auth_secret: '0ec6bc855e719fc0638429c1fa04226fa7931f90ea6339af',
+	meta: {created_at: new Date(), updated_at: new Date(), deleted_at: null}
 }
-
-db.access_tokens.save(demo_token)
+db.access_tokens.save(demo_token);
 
 radim_token = {
 	user: radim._id,
 	alias: 'default',
 	auth_token: '7f08fe3106f287e001a3f1752a09',
-	auth_secret:'4223305def98423ef13fd8463a2705f6d90f350571e95194' 
+	auth_secret:'4223305def98423ef13fd8463a2705f6d90f350571e95194',
+	meta: {created_at: new Date(), updated_at: new Date(), deleted_at: null}
 }
+db.access_tokens.save(radim_token);
 
-db.access_tokens.save(radim_token)
+dev_1_token = {
+	user: dev_1,
+	alias: 'default',
+	auth_token: 'f933c346c502c11b64164143087f',
+	auth_secret: '55347d223f161014a8659361afe771929f61246d09a3b22f',
+	meta: {created_at: new Date(), updated_at: new Date(), deleted_at: null}
+}
+db.access_tokens.save(dev_1_token);
 
-// account
+// === Account 
+db.accounts.drop();
+
 demo_account = {
 	handle: 'demo',
 	owners: [demo._id],
@@ -98,10 +117,10 @@ internal_account = {
 
 db.accounts.save(internal_account)
 
-account = db.accounts.findOne({handle: 'demo'})
 db.users.update({_id: demo._id}, {$set: {def_account: account._id}})
+db.users.update({_id: dev_1._id}, {$set: {def_account: internal_account._id}})
 
-// Keys
+// === Keys
 db.keys.drop();
 
 db.keys.save({

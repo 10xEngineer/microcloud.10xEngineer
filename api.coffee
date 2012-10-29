@@ -7,6 +7,7 @@ auth 		= require("./server/utils/auth")
 # FIXME configurable
 mongoose.connect('mongo://localhost/labs_dev')
 
+require("./api/model/microcloud").register()
 require("./api/model/user").register()
 require("./api/model/account").register()
 require("./api/model/access_token").register()
