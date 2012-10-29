@@ -6,7 +6,7 @@ auth 			= require("./utils/auth")
 platform_api 	= require("./server/api/platform/client")
 
 # TODO configure mongodb
-mongoose.connect('mongodb://'+config.get('mongodb:host')+'/'+config.get('mongodb:dbName'))
+mongoose.connect(config.get('mongodb'))
 
 server = restify.createServer
 	name: "microcloud.10xengineer.me"
@@ -37,6 +37,10 @@ auth.setup server, require("./server/utils/auth_helper"),
 		url_match: new RegExp("^/ping\\?token\=(.*)")
 		schema: "token"
 		token: "pYvf8p3LxFnqoAGn"
+	proxy_users:
+		url_match: new RegExp("^/proxy_users/.*\\?token\=(.*)")
+		schema: "token"
+		token: "MnMFqjHo368Pmf2R"
 
 # setup routes
 routes.registerRoutes server

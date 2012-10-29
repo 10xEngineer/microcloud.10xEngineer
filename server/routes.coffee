@@ -1,5 +1,5 @@
 api = require './api/index'
-auth = require("./utils/auth")
+auth = require("../utils/auth")
 
 # TODO rails like resource helper (CRUD)
 
@@ -21,4 +21,5 @@ module.exports.registerRoutes = (server) ->
 	server.get '/machines/:machine', api.machines.show
 	server.del '/machines/:machine', api.machines.destroy
 
+	server.get '/proxy_users/:user', api.proxy_users.show
 

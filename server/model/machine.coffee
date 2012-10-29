@@ -11,6 +11,7 @@ timestamps 	= require "../utility/timestamp_plugin"
 SSHProxy = new Schema 
 	proxy_user: String
 	fingerprint: String
+	public_key: String
 
 	user: String
 
@@ -56,6 +57,7 @@ Machine.statics.create_proxy = (key, user, callback) ->
 		proxy_data = 
 			proxy_user: results.proxy_user.name
 			fingerprint: key.fingerprint
+			public_key: key.public_key
 			user: user.id
 
 		return callback(null, proxy_data)
