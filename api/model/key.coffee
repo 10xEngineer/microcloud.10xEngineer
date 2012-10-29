@@ -23,7 +23,7 @@ Key.statics.find_by_fingerprint = (fingerprint, user_id, callback) ->
 	# TODO include support for shared keys (ie. with account != null)
 	mongoose.model('Key')
 		.findOne({user: user_id, fingerprint: fingerprint})
-		.where("meta.deleted_at").equals(null)
+		.where("deleted_at").equals(null)
 		.exec callback
 
 module.exports.register = mongoose.model 'Key', Key

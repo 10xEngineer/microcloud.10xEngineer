@@ -9,7 +9,7 @@ Template 	= mongoose.model("Template")
 #
 module.exports.index = (req, res, next) ->
 	Template
-		.where("meta.deleted_at").equals(null)
+		.where("deleted_at").equals(null)
 		.select(_id:0)
 		.exec (err, templates) ->
 			if err

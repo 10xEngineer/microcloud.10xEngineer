@@ -17,7 +17,7 @@ AccessToken.plugin(timestamps)
 AccessToken.statics.findToken = (token, callback) ->
 	mongoose.model('AccessToken')
 		.findOne({auth_token: token})
-		.where("meta.deleted_at").equals(null)
+		.where("deleted_at").equals(null)
 		.exec (err, token) ->
 			if err
 				return callback(new Error("Unable to retrieve token: #{err}"))

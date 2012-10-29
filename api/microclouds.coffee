@@ -8,12 +8,12 @@ Microcloud 	= mongoose.model 'Microcloud'
 
 module.exports.index = (req, res, next) ->
 	Microcloud
-		.where("meta.deleted_at").equals(null)
+		.where("deleted_at").equals(null)
 		.select(
 			_id: 0, 
-			"meta.created_at": 0
-			"meta.updated_at": 0
-			"meta.deleted_at": 0
+			"created_at": 0
+			"updated_at": 0
+			"deleted_at": 0
 			)
 		.exec (err, microclouds) ->
 			if err

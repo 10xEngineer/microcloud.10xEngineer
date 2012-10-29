@@ -14,7 +14,7 @@ Key 		= mongoose.model 'Key'
 module.exports.index = (req, res, next) ->
 	Key
 		.find(user: req.params.user)
-		.where("meta.deleted_at").equals(null)
+		.where("deleted_at").equals(null)
 		.select({_id: 0})
 		.exec (err, keys) ->
 			if err
@@ -25,7 +25,7 @@ module.exports.index = (req, res, next) ->
 module.exports.show = (req, res, next) ->
 	Key
 		.findOne({name: req.params.key, user: req.params.user})
-		.where("meta.deleted_at").equals(null)
+		.where("deleted_at").equals(null)
 		.exec (err, key) ->
 			if err
 				return callback(new restify.InternalError("Unable to retrieve key: #{err}"))
@@ -95,7 +95,7 @@ module.exports.destroy = (req, res, next) ->
 	getKey = (callback, results) ->
 		Key
 			.findOne({name: req.params.key, user: req.params.user})
-			.where("meta.deleted_at").equals(null)
+			.where("deleted_at").equals(null)
 			.exec (err, key) ->
 				if err
 					return callback(new restify.InternalError("Unable to verify key: #{err}"))
@@ -107,7 +107,7 @@ module.exports.destroy = (req, res, next) ->
 
 	removeKey = (callback, results) ->
 		console.log results
-		results.key.meta.deleted_at = Date.now()
+		results.key.deleted_at = Date.now()
 		results.key.save (err) ->
 			if err
 				return next(new restify.InternalError("Unable to remove key: #{err}"))

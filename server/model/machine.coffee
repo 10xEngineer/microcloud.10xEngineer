@@ -41,7 +41,7 @@ Machine.statics.create_proxy = (key, user, callback) ->
 	getProxyUser = (callback, results) ->
 		ProxyUser
 			.find({disabled: false})
-			.where("meta.deleted_at").equals(null)
+			.where("deleted_at").equals(null)
 			.exec (err, proxy_users) ->
 				if err
 					return callback(new Error("Unable to retrieve proxy users: #{err}"))

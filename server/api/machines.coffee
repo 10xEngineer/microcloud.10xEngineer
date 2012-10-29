@@ -70,7 +70,7 @@ module.exports.create = (req, res, next) ->
 
 		Machine
 			.findOne({name: data.name, account: req.user.account_id, archived: false})
-			.where("meta.deleted_at").equals(null)
+			.where("deleted_at").equals(null)
 			.exec (err, machine) ->
 				if machine
 					return callback(new restify.ConflictError("Machine '#{data.name}' already exists!"))
@@ -230,7 +230,7 @@ module.exports.destroy = (req, res, next) ->
 
 	updateMachine = (callback, results) ->
 		results.machine.state = "destroyed"
-		results.machine.meta.deleted_at = Date.now()
+		results.machine.deleted_at = Date.now()
 		results.machine.save (err) ->
 			if err
 				return next(new restify.InternalError("Unable to update machine: #{err}"))
@@ -243,7 +243,7 @@ module.exports.destroy = (req, res, next) ->
 				log.warn("Unable to retrieve proxy=#{proxy._id}")
 				return
 
-			proxy.meta.deleted_at = Date.now()
+			proxy.deleted_at = Date.now()
 			proxy.save (err) ->
 				if err
 					log.warn("Unable to remove proxy=#{proxy._id}")

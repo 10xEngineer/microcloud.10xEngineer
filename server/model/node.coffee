@@ -18,7 +18,7 @@ Node.plugin timestamps
 Node.statics.find_by_hostname = (hostname, callback) ->
 	mongoose.model('Node')
 		.findOne({hostname: hostname})
-		.where('meta.deleted_at').equals(null)
+		.where('deleted_at').equals(null)
 		.exec(callback)
 
 module.exports.register = mongoose.model 'Node', Node
