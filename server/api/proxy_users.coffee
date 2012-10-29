@@ -31,17 +31,29 @@ module.exports.show = (req, res, next) ->
 							name: machine.name
 						key: proxy.public_key
 
-
 					keys.push(key_data)
 
 		return callback(null, keys)
 
+	formatKeys = (callback, results) ->
+		output = "" 
+
+		for entry in results.key_data
+			# TODO add ,no-pty
+			output = output + "command=\"/tmp/somescript.sh lab #{entry.machine.name}\",no-port-forwarding #{entry.key}\n"
+
+		return callback(null, output)			
+
 	async.auto 
 		machines: getMachines
 		key_data: ['machines', buildKeyData]
+		authorized_keys: ['key_data', formatKeys]
 	, (err, results) ->
 		if err
 			return next(err)
 
-		res.send results.key_data
+		if req.headers.accept == 'text/plain'
+			res.send results.authorized_keys
+		else
+			res.json results.key_data
 
