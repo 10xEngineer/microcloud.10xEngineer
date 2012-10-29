@@ -1,8 +1,9 @@
-mongoose = require("mongoose")
-log = require("log4js").getLogger()
-restify = require("restify")
-config = require("./server/config")
-auth = require("./server/utils/auth")
+mongoose 		= require("mongoose")
+log 			= require("log4js").getLogger()
+restify 		= require("restify")
+config 			= require("./server/config")
+auth 			= require("./server/utils/auth")
+platform_api 	= require("./server/api/mgmt/platform_client")
 
 # TODO configure mongodb
 mongoose.connect('mongodb://'+config.get('mongodb:host')+'/'+config.get('mongodb:dbName'))
@@ -10,6 +11,9 @@ mongoose.connect('mongodb://'+config.get('mongodb:host')+'/'+config.get('mongodb
 server = restify.createServer
 	name: "microcloud.10xengineer.me"
 	version: "0.1.0"
+
+# setup default Platform API client
+platform_api.setup("f933c346c502c11b64164143087f", "55347d223f161014a8659361afe771929f61246d09a3b22f", "http://api.labs.dev/")
 
 # model
 require("./server/model/proxy_user").register
