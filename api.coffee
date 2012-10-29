@@ -3,7 +3,6 @@ restify 	= require("restify")
 mongoose 	= require("mongoose")
 auth 		= require("./utils/auth")
 
-# mongoose
 # FIXME configurable
 mongoose.connect('mongo://localhost/labs_dev')
 
@@ -13,18 +12,11 @@ require("./api/model/account").register()
 require("./api/model/access_token").register()
 require("./api/model/key").register()
 
-AccessToken = mongoose.model('AccessToken')
-token = new AccessToken
-	auth_token: 'xxx'
-
 # API server
 server = restify.createServer
 	name: "api.10xlabs.net"
 
 auth.setup server, require("./api/utils/auth_helper"),
-	debug:
-		url_match: new RegExp("^/")
-		schema: "none"
 	microclouds: 
 		url_match: new RegExp("^/microclouds$")
 		schema: "none"

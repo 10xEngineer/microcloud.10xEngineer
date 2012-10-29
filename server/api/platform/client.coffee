@@ -41,4 +41,6 @@ module.exports.setup = (token, secret, endpoint) ->
 module.exports.get = (url, callback) ->
 	client = create_client('GET', url)
 
-	client.get url, callback
+	_url = "/" + version + url
+
+	client.get _url, callback

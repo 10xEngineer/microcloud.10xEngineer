@@ -3,7 +3,6 @@ log 			= require("log4js").getLogger()
 restify 		= require("restify")
 config 			= require("./server/config")
 auth 			= require("./utils/auth")
-auth_helper 	= require("./server/utils/auth_helper")
 platform_api 	= require("./server/api/platform/client")
 
 # TODO configure mongodb
@@ -30,7 +29,7 @@ server.use restify.acceptParser(server.acceptable)
 server.use restify.queryParser()
 server.use restify.bodyParser()
 
-auth.setup server, 
+auth.setup server, require("./server/utils/auth_helper"),
 	ping: 
 		url_match: new RegExp("^/ping\\?token\=(.*)")
 		schema: "token"

@@ -5,6 +5,6 @@ restify			= require("restify")
 platform_client	= require "./client"
 
 module.exports.show = (account_handle, callback) ->
-	platform_client.get "/v1/accounts/#{account_handle}", (err, req, res, obj) ->
+	platform_client.get "/accounts/#{account_handle}", (err, req, res, obj) ->
 		callback(err, obj)
 	

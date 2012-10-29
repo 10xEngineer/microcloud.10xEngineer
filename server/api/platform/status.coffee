@@ -9,6 +9,6 @@ platform_client	= require "./client"
 version = "v1"
 
 module.exports.ping = (callback) ->
-	platform_client.get "/v1/ping", (err, req, res, obj) ->
+	platform_client.get "/ping", (err, req, res, obj) ->
 		callback(err, obj)
 	
