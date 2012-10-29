@@ -13,7 +13,10 @@ server = restify.createServer
 	version: "0.1.0"
 
 # setup default Platform API client
-platform_api.setup("f933c346c502c11b64164143087f", "55347d223f161014a8659361afe771929f61246d09a3b22f", "http://api.labs.dev/")
+platform_api.setup(
+	config.get("platform:token"), 
+	config.get("platform:secret"),
+	config.get("platform:url"))
 
 # model
 require("./server/model/proxy_user").register

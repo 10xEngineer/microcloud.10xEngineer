@@ -1,16 +1,7 @@
 {
     "development": {
-        "server" : {
-            "port" : 8080
-        },
-        "database" : {
-            "host": "127.0.0.2",
-            "port": 1234
-        },
-        "mongodb" : {
-            "host" : "127.0.0.1",
-            "dbName" : "microcloud_dev"
-        },
+        "server" : {"port" : 8080},
+        "mongodb" : "mongo://localhost/microcloud_dev",
         "redis" : {
             "host": "127.0.0.1",
             "dbName": 0
@@ -22,27 +13,18 @@
                 "host": "176.34.236.201",
                 "port": 22
             },
-        "microcloud": {
+        "platform" :{
+            "url": "http://api.labs.dev/",
+            "token": "f933c346c502c11b64164143087f",
+            "secret": "55347d223f161014a8659361afe771929f61246d09a3b22f"
+        },        
+        "microcloud": {            
             "gateway": {
                 "host": "localhost",
                 "port": 2222
             }
         }
     },
-    "test": {
-        "server" : {
-            "port" : 8081
-        },
-        "database" : {
-            "host": "127.0.0.2",
-            "port": 1234
-        },
-        "mongodb" : {
-            "host" : "127.0.0.1",
-            "dbName" : "microcloud_test"
-        },
-        "broker": "ipc:///tmp/mc.broker"
-    },    
-    "production": {
-    }
+    "test": {},
+    "production": {},
 }
