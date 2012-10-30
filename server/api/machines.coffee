@@ -127,7 +127,6 @@ module.exports.create = (req, res, next) ->
 			callback(null, machine)
 
 	saveSnapshots = (callback, results) ->
-		
 		async.forEach results.raw_machine.snapshots, (snap_data, iter_next) ->
 			snapshot = new Snapshot(snap_data)
 			snapshot.machine_id = results.machine._id
@@ -260,30 +259,42 @@ module.exports.destroy = (req, res, next) ->
 
 			callback(null)
 
-	removeProxy = (results) ->
-		SSHProxy.findById results.machine.ssh_proxy, (err, proxy) ->
-			if err
-				log.warn("Unable to retrieve proxy=#{proxy._id}")
-				return
-
-			proxy.deleted_at = Date.now()
-			proxy.save (err) ->
-				if err
-					log.warn("Unable to remove proxy=#{proxy._id}")
-				
-				log.debug("proxy=#{proxy._id} removed")
-				return
-
 	async.auto
 		machine: getMachine
 		node: ['machine', getNode]
 		destroy: ['node', destroyMachine]
 		update: ['destroy', updateMachine]
 
-	, (err, results) ->
+	, (err, first_results) ->
 		if err
 			return next(err)
 
+		# say bye to client
 		res.send 200
 
-		removeProxy(results)
+		getSnapshots = (callback, results) ->
+			Snapshot
+				.find({machine_id: first_results.machine._id, deleted_at: null})
+				.exec (err, snapshots) ->
+					if err
+						return callback(new restify.InternalError("Unable to retrieve the list of snapshots: #{err}"))
+
+					callback(null, snapshots)
+
+		removeSnapshots = (callback, results) ->
+			# soft delete is enough as zfs destroy -r is used to delete machine dataset
+			async.forEach results.snapshots, (snapshot, iter_next) ->
+				console.log '--'
+				console.log snapshot
+				snapshot.delete (err) ->
+					console.log err
+					return iter_next(err)
+
+		async.auto
+			snapshots: getSnapshots
+			remove: ['snapshots', removeSnapshots]
+		, (err, n_results) ->
+			if err
+				log.warn "unable to finish machine=#{results.machine._id} cleanup"
+
+			log.debug "machine=#{results.machine._id} cleanup finished"

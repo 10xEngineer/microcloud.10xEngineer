@@ -120,10 +120,7 @@ module.exports.destroy = (req, res, next) ->
 				callback(null, snapshot)
 
 	deleteSnapshot = (callback, results) ->
-		snapshot = results.snapshot
-
-		snapshot.deleted_at = Date.now()
-		snapshot.save (err) ->
+		results.snapshot.delete (err) ->
 			if err
 				return callback(new restify.InternalError("Unable to mark snapshot as deleted: #{err}"))
 

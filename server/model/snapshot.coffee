@@ -17,4 +17,9 @@ Snapshot = new Schema
 
 Snapshot.plugin(timestamps)
 
+Snapshot.methods.delete = (callback) ->
+	this.deleted_at = Date.now()
+	this.save (err) ->
+		return callback(err)
+
 module.exports.register = mongoose.model 'Snapshot', Snapshot
