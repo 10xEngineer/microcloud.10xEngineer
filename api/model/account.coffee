@@ -29,8 +29,7 @@ ObjectId 	= mongoose.Schema.ObjectId
 Account = new mongoose.Schema
 	handle: String
 
-	# dropped account_ref in favor of _id
-	#account_ref: String
+	account_ref: String
 
 	owners: [ObjectId]
 

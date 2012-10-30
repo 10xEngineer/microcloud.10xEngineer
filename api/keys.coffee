@@ -13,7 +13,7 @@ Key 		= mongoose.model 'Key'
 #
 module.exports.index = (req, res, next) ->
 	Key
-		.find(user: req.params.user)
+		.find(user_id: req.params.user)
 		.where("deleted_at").equals(null)
 		.select({_id: 0})
 		.exec (err, keys) ->
@@ -24,7 +24,7 @@ module.exports.index = (req, res, next) ->
 
 module.exports.show = (req, res, next) ->
 	Key
-		.findOne({name: req.params.key, user: req.params.user})
+		.findOne({name: req.params.key, user_id: req.params.user})
 		.where("deleted_at").equals(null)
 		.exec (err, key) ->
 			if err
@@ -71,7 +71,7 @@ module.exports.create = (req, res, next) ->
 			fingerprint: results.fingerprint
 			public_key: data.key
 
-			user: req.params.user
+			user_id: req.params.user
 
 		key = new Key(key_data)
 		key.save (err) ->
@@ -94,7 +94,7 @@ module.exports.create = (req, res, next) ->
 module.exports.destroy = (req, res, next) ->
 	getKey = (callback, results) ->
 		Key
-			.findOne({name: req.params.key, user: req.params.user})
+			.findOne({name: req.params.key, user_id: req.params.user})
 			.where("deleted_at").equals(null)
 			.exec (err, key) ->
 				if err

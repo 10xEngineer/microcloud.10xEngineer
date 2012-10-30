@@ -13,8 +13,8 @@ Key = new Schema
 	public_key: String
 
 	# TODO consider String instead of ObjectId as it's not present in the microcloud database
-	account: ObjectId
-	user: ObjectId
+	account_id: ObjectId
+	user_id: ObjectId
 
 Key.plugin(timestamps)
 Key.index({name: 1, user: 1}, {unique: true})
