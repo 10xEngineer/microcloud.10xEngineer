@@ -71,6 +71,35 @@ class LxcService < Provider
     end
   end
 
+  def delshot(request)
+    name = request["options"]["name"]
+    machine_uuid = request["options"]["machine_id"]
+
+    raise "Lab Machine UUID  required" unless machine_uuid and !machine_uuid.empty?
+    raise "Snapshot name required" unless name and !name.empty?
+
+    command = ["/usr/bin/sudo", "/usr/local/bin/lab-vm", "-j", "delshot"]
+    command << "--id #{machine_uuid}"
+    command << "--name #{name}" 
+
+    begin
+      res = ssh_exec('mchammer', @hostname, command.join(' '), @ssh_options)
+
+      options = Yajl::Parser.parse(res)
+
+      response :ok, options
+    rescue Net::SSH::AuthenticationFailed => e
+      response :fail, {:reason => "Hostnode authentication failed"}
+    rescue Exception => e
+      puts e.inspect
+      puts e.backtrace.join("\n")
+      error = json_message(e.message)
+      error[:source] = "lab-vm"
+
+      response :fail, error
+    end
+  end
+
   # ---- original code
 
   # ssh stub

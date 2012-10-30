@@ -24,6 +24,7 @@ module.exports.registerRoutes = (server) ->
 	# Snapshots
 	server.get 		'/machines/:machine/snapshots', api.snapshots.index
 	server.post 	'/machines/:machine/snapshots', api.snapshots.create
+	server.del 		'/machines/:machine/snapshots/:snapshot', api.snapshots.destroy
 
 	server.get 		'/proxy_users/:user', api.proxy_users.show
 

@@ -16,6 +16,9 @@ getMachine = (callback, results) ->
 			if err
 				return callback(new restify.InternalError("Unable to retrieve the list of machines: #{err}"))
 
+			unless machine
+				return callback(new restify.NotFoundError("Machine not found."))
+
 			callback(null, machine)
 
 getNode = (callback, results) ->
@@ -102,3 +105,56 @@ module.exports.create = (req, res, next) ->
 			return next(err)
 
 		res.send 201, results.snapshot
+
+module.exports.destroy = (req, res, next) ->
+	getSnapshot = (callback, results) ->
+		Snapshot
+			.findOne({name: req.params.snapshot, machine_id: results.machine._id, deleted_at: null})
+			.exec (err, snapshot) ->
+				if err
+					return callback(new restify.InternalError("Unable to retrieve snapshot: #{err}"))
+
+				unless snapshot
+					return callback(new restify.NotFoundError("Snapshot not found"))
+
+				callback(null, snapshot)
+
+	deleteSnapshot = (callback, results) ->
+		snapshot = results.snapshot
+
+		snapshot.deleted_at = Date.now()
+		snapshot.save (err) ->
+			if err
+				return callback(new restify.InternalError("Unable to mark snapshot as deleted: #{err}"))
+
+			return callback(null)
+
+	destroySnapshot = (callback, results) ->
+		broker_data = 
+			server: results.node.hostname
+			machine_id: results.machine.uuid
+			name: results.snapshot.name
+
+		sreq = broker.dispatch 'lxc', 'delshot', broker_data
+		sreq.on 'data', (message) ->
+			log.info "machine=#{results.machine._id} snapshot=#{results.snapshot.name} destroyed"
+
+			return callback(null)
+
+		sreq.on 'error', (message) ->
+			log.error "unable to destroy snapshot machine=#{results.machine._id} reason='#{message.options.reason}'"
+
+			return callback(new restify.InternalError(message.options.reason))
+
+	async.auto
+		req:		(callback) -> return callback(null, req)
+		machine:	['req', getMachine]
+		node: 		['machine',getNode]
+		snapshot:	['node', getSnapshot]
+		deleteSnap:	['snapshot', deleteSnapshot]
+		wipeSnap:	['deleteSnap', destroySnapshot]
+	, (err, results) ->
+		if err
+			return next(err)
+
+		res.send 200
