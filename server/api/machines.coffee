@@ -127,9 +127,11 @@ module.exports.create = (req, res, next) ->
 			callback(null, machine)
 
 	saveSnapshots = (callback, results) ->
+		
 		async.forEach results.raw_machine.snapshots, (snap_data, iter_next) ->
 			snapshot = new Snapshot(snap_data)
 			snapshot.machine_id = results.machine._id
+			snapshot.account = results.machine.account
 
 			snapshot.save (err) ->
 				if err

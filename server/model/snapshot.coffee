@@ -13,6 +13,8 @@ Snapshot = new Schema
 	used_size: Number
 	real_size: Number
 
+	account: ObjectId
+
 Snapshot.plugin(timestamps)
 
 module.exports.register = mongoose.model 'Snapshot', Snapshot

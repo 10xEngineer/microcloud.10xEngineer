@@ -45,6 +45,32 @@ class LxcService < Provider
     end    
   end
 
+  def snapshot(request)
+    name = request["options"]["name"]
+    machine_uuid = request["options"]["machine_id"]
+
+    raise "Lab Machine UUID  required" unless machine_uuid and !machine_uuid.empty?
+
+    command = ["/usr/bin/sudo", "/usr/local/bin/lab-vm", "-j", "snapshot"]
+    command << "--id #{machine_uuid}"
+    command << "--name #{name}" if name
+
+    begin
+      res = ssh_exec('mchammer', @hostname, command.join(' '), @ssh_options)
+
+      options = Yajl::Parser.parse(res)
+
+      response :ok, options
+    rescue Net::SSH::AuthenticationFailed => e
+      response :fail, {:reason => "Hostnode authentication failed"}
+    rescue Exception => e
+      error = json_message(e.message)
+      error[:source] = "lab-vm"
+
+      response :fail, error
+    end
+  end
+
   # ---- original code
 
   # ssh stub
