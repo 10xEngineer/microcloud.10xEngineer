@@ -24,6 +24,7 @@ require("./server/model/template").register
 require("./server/model/node").register
 require("./server/model/pool").register
 require("./server/model/machine").register
+require("./server/model/snapshot").register
 
 # routes
 routes = require("./server/routes")

@@ -12,6 +12,7 @@ platform_api	= require("../api/platform")
 Node 			= mongoose.model 'Node'
 Pool 			= mongoose.model 'Pool'
 Machine 		= mongoose.model 'Machine'
+Snapshot 		= mongoose.model 'Snapshot'
 
 #
 # Lab Machine commands
@@ -92,6 +93,7 @@ module.exports.create = (req, res, next) ->
 				uuid: message.options.uuid
 				state: message.options.state
 				name: message.options.name
+				snapshots: message.options.snapshots
 
 			log.info "machine=#{machine.uuid} state=#{machine.state}"
 
@@ -124,6 +126,24 @@ module.exports.create = (req, res, next) ->
 
 			callback(null, machine)
 
+	saveSnapshots = (callback, results) ->
+		async.forEach results.raw_machine.snapshots, (snap_data, iter_next) ->
+			snapshot = new Snapshot(snap_data)
+			snapshot.machine_id = results.machine._id
+
+			snapshot.save (err) ->
+				if err
+					return iter_next(err)
+
+				log.debug "snapshot=#{snap_data.name} machine=#{results.machine._id} state=created"
+
+				iter_next(null)
+		, (err) ->
+			if err
+				return next(new restify.InternalError("Unable to save snapshot: #{err}") )
+
+			return callback(null)
+
 	createProxy = (callback, results) ->
 		Machine.create_proxy results.key, req.user, (err, proxy) ->
 			if err
@@ -142,6 +162,7 @@ module.exports.create = (req, res, next) ->
 		validate: ['proxy', validateMachine]
 		raw_machine: ['validate', createMachine]
 		machine: ['raw_machine', saveMachine]
+		snapshots: ['machine', saveSnapshots]
 
 	, (err, results) ->
 		if err
