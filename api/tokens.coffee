@@ -13,6 +13,6 @@ module.exports.show = (req, res, next) ->
 			return next(new restify.InternalError(err))
 
 		unless token_data
-			return next(new restify.ResourceNotFoundError("Token not found."))
+			return next(new restify.NotFoundError("Invalid token."))
 
 		res.json token_data

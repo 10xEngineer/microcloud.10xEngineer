@@ -6,30 +6,29 @@ AccessToken 	= mongoose.model('AccessToken')
 Account 		= mongoose.model('Account')
 User 			= mongoose.model('User')
 
-module.exports.get_token = (token, callback) ->
+module.exports.get_token = (token, next) ->
 	getToken = (callback, results) ->
-		AccessToken.findToken(token, callback)
+		AccessToken.findToken token, (err, token) ->
+			if err
+				return callback(err)
+
+			callback(null, token)
 
 	getUser = (callback, results) ->
-		User.findUserById(results.token.user, callback)
+		unless results.token
+			return callback(null)
 
-	validate = (callback, results) ->
-		unless results.user
-			log.warn "invalid token=#{token}"
-			return callback(new Error("Invalid token: unable to find associated user"))
-
-		callback()
+		User.findUserById(results.token.user_id, callback)
 
 	async.auto
-		token: [getToken]
+		token: getToken
 		user: ['token', getUser]
-		validate: ['user', validate]
 	, (err, results) ->
 		if err
-			return callback(err)
+			return next(err)
 
 		unless results.token
-			return callback(null, null)
+			return next(null, null)
 
 		data = 
 			user:
@@ -38,7 +37,7 @@ module.exports.get_token = (token, callback) ->
 
 			auth_secret: results.token.auth_secret
 
-		return callback(null, data)
+		return next(null, data)
 
 module.exports.get_account = (account_handle, callback) ->
 	Account

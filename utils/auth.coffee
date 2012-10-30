@@ -54,6 +54,10 @@ module.exports.setup = (server, auth_helper, rules) ->
 
 		auth_helper.get_token req.headers["x-labs-token"], (err, token) ->
 			if err
+				# NotFoundError/404 is not really an error
+				if err.statusCode == 404
+					return next(new restify.UnauthorizedError("Invalid credentials (token)"))
+
 				return next(new restify.InternalError("Unable to retrieve authentication token: #{err}"))
 
 			hmac = crypto.createHmac('sha256', token["auth_secret"])

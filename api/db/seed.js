@@ -56,7 +56,7 @@ db.users.save(dev_1);
 db.access_tokens.drop()
 
 demo_token = {
-	user: demo._id,
+	user_id: demo._id,
 	alias: 'default',
 	auth_token: 'a7b59762d8d7523f797b1ca83e33',
 	auth_secret: '0ec6bc855e719fc0638429c1fa04226fa7931f90ea6339af',
@@ -65,7 +65,7 @@ demo_token = {
 db.access_tokens.save(demo_token);
 
 radim_token = {
-	user: radim._id,
+	user_id: radim._id,
 	alias: 'default',
 	auth_token: '7f08fe3106f287e001a3f1752a09',
 	auth_secret:'4223305def98423ef13fd8463a2705f6d90f350571e95194',
@@ -74,7 +74,7 @@ radim_token = {
 db.access_tokens.save(radim_token);
 
 dev_1_token = {
-	user: dev_1,
+	user_id: dev_1,
 	alias: 'default',
 	auth_token: 'f933c346c502c11b64164143087f',
 	auth_secret: '55347d223f161014a8659361afe771929f61246d09a3b22f',
@@ -87,6 +87,7 @@ db.accounts.drop();
 
 demo_account = {
 	handle: 'demo',
+	account_ref: 'ac-344e22a',
 	owners: [demo._id],
 
 	disabled: false,
@@ -100,6 +101,7 @@ db.accounts.save(demo_account)
 // internal account
 internal_account = {
 	handle: '_internal',
+	account_ref: 'ac-451a23aa',
 	owners: [radim],
 
 	disabled: false,
