@@ -54,11 +54,14 @@ module.exports.create = (req, res, next) ->
 	getKey = (callback, results) ->
 		key_name = data.key || "default"
 		platform_api.keys.show key_name, req.user.id, (err, key) ->
-			if err 
-				return callback(new restify.InternalError("Unable to retrieve SSH key: #{err}"))
+			if err
+				unless err.statusCode == 404
+					return callback(new restify.InternalError("Unable to retrieve SSH key: #{err}"))
+				else
+					key = null
 
 			unless key
-				return callback(new restify.NotFoundError("Specified key '#{key_name}' not found"))
+				return callback(new restify.NotFoundError("SSH key '#{key_name}' not found"))
 
 			return callback(null, key)
 				
