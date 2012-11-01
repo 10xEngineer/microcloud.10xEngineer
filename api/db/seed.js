@@ -10,6 +10,18 @@ mc_default = {
 }
 db.microclouds.save(mc_default);
 
+// Limit Profiles
+db.profiles.drop();
+
+beta = {
+	name: "beta_public",
+	machines: 2,
+	memory: 1024,
+	transfer: 2048
+}
+
+db.profiles.save(beta)
+
 // === Users - default password is 'lab123'
 db.users.drop();
 
@@ -17,6 +29,7 @@ demo = {
 	email: "demo@10xengineer.me",
 	name: "Demo Lab User",
 	password: '$2a$10$Jkr42F/TxB/kLxhGW3oSh.Z4fK57WTCbW5qmjYNG.VtBcjtb7tDvu',
+	limits: {machines:2, memory: 1024, transfer: 2048},
 	service: false,
 	disabled: false,
 	created_at: new Date(), updated_at: new Date(), deleted_at: null
@@ -27,6 +40,7 @@ radim = {
 	email: "radim@10xengineer.me",
 	name: "Radim Marek",
 	cpwd: '$2a$10$Jkr42F/TxB/kLxhGW3oSh.Z4fK57WTCbW5qmjYNG.VtBcjtb7tDvu',
+	limits: {machines:10, memory: 10240, transfer: 5192},
 	service: false,
 	disabled: false,
 	created_at: new Date(), updated_at: new Date(), deleted_at: null
@@ -38,6 +52,7 @@ dev_1 = {
 	email: "support+dev-1@10xengineer.me",
 	name: "dev-1",
 	cpwd: '$2a$10$Jkr42F/TxB/kLxhGW3oSh.Z4fK57WTCbW5qmjYNG.VtBcjtb7tDvu',
+	limits: {machines:0, memory: 0, transfer: 0},
 	service: true,
 	disabled: false,
 	created_at: new Date(), updated_at: new Date(), deleted_at: null

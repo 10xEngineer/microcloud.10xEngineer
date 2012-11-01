@@ -11,6 +11,12 @@ User = new mongoose.Schema
 	salt: String
 
 	def_account: ObjectId
+	limits: {
+		machines: Number
+		memory: Number
+
+		transfer: Number
+	}
 
 	service: {type: Boolean, default: false}
 	disabled: {type: Boolean, default: false}

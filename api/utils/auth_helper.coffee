@@ -30,10 +30,13 @@ module.exports.get_token = (token, next) ->
 		unless results.token
 			return next(null, null)
 
+		# FIXME fill-in limits not defined within default profile
+
 		data = 
 			user:
 				id: results.user._id	
 				account_id: results.user.def_account
+				limits: results.user.limits
 
 			auth_secret: results.token.auth_secret
 
