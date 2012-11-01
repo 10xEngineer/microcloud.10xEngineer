@@ -37,6 +37,16 @@ Machine = new Schema
 Machine.plugin(timestamps)
 Machine.index({name: 1, account: 1, archived:1}, {unique: true})
 
+Machine.statics.getCurrentUsage = (user, callback) ->
+	mongoose.model('Machine')
+		.find({account: user.account_id, archived: false, deleted_at: null})
+		.exec (err, machines) ->
+			if err
+				# TODO return error
+				return callback(-1)
+
+			return callback(null, machines.length)
+
 Machine.statics.create_proxy = (key, user, callback) ->
 	getProxyUser = (callback, results) ->
 		ProxyUser

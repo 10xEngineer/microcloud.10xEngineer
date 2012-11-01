@@ -44,6 +44,17 @@ module.exports.create = (req, res, next) ->
 	checkParams = (callback, results) -> 
 		param_helper.checkPresenceOf data, ['template','size','pool'], callback
 
+	verifyLimits = (callback, results) ->
+		Machine.getCurrentUsage req.user, (err, count) ->
+			if err
+				return callback(new restify.InternalError("Unable to verify resources: #{err}"))
+
+			unless count < req.user.limits.machines
+				return callback(new restify.RequestThrottledError("Machine resource limit exceeded!"))
+			
+			return callback(null)
+
+
 	getPool = (callback, results) ->
 		Pool.find_by_name data.pool, (err, pool) ->
 			if err
@@ -158,8 +169,9 @@ module.exports.create = (req, res, next) ->
 	# TODO LRU for pool allocation
 
 	async.auto
-		checkParams: checkParams 
-		pool: ['checkParams', getPool]
+		params: checkParams
+		limits: ['params', verifyLimits]
+		pool: ['limits', getPool]
 		key: ['pool', getKey]
 		node: ['key', getNode]
 		proxy: ['key', createProxy]
@@ -288,7 +300,6 @@ module.exports.destroy = (req, res, next) ->
 			# soft delete is enough as zfs destroy -r is used to delete machine dataset
 			async.forEach results.snapshots, (snapshot, iter_next) ->
 				snapshot.delete (err) ->
-					console.log err
 					return iter_next(err)
 
 		async.auto
