@@ -14,6 +14,7 @@ User = new mongoose.Schema
 
 	service: {type: Boolean, default: false}
 	disabled: {type: Boolean, default: false}
+	tc_agreed: {type: Boolean, default: false}
 
 User.plugin(timestamps)
 

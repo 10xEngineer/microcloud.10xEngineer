@@ -70,8 +70,8 @@ puts "****** post-install finished"
 # create image
 puts "Initiating AMI"
 timestamp = Time.now.utc.strftime("%y%m%d")
-image_name = "10xeng-precise64-#{timestamp}"
-image_desc = "10xEngineer based AMI (Ubuntu 12.04 based)"
+image_name = "labs-precise64-#{timestamp}"
+image_desc = "10xEngineer Labs based AMI (Ubuntu 12.10 based)"
 
 ami = aws.create_image(base.identity, image_name, image_desc)
 image_id = ami.body['imageId']

@@ -28,10 +28,10 @@ module.exports.show = (req, res, next) ->
 		.where("deleted_at").equals(null)
 		.exec (err, key) ->
 			if err
-				return callback(new restify.InternalError("Unable to retrieve key: #{err}"))
+				return next(new restify.InternalError("Unable to retrieve key: #{err}"))
 
 			unless key
-				return callback(new restify.NotFoundError("Key not found"))
+				return next(new restify.NotFoundError("Key not found"))
 
 			res.send key
 

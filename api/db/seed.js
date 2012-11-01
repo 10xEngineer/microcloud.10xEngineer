@@ -16,7 +16,7 @@ db.users.drop();
 demo = {
 	email: "demo@10xengineer.me",
 	name: "Demo Lab User",
-	cpwd: '$2a$10$Jkr42F/TxB/kLxhGW3oSh.Z4fK57WTCbW5qmjYNG.VtBcjtb7tDvu',
+	password: '$2a$10$Jkr42F/TxB/kLxhGW3oSh.Z4fK57WTCbW5qmjYNG.VtBcjtb7tDvu',
 	service: false,
 	disabled: false,
 	created_at: new Date(), updated_at: new Date(), deleted_at: null

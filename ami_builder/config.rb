@@ -9,7 +9,7 @@ module TenxEngineer
     :ubuntu => {
       "ap-northeast-1" => "ami-c641f2c7",
       "ap-southeast-1" => "ami-acf6b0fe",
-      "eu-west-1" => "ami-ab9491df",
+      "eu-west-1" => "ami-e9eded9d",
       "sa-east-1" => "ami-5c03dd41",
       "us-east-1" => "ami-82fa58e",
       "us-west-1" => "ami-5965401c",

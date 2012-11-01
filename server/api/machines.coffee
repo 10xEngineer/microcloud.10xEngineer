@@ -284,8 +284,6 @@ module.exports.destroy = (req, res, next) ->
 		removeSnapshots = (callback, results) ->
 			# soft delete is enough as zfs destroy -r is used to delete machine dataset
 			async.forEach results.snapshots, (snapshot, iter_next) ->
-				console.log '--'
-				console.log snapshot
 				snapshot.delete (err) ->
 					console.log err
 					return iter_next(err)
