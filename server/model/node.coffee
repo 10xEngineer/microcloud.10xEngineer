@@ -10,6 +10,10 @@ Node = new Schema
 	provider: String
 	rsa_key: String
 
+	resources: {
+		memory: Number
+	}
+
 	pool: ObjectId
 	disabled: {type: Boolean, default: false}
 
