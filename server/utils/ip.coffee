@@ -3,7 +3,7 @@
 generateIP = () ->
 	prefix = 172
 	segment_ranges = [0,14,253,253]
-	segment_initial = [127, 17, 1, 1]
+	segment_initial = [172, 17, 1, 1]
 
 	ip_data = []
 

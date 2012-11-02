@@ -28,6 +28,8 @@ Machine = new Schema
 
 	ssh_proxy: [SSHProxy]
 
+	ipv4_address: String
+
 	# TODO statistics - update periodically
 	snapshots_count: Number
 	total_storage: Number

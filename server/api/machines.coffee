@@ -9,6 +9,7 @@ restify			= require "restify"
 hostname		= require "../utils/hostname"
 config 			= require("../config")
 platform_api	= require("../api/platform")
+ip 				= require("../utils/ip")
 Node 			= mongoose.model 'Node'
 Pool 			= mongoose.model 'Pool'
 Machine 		= mongoose.model 'Machine'
@@ -54,6 +55,8 @@ module.exports.create = (req, res, next) ->
 			
 			return callback(null)
 
+	generateIP = (callback, results) ->
+		return callback(null, ip.generate())
 
 	getPool = (callback, results) ->
 		Pool.find_by_name data.pool, (err, pool) ->
@@ -93,6 +96,8 @@ module.exports.create = (req, res, next) ->
 				return callback(null)
 
 	createMachine = (callback, results) ->
+		custom_data = "ipv4=#{results.ip}"
+
 		broker_data = 
 			template: data.template
 			server: results.node.hostname
@@ -100,6 +105,7 @@ module.exports.create = (req, res, next) ->
 			defer: true
 			name: data.name || hostname.generate()
 			authorized_keys: results.key.public_key
+			data: custom_data
 
 		creq = broker.dispatch 'lxc', 'create', broker_data
 		creq.on 'data', (message) ->
@@ -132,6 +138,8 @@ module.exports.create = (req, res, next) ->
 			template: data.template
 
 			ssh_proxy: [results.proxy]
+
+			ipv4_address: results.ip
 
 		machine = new Machine(data)
 		machine.save (err) ->
@@ -172,7 +180,8 @@ module.exports.create = (req, res, next) ->
 		params: checkParams
 		limits: ['params', verifyLimits]
 		pool: ['limits', getPool]
-		key: ['pool', getKey]
+		ip: ['pool', generateIP]
+		key: ['ip', getKey]
 		node: ['key', getNode]
 		proxy: ['key', createProxy]
 		validate: ['proxy', validateMachine]

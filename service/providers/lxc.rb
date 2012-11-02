@@ -18,6 +18,7 @@ class LxcService < Provider
     size = request["options"]["size"] || 512
     defer = request["options"]["defer"] || false
     name = request["options"]["name"]
+    data = request["options"]["data"] || nil
     authorized_keys = request["options"]["authorized_keys"] 
 
     raise "Lab Machine name required" unless name and !name.empty?
@@ -27,6 +28,7 @@ class LxcService < Provider
     command << "--size #{size}MB" if size != 0
     command << "--hostname #{name}"
     command << "--defer" if defer
+    command << "--data \"#{data}\"" if data
     command << "--keys \"#{authorized_keys}\"" if authorized_keys
 
     begin
