@@ -234,7 +234,7 @@ class LxcService < Provider
       }
 
       # TODO using key file directly, switch to ssh-agent later
-      @ssh_options[:keys] = [@config["ssh_key"]] if @config["ssh_key"]
+      #@ssh_options[:keys] = [@config["ssh_key"]] if @config["ssh_key"]
   end
 
   def validate_vm(request)
