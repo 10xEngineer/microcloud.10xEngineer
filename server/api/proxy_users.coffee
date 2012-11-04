@@ -29,6 +29,7 @@ module.exports.show = (req, res, next) ->
 						machine: 
 							id: machine._id
 							name: machine.name
+							node: machine.node
 						key: proxy.public_key
 
 					keys.push(key_data)

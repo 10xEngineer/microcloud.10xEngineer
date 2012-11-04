@@ -20,7 +20,10 @@ Machine = new Schema
 	name: String
 
 	account: ObjectId
-	node: ObjectId
+	node: {
+		node_id: ObjectId
+		hostname: String
+	}
 	lab: ObjectId
 
 	state: String

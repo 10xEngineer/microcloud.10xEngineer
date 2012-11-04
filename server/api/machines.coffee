@@ -129,13 +129,17 @@ module.exports.create = (req, res, next) ->
 			return callback(new restify.InternalError(message.options.reason))
 
 	saveMachine = (callback, results) ->
+		node_data = 
+			node_id: results.node["node_ref"]
+			hostname: results.node["hostname"]
+
 		data = 
 			uuid: results.raw_machine.uuid
 			name: results.raw_machine.name
 
 			account: req.user.account_id
 			# TODO why results.node.node_ref doesn't work
-			node: results.node["node_ref"]
+			node: node_data
 			lab: null
 
 			state: results.raw_machine.state
@@ -255,7 +259,7 @@ module.exports.destroy = (req, res, next) ->
 
 	getNode = (callback, results) ->
 		Node
-			.findOne({_id: results.machine.node})
+			.findOne({_id: results.machine.node.node_id})
 			.exec (err, node) ->
 				if err
 					return callback(new restify.InternalError("Unable to retrieve machine's node: #{err}"))
