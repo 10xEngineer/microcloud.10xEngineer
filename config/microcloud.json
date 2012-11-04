@@ -41,8 +41,8 @@
         },        
         "microcloud": {            
             "gateway": {
-                "host": "localhost",
-                "port": 2222
+                "host": "ssh.eu-1-aws.10xlabs.net",
+                "port": 22
             }
         }
 
