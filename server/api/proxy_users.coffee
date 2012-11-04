@@ -12,6 +12,7 @@ module.exports.show = (req, res, next) ->
 	getMachines = (callback, results) ->
 		Machine
 			.find({archived: false})
+			.where("deleted_at").equals(null)
 			.where("ssh_proxy").elemMatch({proxy_user: req.params.user})
 			.exec (err, machines) ->
 				if err
