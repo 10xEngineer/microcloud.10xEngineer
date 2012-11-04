@@ -106,7 +106,7 @@ module.exports.create = (req, res, next) ->
 			template: data.template
 			server: results.node.hostname
 			size: data.size
-			defer: true
+			defer: false
 			name: data.name || hostname.generate()
 			authorized_keys: results.key.public_key
 			data: custom_data
