@@ -31,6 +31,7 @@ module.exports.show = (req, res, next) ->
 							id: machine._id
 							name: machine.name
 							node: machine.node
+							ipv4_address: machine.ipv4_address
 						key: proxy.public_key
 
 					keys.push(key_data)
@@ -42,7 +43,7 @@ module.exports.show = (req, res, next) ->
 
 		for entry in results.key_data
 			# TODO add ,no-pty
-			output = output + "command=\"/tmp/somescript.sh lab #{entry.machine.name}\",no-port-forwarding #{entry.key}\n"
+			output = output + "command=\"/tmp/somescript.sh #{entry.machine.node.hostname} #{entry.machine.ipv4_address}\",no-port-forwarding #{entry.key}\n"
 
 		return callback(null, output)			
 
