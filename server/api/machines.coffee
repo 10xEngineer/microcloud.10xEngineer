@@ -80,7 +80,11 @@ module.exports.create = (req, res, next) ->
 			return callback(null, key)
 				
 	getNode = (callback, results) ->
-		results.pool.selectNode(callback)
+		results.pool.selectNode (err, node) ->
+			unless node
+				return callback(new restify.ServiceUnavailableError("Hostnode capacity exceeded"))
+
+			return callback(err, node)
 
 	validateMachine = (callback, results) ->
 		unless data.name
@@ -255,6 +259,9 @@ module.exports.destroy = (req, res, next) ->
 			.exec (err, node) ->
 				if err
 					return callback(new restify.InternalError("Unable to retrieve machine's node: #{err}"))
+
+				unless node
+					return callback(new restify.ServiceUnavailableError("No hostnode available."))
 
 				return callback(null, node)
 
