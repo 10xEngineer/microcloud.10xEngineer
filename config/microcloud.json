@@ -26,5 +26,25 @@
         }
     },
     "test": {},
-    "production": {}
+    "production": {
+        "server" : {"port" : 8080},
+        "mongodb" : "mongo://localhost/microcloud",
+        "redis" : {
+            "host": "127.0.0.1",
+            "dbName": 0
+        },
+        "broker": "ipc:///tmp/mc.broker",
+        "platform" :{
+            "url": "http://api.labs.dev/",
+            "token": "f933c346c502c11b64164143087f",
+            "secret": "55347d223f161014a8659361afe771929f61246d09a3b22f"
+        },        
+        "microcloud": {            
+            "gateway": {
+                "host": "localhost",
+                "port": 2222
+            }
+        }
+
+    }
 }
