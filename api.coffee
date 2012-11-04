@@ -2,9 +2,11 @@ log 		= require("log4js").getLogger()
 restify 	= require("restify")
 mongoose 	= require("mongoose")
 auth 		= require("./utils/auth")
+config 		= require("./api/config")
 
 # FIXME configurable
-mongoose.connect('mongo://localhost/labs_dev')
+log.info "using mongo=#{config.get('mongodb')}"
+mongoose.connect(config.get('mongodb'))
 
 require("./api/model/microcloud").register()
 require("./api/model/user").register()

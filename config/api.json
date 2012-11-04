@@ -1,0 +1,9 @@
+{
+    "development": {
+        "mongodb" : "mongo://localhost/labs_dev"
+    },
+    "test": {},
+    "production": {
+        "mongodb" : "mongo://localhost/labs"
+    }
+}
