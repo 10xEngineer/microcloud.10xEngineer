@@ -11,7 +11,11 @@ module.exports.ping = (req, res, next) ->
 
 	pingAPI = (callback) ->
 		platform_api.status.ping (err, api) ->
+			if err
+				console.debug "platform_api err=#{err}"
+
 			unless api and api["status"] == "ok"
+				console.debug "platform_api=#{api}"
 				return callback(null, "failed")
 
 			callback(null, "ok")
