@@ -33,6 +33,7 @@ create_client = (method, url, body = null) ->
 			headers: setup_auth(method, url, body)
 
 module.exports.setup = (token, secret, endpoint) ->
+	log.info "using platform endpoint=#{endpoint}"
 	PLATFORM_API_CONFIG = 
 		token: token
 		secret: secret
