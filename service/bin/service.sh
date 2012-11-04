@@ -8,4 +8,4 @@ if [ -d "/home/microcloud" ]; then
 	ssh-add /etc/10xlabs/mchammer
 fi
 
-bundle exec ruby service.rb $1
+exec bundle exec ruby service.rb $1

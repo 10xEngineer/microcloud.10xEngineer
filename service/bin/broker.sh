@@ -1,3 +1,3 @@
 #!/bin/sh
 
-bundle exec ruby broker.rb
+exec bundle exec ruby broker.rb
