@@ -43,7 +43,7 @@ module.exports.show = (req, res, next) ->
 
 		for entry in results.key_data
 			# TODO add ,no-pty
-			output = output + "command=\"/tmp/somescript.sh #{entry.machine.node.hostname} #{entry.machine.ipv4_address}\",no-port-forwarding #{entry.key}\n"
+			output = output + "command=\"/etc/ssh/ssh_connect.sh #{entry.machine.node.hostname} #{entry.machine.ipv4_address}\",no-port-forwarding #{entry.key}\n"
 
 		return callback(null, output)			
 
