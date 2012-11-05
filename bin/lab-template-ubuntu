@@ -15,8 +15,8 @@ write_sourceslist()
 
     case $arch in
       amd64|i386)
-            MIRROR=${MIRROR:-http://archive.ubuntu.com/ubuntu}
-            SECURITY_MIRROR=${SECURITY_MIRROR:-http://security.ubuntu.com/ubuntu}
+            MIRROR=${MIRROR:-eu-west-1.ec2.archive.ubuntu.com.s3.amazonaws.com}
+            SECURITY_MIRROR=${SECURITY_MIRROR:-eu-west-1.ec2.archive.ubuntu.com.s3.amazonaws.com}
             ;;
       *)
             MIRROR=${MIRROR:-http://ports.ubuntu.com/ubuntu-ports}
