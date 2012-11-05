@@ -15,8 +15,8 @@ write_sourceslist()
 
     case $arch in
       amd64|i386)
-            MIRROR=${MIRROR:-eu-west-1.ec2.archive.ubuntu.com.s3.amazonaws.com}
-            SECURITY_MIRROR=${SECURITY_MIRROR:-eu-west-1.ec2.archive.ubuntu.com.s3.amazonaws.com}
+            MIRROR=${MIRROR:-http://eu-west-1.ec2.archive.ubuntu.com.s3.amazonaws.com}
+            SECURITY_MIRROR=${SECURITY_MIRROR:-http://eu-west-1.ec2.archive.ubuntu.com.s3.amazonaws.com}
             ;;
       *)
             MIRROR=${MIRROR:-http://ports.ubuntu.com/ubuntu-ports}
@@ -266,6 +266,17 @@ post_process()
 {
     rootfs=$1
     release=$2
+
+    chroot $rootfs /usr/sbin/locale-gen en_US.UTF-8
+    chroot $rootfs /usr/sbin/update-locale en_US.UTF-8
+
+    # update motd
+    cat <<EOF > $rootfs/etc/update-motd.d/10-help-text
+#!/bin/sh
+[ -r /etc/lsb-release ] && . /etc/lsb-release
+
+printf "\nWelcome to Lab machine!\n\n * Documentation: http://help.10xengineer.me/\n\n"
+EOF    
 
     if [ ! -f $rootfs/etc/init/container-detect.conf ]; then
         # Make sure we have a working resolv.conf
