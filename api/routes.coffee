@@ -1,6 +1,6 @@
 module.exports = ->
-	
-status 			= require('./status')
+
+status 			= require('./status')	
 tokens 			= require('./tokens')
 accounts 		= require('./accounts')
 keys 			= require('./keys')

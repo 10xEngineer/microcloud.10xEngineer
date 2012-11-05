@@ -42,6 +42,10 @@ auth.setup server, require("./server/utils/auth_helper"),
 		url_match: new RegExp("^/proxy_users/.*\\?token\=(.*)")
 		schema: "token"
 		token: "MnMFqjHo368Pmf2R"
+	gecko_widget:
+		url_match: new RegExp("^/stats/gecko\\?token\=(.*)")
+		schema: "token"
+		token: "3Kqd3fYTh9K3bXEp"
 
 # setup routes
 routes.registerRoutes server

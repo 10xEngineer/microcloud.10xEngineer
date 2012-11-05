@@ -28,3 +28,7 @@ module.exports.registerRoutes = (server) ->
 
 	server.get 		'/proxy_users/:user', api.proxy_users.show
 
+	# Statistics
+	server.get		'/stats/gecko',	api.status.gecko_widget
+
+

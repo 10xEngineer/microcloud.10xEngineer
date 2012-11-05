@@ -6,6 +6,7 @@ async 			= require "async"
 broker			= require "../broker"
 restify			= require "restify"
 platform_api 	= require("../api/platform")
+Machine 		= mongoose.model "Machine"
 
 module.exports.ping = (req, res, next) ->
 
@@ -45,4 +46,23 @@ module.exports.ping = (req, res, next) ->
 		res.send code || 200, results
 
 
+module.exports.gecko_widget = (req, res, next) ->
 
+	machineCount = (callback, results) ->
+		Machine
+			.find({archived: false, deleted_at: null})
+			.exec (err, machines) ->
+				if err
+					return callback(new restify.InternalError("Unable to retrieve the list of machines: #{err}"))
+
+				return callback(null, machines.length)
+
+	async.auto
+		machines: machineCount
+	, (err, results) ->
+		widget =
+			item:
+				text: "Active Machines"
+				value: results.machines
+
+		res.json widget
