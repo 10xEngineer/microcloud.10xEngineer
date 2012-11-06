@@ -5,6 +5,7 @@ async 		= require 'async'
 mongoose 	= require("mongoose")
 broker		= require "../broker"
 restify 	= require 'restify'
+param_helper= require "../utils/param_helper"
 Machine 	= mongoose.model 'Machine'
 Snapshot 	= mongoose.model 'Snapshot'
 Node 		= mongoose.model 'Node'
@@ -30,20 +31,33 @@ getNode = (callback, results) ->
 
 			return callback(null, node)
 
+getSnapshot = (callback, results) ->
+	Snapshot
+		.findOne({name: results.req.params.snapshot, machine_id: results.machine._id, deleted_at: null})
+		.exec (err, snapshot) ->
+			if err
+				return callback(new restify.InternalError("Unable to retrieve snapshot: #{err}"))
+
+			unless snapshot
+				return callback(new restify.NotFoundError("Snapshot not found"))
+
+			callback(null, snapshot)
+
+getSnapshots = (callback, results) ->
+	Snapshot
+		.find({machine_id: results.machine._id, deleted_at: null})
+		.select({_id: 0, real_size: 0, machine_id: 0})
+		.sort('timestamp')
+		.exec (err, snapshots) ->
+			if err
+				return callback(new restify.InternalError("Unable to retrieve the list of snapshots: #{err}"))
+
+			callback(null, snapshots)
+
 #
 # Snapshots commands
 #
 module.exports.index = (req, res, next) ->
-
-	getSnapshots = (callback, results) ->
-		Snapshot
-			.find({machine_id: results.machine._id, deleted_at: null})
-			.select({_id: 0, real_size: 0, machine_id: 0})
-			.exec (err, snapshots) ->
-				if err
-					return callback(new restify.InternalError("Unable to retrieve the list of snapshots: #{err}"))
-
-				callback(null, snapshots)
 
 	async.auto
 		req:		(callback) -> return callback(null, req)
@@ -97,9 +111,12 @@ module.exports.create = (req, res, next) ->
 			return callback(new restify.InternalError(message.options.reason))
 
 	saveSnapshot = (callback, results) ->
+		timestamp = new Date().getTime()
+
 		snapshot = new Snapshot(results.snapshot)
 		snapshot.machine_id = results.machine._id
 		snapshot.account = results.machine.account
+		snapshot.timestamp = timestamp
 		snapshot.save (err) ->
 			if err 
 				return next(new restify.InternalError("Unable to save machine snapshot: #{err}"))
@@ -119,19 +136,93 @@ module.exports.create = (req, res, next) ->
 
 		res.send 201, results.snapshot
 
-module.exports.destroy = (req, res, next) ->
-	getSnapshot = (callback, results) ->
-		Snapshot
-			.findOne({name: req.params.snapshot, machine_id: results.machine._id, deleted_at: null})
-			.exec (err, snapshot) ->
+module.exports.revert = (req, res, next) ->
+	try
+		data = JSON.parse req.body
+	catch e
+		return next(new restify.BadRequestError("Invalid data"))
+
+	internal_req = 
+		"head": 0
+		"head^": 1
+		"head~2": 2
+
+	checkParams = (callback, results) -> 
+		param_helper.checkPresenceOf data, ['name'], callback
+
+	resolveSnapshot = (callback, results) ->
+		snapshot_index = internal_req[data.name]
+
+		# TODO how to refactor both conditional branches 
+		if snapshot_index >= 0
+			getSnapshots (err, snapshots) -> 
 				if err
-					return callback(new restify.InternalError("Unable to retrieve snapshot: #{err}"))
+					return callback(err)
+
+				snapshot = snapshots[snapshots.length - 1 - snapshot_index]
+				unless snapshot
+					return callback(new restify.BadRequestError("Invalid snapshot request '#{data.name}'"))
+
+				return callback(null, snapshot)
+			, results
+		else
+			results.req.params.snapshot = data.name
+			getSnapshot (err, snapshot) ->
+				if err
+					return callback(err)
 
 				unless snapshot
-					return callback(new restify.NotFoundError("Snapshot not found"))
+					return callback(new restify.BadRequestError("Invalid snapshot request '#{data.name}'"))
 
-				callback(null, snapshot)
+				return callback(null, snapshot)
+			, results
 
+	revertToSnapshot = (callback, results) ->
+		broker_data = 
+			server: results.node.hostname
+			machine_id: results.machine.uuid
+			name: results.snapshot.name
+
+		sreq = broker.dispatch 'lxc', 'revert', broker_data
+		sreq.on 'data', (message) ->
+			log.info "machine=#{results.machine._id} reverted to snapshot=#{results.snapshot.name}"
+
+			return callback(null)
+
+		sreq.on 'error', (message) ->
+			log.error "unable to revert machine=#{results.machine._id} to snapshot=#{snapshot.name} reason='#{message.options.reason}'"
+
+			return callback(new restify.InternalError(message.options.reason))
+
+	removeSnapshots = (callback, results) ->
+		Snapshot
+			.remove {
+				machine_id: results.machine._id,
+				account: results.req.user.account_id,
+				timestamp: { $gt: results.snapshot.timestamp} 
+				}, (err) ->
+					if err
+						log.warn "unable to remote snapshots for machine=#{results.machine._id} "
+						return next(new restify.InternalError("Unable to remove snapshots records: #{err}"))
+
+					return callback(null)
+
+	async.auto
+		req:		(callback) -> return callback(null, req)
+		params: 	checkParams
+		machine: 	['params', getMachine]		
+		node: 		['machine', getNode]
+		snapshot: 	['node', resolveSnapshot]
+		revert:		['snapshot', revertToSnapshot]
+		remove:		['revert', removeSnapshots]
+	, (err, results) ->
+		if err
+			return next(err)
+
+		res.send results.snapshot
+
+
+module.exports.destroy = (req, res, next) ->
 	deleteSnapshot = (callback, results) ->
 		results.snapshot.delete (err) ->
 			if err

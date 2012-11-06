@@ -13,6 +13,8 @@ Snapshot = new Schema
 	used_size: Number
 	real_size: Number
 
+	timestamp: Number
+
 	account: ObjectId
 
 Snapshot.plugin(timestamps)
