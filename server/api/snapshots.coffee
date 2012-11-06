@@ -23,7 +23,7 @@ getMachine = (callback, results) ->
 
 getNode = (callback, results) ->
 	Node
-		.findOne({_id: results.machine.node})
+		.findOne({_id: results.machine.node.node_id})
 		.exec (err, node) ->
 			if err
 				return callback(new restify.InternalError("Unable to retrieve machine's node: #{err}"))
@@ -61,6 +61,18 @@ module.exports.create = (req, res, next) ->
 	catch e
 		return next(new restify.BadRequestError("Invalid data"))
 
+	verifyName = (callback, results) ->
+		return callback(null) unless data.name
+
+		unless /[\w\-]{3,32}$/.test(data.name)
+			return callback(new restify.BadRequestError("Invalid snapshot name"))
+
+		reserved_names = ['head', 'template', 'labs', 'lab']
+		if reserved_names.indexOf(data.name) >= 0
+			return callback(new restify.BadRequestError("Snapshot name is reserved"))
+
+		return callback(null)
+
 	createSnapshot = (callback, results) ->
 		broker_data = 
 			server: results.node.hostname
@@ -96,7 +108,8 @@ module.exports.create = (req, res, next) ->
 
 	async.auto
 		req:		(callback) -> return callback(null, req)
-		machine:	['req', getMachine]
+		name:		['req', verifyName]
+		machine:	['name', getMachine]
 		node: 		['machine',getNode]
 		snapshot:	['node', createSnapshot]
 		store:		['snapshot', saveSnapshot]
