@@ -19,8 +19,11 @@ class KeyService < Provider
 
   		raise "Missing key to validate" unless key and !key.empty?
 
-  		if SSHKey.valid_ssh_public_key? key
-  			fingerprint = SSHKey.fingerprint key
+      parts = key.split(' ')
+      _key = parts[0..1].join(' ')
+
+  		if SSHKey.valid_ssh_public_key? _key
+  			fingerprint = SSHKey.fingerprint _key
 
   			return response :ok, {
   				:fingerprint => fingerprint
