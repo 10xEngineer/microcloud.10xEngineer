@@ -20,7 +20,8 @@
     "zmq": "*",
     "async": "~0.1.22",
     "redis": "~0.7.2", 
-    "node-uuid": "*"
+    "node-uuid": "*",
+    "http-proxy": "*"
   },
   "devDependencies": {
     "mocha": "*",

@@ -28,7 +28,8 @@ db.users.drop();
 demo = {
 	email: "demo@10xengineer.me",
 	name: "Demo Lab User",
-	password: '$2a$10$Jkr42F/TxB/kLxhGW3oSh.Z4fK57WTCbW5qmjYNG.VtBcjtb7tDvu',
+	password: '$2a$10$zYieNqhUQE5ZKGqhOA5ck.fYPQ9Qoj25diVDiu99.jdOQr9M3MGei',
+	salt: 'fBCSyorrywT4qqzK1BsC',
 	limits: {machines:2, memory: 1024, transfer: 2048},
 	service: false,
 	disabled: false,
@@ -39,7 +40,8 @@ db.users.save(demo);
 radim = {
 	email: "radim@10xengineer.me",
 	name: "Radim Marek",
-	cpwd: '$2a$10$Jkr42F/TxB/kLxhGW3oSh.Z4fK57WTCbW5qmjYNG.VtBcjtb7tDvu',
+	password: '$2a$10$zYieNqhUQE5ZKGqhOA5ck.fYPQ9Qoj25diVDiu99.jdOQr9M3MGei',
+	salt: 'fBCSyorrywT4qqzK1BsC',
 	limits: {machines:10, memory: 10240, transfer: 5192},
 	service: false,
 	disabled: false,
@@ -59,6 +61,18 @@ dev_1 = {
 }
 
 db.users.save(dev_1);
+
+http_proxy = {
+	email: "support+http-proxy@10xengineer.me",
+	name: "http-proxy",
+	cpwd: '$2a$10$Jkr42F/TxB/kLxhGW3oSh.Z4fK57WTCbW5qmjYNG.VtBcjtb7tDvu',
+	limits: {machines:0, memory: 0, transfer: 0},
+	service: true,
+	disabled: false,
+	created_at: new Date(), updated_at: new Date(), deleted_at: null
+}
+
+db.users.save(http_proxy);
 
 // === Access Tokens
 //
@@ -89,13 +103,24 @@ radim_token = {
 db.access_tokens.save(radim_token);
 
 dev_1_token = {
-	user_id: dev_1,
+	user_id: dev_1._id,
 	alias: 'default',
 	auth_token: 'f933c346c502c11b64164143087f',
 	auth_secret: '55347d223f161014a8659361afe771929f61246d09a3b22f',
 	created_at: new Date(), updated_at: new Date(), deleted_at: null
 }
+
 db.access_tokens.save(dev_1_token);
+
+http_proxy_token = {
+	user_id: http_proxy._id,
+	alias: 'default',	           
+	auth_token: 'af124df24862fb214a7385c37acd',	          
+	auth_secret: '73dbede5a8cbef14cfd67892a4ad039bb71c6b82b83e9f32',
+	created_at: new Date(), updated_at: new Date(), deleted_at: null
+}
+
+db.access_tokens.save(http_proxy_token);
 
 // === Account 
 db.accounts.drop();

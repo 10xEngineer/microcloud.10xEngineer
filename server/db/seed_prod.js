@@ -64,3 +64,22 @@ db.proxy_users.save({name: 'lab-d8d6b', disabled: false, created_at: new Date(),
 db.proxy_users.save({name: 'lab-1e2f2', disabled: false, created_at: new Date(), updated_at: new Date(), deleted_at: null})
 db.proxy_users.save({name: 'lab-21137', disabled: false, created_at: new Date(), updated_at: new Date(), deleted_at: null})
 db.proxy_users.save({name: 'lab-a3bf8', disabled: false, created_at: new Date(), updated_at: new Date(), deleted_at: null})
+
+// first hostnode
+
+nd01_host = {
+	hostname: "nd01.eu-1-aws.int.10xlabs.net",
+	provider: "ec2",
+	rsa_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDDM+6HtYwjP5YyNj/RYitSRNNJpqH/Dnzn7pF/N+OyrOVQJ6ybeWZsjdFO0g98KhQBtuArBtmg1zBSbXLmq2tL2LF8dcQcUovymuRI+LUzpu1A8YBtQAR5RpUsWvkXyAY4pKbI4odOPIR4RWOHtqvqx+BKjHo1pvT3G4qsy1FG2iR1moX9wViSLD4JEmbdKaqXfZWvTBZ/q1964OQNF1Z9G6wNr/o9yCSj1I0l+ndjzKboa+dfg/a3gu1eo1BaWfmsi4HcBwiHCIdmu5CQ1f9zzyq0wpcxUDmMuE2eA5ef/LfM5GfR11Q+j3iVKhObtcVvoQ1W1WBzpVWJMbCTpeHN mchammer@dev",
+
+	resources: {
+		memory: 7680
+	},
+	pool: default_pool._id,
+	disabled: false,
+	created_at: new Date(),	updated_at: new Date(), deleted_at: null
+}
+
+db.nodes.save(nd01_host);
+
+db.pools.update({}, {$push: {"nodes": {"hostname": "nd01.eu-1-aws.int.10xlabs.net", "node_ref": nd01_host._id}}});
