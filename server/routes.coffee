@@ -21,6 +21,9 @@ module.exports.registerRoutes = (server) ->
 	server.get 		'/machines/:machine', api.machines.show
 	server.del 		'/machines/:machine', api.machines.destroy
 
+	# TODO get machine by token
+	server.get 		'/machines/token/:token', auth.verify('_internal', api.machines.show_by_token)
+
 	# Snapshots
 	server.get 		'/machines/:machine/snapshots', api.snapshots.index
 	server.post 	'/machines/:machine/snapshots', api.snapshots.create

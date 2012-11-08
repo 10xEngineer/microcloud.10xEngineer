@@ -28,6 +28,7 @@ Machine = new Schema
 
 	state: String
 	template: String
+	token: String
 
 	ssh_proxy: [SSHProxy]
 

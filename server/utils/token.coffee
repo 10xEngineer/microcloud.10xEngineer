@@ -1,5 +1,5 @@
 crypto 		= require 'crypto'
-module.exports.random = (length = 6) ->
-	crypto.randomBytes(length, function(ex, buf) {
-  		return buf.toString('hex');
-	});
+
+module.exports.random = (callback, results) ->
+	crypto.randomBytes 6, (ex, buf) ->
+  		return callback(null, buf.toString('hex'))

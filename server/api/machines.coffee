@@ -10,6 +10,7 @@ hostname		= require "../utils/hostname"
 config 			= require("../config")
 platform_api	= require("../api/platform")
 ip 				= require("../utils/ip")
+token 			= require("../utils/token")
 Node 			= mongoose.model 'Node'
 Pool 			= mongoose.model 'Pool'
 Machine 		= mongoose.model 'Machine'
@@ -144,6 +145,7 @@ module.exports.create = (req, res, next) ->
 
 			state: results.raw_machine.state
 			template: data.template
+			token: results.token
 
 			ssh_proxy: [results.proxy]
 
@@ -192,9 +194,10 @@ module.exports.create = (req, res, next) ->
 		key: ['ip', getKey]
 		node: ['key', getNode]
 		proxy: ['key', createProxy]
+		token: token.random
 		validate: ['proxy', validateMachine]
 		raw_machine: ['validate', createMachine]
-		machine: ['raw_machine', saveMachine]
+		machine: ['raw_machine', 'token', saveMachine]
 		snapshots: ['machine', saveSnapshots]
 
 	, (err, results) ->
@@ -242,6 +245,21 @@ module.exports.show = (req, res, next) ->
 		data: ['machine', buildMachineData]
 	, (err, results) ->
 		res.send 200, results.data
+
+module.exports.show_by_token = (req, res, next) ->
+	getMachine = (callback, results) ->
+		Machine
+			.findOne({name: req.params.token, archived: false, deleted_at: null})
+			.exec (err, machine) ->
+				if err
+					return callback(new restify.InternalError("Unable to retrieve machine: #{err}"))
+
+				return callback(null, machine.toObject())
+
+	async.auto
+		machine: getMachine
+	, (err, results) ->
+		res.send 200, results.machine
 
 module.exports.destroy = (req, res, next) ->
 	getMachine = (callback, results) ->
