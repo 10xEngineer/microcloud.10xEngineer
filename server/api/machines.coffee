@@ -249,16 +249,22 @@ module.exports.show = (req, res, next) ->
 module.exports.show_by_token = (req, res, next) ->
 	getMachine = (callback, results) ->
 		Machine
-			.findOne({name: req.params.token, archived: false, deleted_at: null})
+			.findOne({token: req.params.token, archived: false, deleted_at: null})
 			.exec (err, machine) ->
 				if err
 					return callback(new restify.InternalError("Unable to retrieve machine: #{err}"))
 
-				return callback(null, machine.toObject())
+				unless machine
+					return callback(new restify.NotFoundError("No machine found"))
+
+				return callback(null, machine)
 
 	async.auto
 		machine: getMachine
 	, (err, results) ->
+		if err
+			return next(err)
+			
 		res.send 200, results.machine
 
 module.exports.destroy = (req, res, next) ->
