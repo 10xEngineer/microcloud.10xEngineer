@@ -134,7 +134,11 @@ module.exports.create = (req, res, next) ->
 		if err
 			return next(err)
 
-		res.send 201, results.snapshot
+		snapshot_data = 
+			name: results.snapshot.name
+			used_size: results.snapshot.used_size
+
+		res.send 201, snapshot_data
 
 module.exports.revert = (req, res, next) ->
 	try
@@ -218,6 +222,10 @@ module.exports.revert = (req, res, next) ->
 	, (err, results) ->
 		if err
 			return next(err)
+
+		snapshot_data =
+			name: results.snapshot.name
+			used_size: results.snapshot.used_size
 
 		res.send results.snapshot
 
