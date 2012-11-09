@@ -1,8 +1,8 @@
 log 		= require("log4js").getLogger()
 restify 	= require("restify")
-config 		= require("./gateway_proxy/config")
+config 		= require("./config")
 httpProxy 	= require("http-proxy")
-api_client 	= require("./server/api/platform/client")
+api_client 	= require("./client")
 lru			= require("lru-cache")
 
 proxy_serv 	= config.get('service')
