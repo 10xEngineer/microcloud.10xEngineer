@@ -1,6 +1,7 @@
 {
     "development": {
         "server" : {"port" : 8080},
+        "deploy" : "default.labs.dev",
         "mongodb" : "mongo://localhost/microcloud_dev",
         "redis" : {
             "host": "127.0.0.1",
@@ -28,6 +29,7 @@
     "test": {},
     "production": {
         "server" : {"port" : 8080},
+        "deploy" : "eu-1-aws.10xlabs.net",
         "mongodb" : "mongo://localhost/microcloud",
         "redis" : {
             "host": "127.0.0.1",

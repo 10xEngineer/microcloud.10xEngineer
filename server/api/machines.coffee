@@ -134,6 +134,11 @@ module.exports.create = (req, res, next) ->
 			node_id: results.node["node_ref"]
 			hostname: results.node["hostname"]
 
+		port_mapping = {}
+
+		if data.port_mapping
+			port_mapping["http"] = data.port_mapping.http if data.port_mapping.http
+
 		data = 
 			uuid: results.raw_machine.uuid
 			name: results.raw_machine.name
@@ -146,6 +151,8 @@ module.exports.create = (req, res, next) ->
 			state: results.raw_machine.state
 			template: data.template
 			token: results.token
+
+			port_mapping: port_mapping
 
 			ssh_proxy: [results.proxy]
 
@@ -208,6 +215,7 @@ module.exports.create = (req, res, next) ->
 
 module.exports.show = (req, res, next) ->
 	gateway = config.get "microcloud:gateway"
+	deploy_domain = config.get "deploy"
 
 	getMachine = (callback, results) ->
 		Machine
@@ -237,6 +245,7 @@ module.exports.show = (req, res, next) ->
 		delete machine.ssh_proxy
 
 		machine["ssh_proxy"] = proxies[0]
+		machine["microcloud"] = deploy_domain
 
 		return callback(null, machine)
 
