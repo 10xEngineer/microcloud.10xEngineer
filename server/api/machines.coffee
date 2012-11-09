@@ -256,6 +256,9 @@ module.exports.show = (req, res, next) ->
 		machine: getMachine
 		data: ['machine', buildMachineData]
 	, (err, results) ->
+		if err
+			next(err)
+			
 		res.send 200, results.data
 
 module.exports.show_by_token = (req, res, next) ->
