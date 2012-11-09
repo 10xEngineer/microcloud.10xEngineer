@@ -225,6 +225,9 @@ module.exports.show = (req, res, next) ->
 				if err
 					return callback(new restify.InternalError("Unable to retrieve machine: #{err}"))
 
+				unless machine
+					return callback(new restify.NotFoundError("No machine found."))
+
 				return callback(null, machine.toObject())
 
 	buildMachineData = (callback, results) ->
