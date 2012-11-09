@@ -85,10 +85,6 @@ proxyServer =  httpProxy.createServer (req, res, proxy) ->
 		req.headers["machine_ipv4"] = machine.ipv4_address
 		req.headers["machine_port"] = machine.port_mapping.http
 
-		# TODO remove
-		console.log hostnode
-		console.log req.headers
-
 		# TODO proxy to hostnode (instead of localhost)
 		proxy.proxyRequest req, res,
 			host: hostnode
