@@ -9,7 +9,6 @@ if config.get('NODE_ENV') == 'development'
 	configPath = path.resolve __dirname, "../config/gateway.json"
 else
 	configPath = "/etc/10xlabs/gateway.json"
-end
 
 # initialize config
 config
