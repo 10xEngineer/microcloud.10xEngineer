@@ -34,6 +34,11 @@ Machine = new Schema
 
 	ipv4_address: String
 
+	port_mapping: {
+		http: Number
+		http_alt: Number
+	}
+
 	# TODO statistics - update periodically
 	snapshots_count: Number
 	total_storage: Number

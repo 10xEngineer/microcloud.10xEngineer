@@ -21,7 +21,8 @@
     "async": "~0.1.22",
     "redis": "~0.7.2", 
     "node-uuid": "*",
-    "http-proxy": "*"
+    "http-proxy": "*",
+    "lru-cache": "*"
   },
   "devDependencies": {
     "mocha": "*",
