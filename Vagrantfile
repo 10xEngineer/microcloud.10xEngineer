@@ -17,6 +17,7 @@ Vagrant::Config.run do |config|
   # define ports to forward to host
   #config.vm.forward_port 9001, 9101
   #config.vm.forward_port 9090, 9000
+  config.vm.forward_port 8000, 8000
   config.vm.forward_port 443, 8443
   
   # additional shared folders

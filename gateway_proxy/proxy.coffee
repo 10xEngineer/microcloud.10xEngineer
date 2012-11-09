@@ -95,4 +95,5 @@ proxyServer =  httpProxy.createServer (req, res, proxy) ->
 			port: node_port
 			buffer: buffer
 
-proxyServer.listen config.get('port')
+proxyServer.listen config.get('port'), ->
+	log.info "gateway started on #{config.get('port')} for service '#{config.get('service')}'"
