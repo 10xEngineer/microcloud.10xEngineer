@@ -25,7 +25,8 @@
     "lru-cache": "*"
   },
   "devDependencies": {
-    "mocha": "*",
-    "api-easy": "0.2.x"
+    "mocha": "latest",
+    "should": "latest",
+    "supertest": "latest"
   }
 }
