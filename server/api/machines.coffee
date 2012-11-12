@@ -409,7 +409,7 @@ module.exports.ps_exec = (req, res, next) ->
 		ps: ['machine', execPs]
 	, (err, results) ->
 		if err
-			log.warn "unable to retrieve process status machine=#{results.machine._id}"
+			next(err)
 
 		res.send 200, results.ps
 
