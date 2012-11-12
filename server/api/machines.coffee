@@ -389,12 +389,12 @@ module.exports.ps_exec = (req, res, next) ->
 
 	execPs = (callback, results) ->
 		broker_data = 
-			server: results.node.hostname
+			server: results.machine.node.hostname
 			uuid: results.machine.uuid
 
 		creq = broker.dispatch 'lxc', 'ps_exec', broker_data
 		creq.on 'data', (message) ->
-			log.info "machine=#{machine.uuid} process state retrieved"
+			log.info "machine=#{results.machine.uuid} process state retrieved"
 
 			ps = message.options
 
