@@ -16,6 +16,9 @@ Pool 			= mongoose.model 'Pool'
 Machine 		= mongoose.model 'Machine'
 Snapshot 		= mongoose.model 'Snapshot'
 
+# FIXME refactor getMachine for better reusability (first attempt failed on inconsistent mongo
+#       persistence, ie. destroy wasn't updating object properly).
+
 #
 # Lab Machine commands
 #
@@ -369,3 +372,45 @@ module.exports.destroy = (req, res, next) ->
 				log.warn "unable to finish machine=#{results.machine._id} cleanup"
 
 			log.debug "machine=#{results.machine._id} cleanup finished"
+
+module.exports.ps_exec = (req, res, next) ->
+	getMachine = (callback, results) ->
+		Machine
+			.findOne({account: req.user.account_id, name: req.params.machine})
+			.or([{archived: false}, {deleted_at: null}])
+			.exec (err, machine) ->
+				if err
+					return callback(new restify.InternalError("Unable to retrieve the list of machines: #{err}"))
+
+				unless machine
+					return callback(new restify.NotFoundError("Machine not found"))
+
+				return callback(null, machine)
+
+	execPs = (callback, results) ->
+		broker_data = 
+			server: results.node.hostname
+			uuid: results.machine.uuid
+
+		creq = broker.dispatch 'lxc', 'ps_exec', broker_data
+		creq.on 'data', (message) ->
+			log.info "machine=#{machine.uuid} process state retrieved"
+
+			ps = message.options
+
+			return callback(null, ps)
+
+		creq.on 'error', (message) ->
+			log.error "unable to retrieve machine processes status reason='#{message.options.reason}'"
+
+			return callback(new restify.InternalError(message.options.reason))
+
+	async.auto
+		machine: getMachine
+		ps: ['machine', execPs]
+	, (err, results) ->
+		if err
+			log.warn "unable to retrieve process status machine=#{results.machine._id}"
+
+		res.send 200, results.ps
+

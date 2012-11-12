@@ -10,7 +10,8 @@ class LxcService < Provider
   # descriptor (disk size, cgroups, firewall, etc). might come from course-lab-descriptor
 
   before_filter :validate_hostname
-  before_filter :validate_vm, :only => [:bootstrap, :start, :stop, :status, :destroy]
+  before_filter :validate_vm, :only => [:bootstrap, :start, :stop, :status, :destroy, 
+    :snapshot, :revert, :delshot, :ps_exec]
   before_filter :setup_ssh
 
   def create(request)
@@ -49,12 +50,9 @@ class LxcService < Provider
 
   def snapshot(request)
     name = request["options"]["name"]
-    machine_uuid = request["options"]["machine_id"]
-
-    raise "Lab Machine UUID  required" unless machine_uuid and !machine_uuid.empty?
 
     command = ["/usr/bin/sudo", "/usr/local/bin/lab-vm", "-j", "snapshot"]
-    command << "--id #{machine_uuid}"
+    command << "--id #{@uuid}"
     command << "--name #{name}" if name
 
     begin
@@ -75,13 +73,10 @@ class LxcService < Provider
 
   def revert(request)
     name = request["options"]["name"]
-    machine_uuid = request["options"]["machine_id"]
-
-    raise "Lab Machine UUID  required" unless machine_uuid and !machine_uuid.empty?
     raise "Snapshot name required" unless name and !name.empty?
 
     command = ["/usr/bin/sudo", "/usr/local/bin/lab-vm", "-j", "revert"]
-    command << "--id #{machine_uuid}"
+    command << "--id #{@uuid}"
     command << "--name #{name}" 
 
     begin
@@ -103,13 +98,10 @@ class LxcService < Provider
 
   def delshot(request)
     name = request["options"]["name"]
-    machine_uuid = request["options"]["machine_id"]
-
-    raise "Lab Machine UUID  required" unless machine_uuid and !machine_uuid.empty?
     raise "Snapshot name required" unless name and !name.empty?
 
     command = ["/usr/bin/sudo", "/usr/local/bin/lab-vm", "-j", "delshot"]
-    command << "--id #{machine_uuid}"
+    command << "--id #{@uuid}"
     command << "--name #{name}" 
 
     begin
@@ -128,26 +120,9 @@ class LxcService < Provider
     end
   end
 
-  # ---- original code
-
-  # ssh stub
-  # 
-  # TODO SSH Key needs to be loaded to agent!
-  # locate machine
-
-  def prepare(request)
-    template = request["options"]["template"] || nil
-    pool = request["options"]["pool"] || nil
-    size = request["options"]["size"].to_i || 0
-
-    # TODO better protection from hostname fixing
-    # TODO where to get vgname from?
-
-    command = ["/usr/bin/sudo", "/usr/local/bin/10xeng-vm", "-j", "prepare"]
-    command << "--template #{template}" if template
-    command << "--vgname #{@vgname}" if @vgname
-    command << "--pool #{pool}" if pool
-    command << "--size #{size}MB" if size != 0
+  def ps_exec(request)
+    command = ["/usr/bin/sudo", "/usr/local/bin/lab-vm", "-j", "ps"]
+    command << "--id #{@uuid}"
 
     begin
       res = ssh_exec('mchammer', @hostname, command.join(' '), @ssh_options)
@@ -159,38 +134,13 @@ class LxcService < Provider
       response :fail, {:reason => "Hostnode authentication failed"}
     rescue Exception => e
       error = json_message(e.message)
-      error[:source] = "10xeng-vm"
+      error[:source] = "lab-vm"
 
       response :fail, error
     end
   end
 
-  def bootstrap(request)
-    # updated logic (10xEngineer -> 10xLabs switch) the bootstrap is effectivly lcx-start
-    #
-    # 1. VMs are already prepared
-    # 2. Start finishes the bootstrap cycle
-    # 3. Initial bootstrap (think knife bootstrap) is facilitated as part of the first boot
-    # 4. Sends external notification to MC/TE
-
-    command = ["/usr/bin/sudo", "/usr/local/bin/10xeng-vm", "-j", "start"]
-    command << "--id #{@id}"
-
-    begin
-      res = ssh_exec('mchammer', @hostname, command.join(' '), @ssh_options)
-
-      options = Yajl::Parser.parse(res)
-
-      response :ok
-    rescue Net::SSH::AuthenticationFailed => e
-      response :fail, {:reason => "Hostnode authentication failed"}
-    rescue Exception => e
-      error = json_message(e.message)
-      error[:source] = "10xeng-vm"
-
-      response :fail, error
-    end
-  end
+  # --- original code
 
   def stop(request)
     command = ["/usr/bin/sudo", "/usr/local/bin/10xeng-vm", "-j", "stop"]
