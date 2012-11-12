@@ -376,8 +376,7 @@ module.exports.destroy = (req, res, next) ->
 module.exports.ps_exec = (req, res, next) ->
 	getMachine = (callback, results) ->
 		Machine
-			.findOne({account: req.user.account_id, name: req.params.machine})
-			.or([{archived: false}, {deleted_at: null}])
+			.findOne({account: req.user.account_id, name: req.params.machine, archived: false, deleted_at: null})
 			.exec (err, machine) ->
 				if err
 					return callback(new restify.InternalError("Unable to retrieve the list of machines: #{err}"))
