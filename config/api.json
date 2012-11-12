@@ -1,9 +1,17 @@
 {
     "development": {
-        "mongodb" : "mongo://localhost/labs_dev"
+        "mongodb" : "mongo://localhost/labs_dev",
+        "metrics": {
+            "client": "radim@laststation.net",
+            "token": "dc101eb9dcde505831eebe653bc2a63353ec48b920a604db936d388db1bd9496"
+        }        
     },
     "test": {},
     "production": {
-        "mongodb" : "mongo://localhost/labs"
+        "mongodb" : "mongo://localhost/labs",
+        "metrics": {
+            "client": "radim@laststation.net",
+            "token": "dc101eb9dcde505831eebe653bc2a63353ec48b920a604db936d388db1bd9496"
+        }        
     }
 }

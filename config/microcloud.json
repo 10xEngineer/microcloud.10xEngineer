@@ -7,6 +7,10 @@
             "host": "127.0.0.1",
             "dbName": 0
         },
+        "metrics": {
+            "client": "radim@laststation.net",
+            "token": "dc101eb9dcde505831eebe653bc2a63353ec48b920a604db936d388db1bd9496"
+        },
         "broker": "ipc:///tmp/mc.broker",
         "taskeng": "ipc:///tmp/taskeng",
         "compilation": {
@@ -35,6 +39,10 @@
         "redis" : {
             "host": "127.0.0.1",
             "dbName": 0
+        },
+        "metrics": {
+            "client": "radim@laststation.net",
+            "token": "dc101eb9dcde505831eebe653bc2a63353ec48b920a604db936d388db1bd9496"
         },
         "broker": "ipc:///tmp/mc.broker",
         "platform" :{

@@ -4,6 +4,7 @@ restify 		= require("restify")
 config 			= require("./server/config")
 auth 			= require("./utils/auth")
 platform_api 	= require("./server/api/platform/client")
+stats 			= require("./server/stats")
 
 # TODO configure mongodb
 mongoose.connect(config.get('mongodb'))
@@ -26,6 +27,9 @@ require("./server/model/pool").register
 require("./server/model/machine").register
 require("./server/model/snapshot").register
 
+# librato metrics
+stats.setup()
+
 # routes
 routes = require("./server/routes")
 
@@ -47,9 +51,12 @@ auth.setup server, require("./server/utils/auth_helper"),
 		schema: "token"
 		token: "3Kqd3fYTh9K3bXEp"
 
+server.use stats.api_calls_log
+
 # setup routes
 routes.registerRoutes server
 
 server.use restify.conditionalRequest()
+
 server.listen config.get('server:port'), ->
 	log.info "%s listening at %s", server.name, server.url
