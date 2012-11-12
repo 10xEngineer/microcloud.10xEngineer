@@ -15,6 +15,7 @@
                 "port": 22
             },
         "platform" :{
+            "cache": false,
             "url": "http://api.labs.dev/",
             "token": "f933c346c502c11b64164143087f",
             "secret": "55347d223f161014a8659361afe771929f61246d09a3b22f"
@@ -37,6 +38,7 @@
         },
         "broker": "ipc:///tmp/mc.broker",
         "platform" :{
+            "cache": true,
             "url": "http://api.labs.internal/",
             "token": "f933c346c502c11b64164143087f",
             "secret": "55347d223f161014a8659361afe771929f61246d09a3b22f"
