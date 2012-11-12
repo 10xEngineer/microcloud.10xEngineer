@@ -3,13 +3,15 @@ restify 	= require("restify")
 mongoose 	= require("mongoose")
 config 		= require("./config")
 
-module.exports = (auth, auth_helper) ->
+module.exports.setup = () ->
 	require("./model/microcloud").register()
 	require("./model/user").register()
 	require("./model/account").register()
 	require("./model/access_token").register()
 	require("./model/key").register()
 
+
+module.exports.run = (auth, auth_helper) ->
 	# API server
 	server = restify.createServer
 		name: "api.10xlabs.net"

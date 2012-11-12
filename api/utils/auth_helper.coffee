@@ -2,8 +2,9 @@ log 			= require("log4js").getLogger()
 restify 		= require 'restify'
 mongoose 		= require 'mongoose'
 async 			= require 'async'
-AccessToken 	= mongoose.model('AccessToken')
-Account 		= mongoose.model('Account')
+AccessToken		= mongoose.model('AccessToken')
+account			= mongoose.model('Account')
+
 User 			= mongoose.model('User')
 
 module.exports.get_token = (token, next) ->
