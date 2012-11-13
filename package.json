@@ -20,10 +20,12 @@
     "zmq": "*",
     "async": "~0.1.22",
     "redis": "~0.7.2", 
-    "node-uuid": "*",
-    "http-proxy": "*",
-    "lru-cache": "*",
-    "librato-metrics": "*"
+    "node-uuid": "~1.4.0",
+    "http-proxy": "~0.8.4",
+    "lru-cache": "~2.1.0",
+    "librato-metrics": "~0.0.4",
+    "cron": "~1.0.1",
+    "date-utils": "~1.2.12"
   },
   "devDependencies": {
     "mocha": "latest",

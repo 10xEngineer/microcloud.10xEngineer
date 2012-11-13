@@ -3,6 +3,7 @@ mongoose 	= require "mongoose"
 Schema		= mongoose.Schema
 ObjectId 	= Schema.ObjectId;
 async 		= require "async"
+date_utils 	= require "date-utils"
 
 ProxyUser 	= mongoose.model 'ProxyUser'
 
@@ -47,6 +48,17 @@ Machine = new Schema
 
 Machine.plugin(timestamps)
 Machine.index({name: 1, account: 1, archived:1}, {unique: true})
+
+Machine.statics.archive = (callback) ->
+	date = new Date()
+	date.addMinutes(-15)
+
+	threshold = date.toFormat("YYYY-MM-DDTHH24:MI:00.000Z")
+	trash_date = "ISODate(#{threshold})"
+
+	mongoose.model('Machine')
+		.update {deleted_at: {"$lt": threshold}, archived:false}, {archived: true}, {multi: true}, (err, count, raw) ->
+			log.info "archived count=#{count} machines threshold=#{threshold}"
 
 Machine.statics.getCurrentUsage = (user, callback) ->
 	mongoose.model('Machine')

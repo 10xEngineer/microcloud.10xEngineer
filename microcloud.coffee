@@ -30,6 +30,9 @@ require("./server/model/snapshot").register
 # librato metrics
 stats.setup()
 
+# housekeeping
+require("./server/housekeeping").setup()
+
 # routes
 routes = require("./server/routes")
 
