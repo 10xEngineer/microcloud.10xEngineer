@@ -90,7 +90,7 @@ module.exports.create = (req, res, next) ->
 	createSnapshot = (callback, results) ->
 		broker_data = 
 			server: results.node.hostname
-			machine_id: results.machine.uuid
+			uuid: results.machine.uuid
 
 		broker_data["name"] = data.name if data.name
 
@@ -184,7 +184,7 @@ module.exports.revert = (req, res, next) ->
 	revertToSnapshot = (callback, results) ->
 		broker_data = 
 			server: results.node.hostname
-			machine_id: results.machine.uuid
+			uuid: results.machine.uuid
 			name: results.snapshot.name
 
 		sreq = broker.dispatch 'lxc', 'revert', broker_data
@@ -241,7 +241,7 @@ module.exports.destroy = (req, res, next) ->
 	destroySnapshot = (callback, results) ->
 		broker_data = 
 			server: results.node.hostname
-			machine_id: results.machine.uuid
+			uuid: results.machine.uuid
 			name: results.snapshot.name
 
 		sreq = broker.dispatch 'lxc', 'delshot', broker_data
