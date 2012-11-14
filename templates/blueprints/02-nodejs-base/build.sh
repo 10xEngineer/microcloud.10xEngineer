@@ -27,6 +27,7 @@ chroot $ROOTFS echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart
 chroot $ROOTFS apt-get -y update
 chroot $ROOTFS apt-get -y install nodejs npm 
 chroot $ROOTFS apt-get -y install mongodb-10gen || echo "mongodb-10gen configure failed as expected."
+chroot $ROOTFS npm -g install coffee-script
 
 create_archive $TMPL_ROOT $TEMPLATE_NAME $ARCH
 
