@@ -18,12 +18,17 @@ function create_archive()
 
     archive_name="${template}-${arch}-${date}.tar.gz"
 
-    tar -cz -f dist/$archive_name ${tmpl_root}/
+    cwd=`pwd`
+    cd $tmpl_root
+
+    tar -cz -f ${cwd}/dist/$archive_name ./
+
+    cd $cwd
 
     echo "Archive name ${archive_name}"
 
     rm -f dist/${template}.tar.gz
-    ln -s dist/$archive_name dist/${template}.tar.gz
+    ln -s ${cwd}/dist/$archive_name dist/${template}.tar.gz
 }
 
 function copy_base_image()
@@ -39,5 +44,6 @@ function copy_base_image()
 		exit 1
 	fi
 
-	tar xvfz dist/$image.tar.gz -C $target
+	echo "Extracting base image."
+	tar xvfz dist/$image.tar.gz -C $target >/dev/null
 }
