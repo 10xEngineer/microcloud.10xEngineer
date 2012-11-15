@@ -14,6 +14,8 @@ Vagrant::Config.run do |config|
   # default Vagrant box - 10xeng-precise32
   config.vm.box = '10xeng-precise32-zfs'
 
+  config.vm.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
+
   # define ports to forward to host
   #config.vm.forward_port 9001, 9101
   #config.vm.forward_port 9090, 9000
