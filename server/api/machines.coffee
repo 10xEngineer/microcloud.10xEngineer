@@ -106,6 +106,8 @@ module.exports.create = (req, res, next) ->
 	createMachine = (callback, results) ->
 		custom_data = "ipv4=#{results.ip}"
 
+		custom_data += ",shell=#{data.shell}" if data.shell and data.shell.match /^\w+$/
+
 		broker_data = 
 			template: data.template
 			server: results.node.hostname
