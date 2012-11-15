@@ -22,7 +22,7 @@ module TenxLabs
         if stat.exitstatus > 0
           error_message = error.empty? ? (output.delete_if {|i| i.strip.empty?}).first : error 
 
-          raise CommandFailure, "Error (#{stat.exitstatus}): #{error_message}"
+          raise CommandFailure, error_message
         end
       elsif stat.signaled?
         raise CommandFailure, "Error - signal (#{stat.termsig}) and terminated."
