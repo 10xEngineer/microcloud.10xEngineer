@@ -11,7 +11,7 @@ ROOTFS=${TMPL_ROOT}/rootfs
 ARCH=amd64
 
 check_root
-mkdir -p rootfs
+mkdir -p ${ROOTFS}
 
 copy_base_image $BASE_IMAGE $TMPL_ROOT
 
