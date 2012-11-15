@@ -8,8 +8,7 @@ TEMPLATE_NAME=$1
 BASE_IMAGE=01-ubuntu-precise
 TMPL_ROOT=`/bin/mktemp -d`
 ROOTFS=${TMPL_ROOT}/rootfs
-#ARCH=amd64
-ARCH=i386
+ARCH=amd64
 
 check_root
 mkdir -p rootfs

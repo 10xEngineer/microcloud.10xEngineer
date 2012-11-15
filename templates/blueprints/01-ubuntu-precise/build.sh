@@ -5,8 +5,7 @@ set -x -e
 . shared/build-logic.sh
 
 RELEASE=precise
-#ARCH=amd64
-ARCH=i386
+ARCH=amd64
 TEMPLATE_NAME=$1
 
 TMPL_ROOT=`/bin/mktemp -d`
