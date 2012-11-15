@@ -17,7 +17,9 @@ copy_base_image $BASE_IMAGE $TMPL_ROOT
 
 # node.js
 chroot $ROOTFS /usr/bin/apt-add-repository -y ppa:chris-lea/node.js
-chroot $ROOTFS apt-get -y update
+
+# redis
+chroot $ROOTFS /usr/bin/apt-add-repository -y ppa:chris-lea/redis-server
 
 # mongodb
 chroot $ROOTFS apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
@@ -25,6 +27,7 @@ chroot $ROOTFS echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart
 
 chroot $ROOTFS apt-get -y update
 chroot $ROOTFS apt-get -y install nodejs npm 
+chroot $ROOTFS apt-get -y install redis-server || echo "redis configure failed as expected."
 chroot $ROOTFS apt-get -y install mongodb-10gen || echo "mongodb-10gen configure failed as expected."
 chroot $ROOTFS npm -g install coffee-script
 
