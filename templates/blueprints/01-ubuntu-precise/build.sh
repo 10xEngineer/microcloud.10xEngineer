@@ -50,7 +50,7 @@ download_ubuntu()
 {
     cache=$1
 
-    packages=vim-tiny,ssh,git,curl,zsh,man,info,build-essential,python-software-properties
+    packages=vim-tiny,ssh,git,curl,zsh,man-db,info,build-essential,python-software-properties
     echo "installing packages: $packages"
 
     trap cleanup EXIT SIGHUP SIGINT SIGTERM
