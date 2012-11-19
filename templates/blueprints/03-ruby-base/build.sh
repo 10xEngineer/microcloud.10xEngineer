@@ -18,6 +18,9 @@ copy_base_image $BASE_IMAGE $TMPL_ROOT
 # create lab user by default
 chroot $ROOTFS useradd --create-home --uid 1000 -s /bin/bash lab
 
+# policy-rc.d
+cp blueprints/${TEMPLATE_NAME}/assets/invoke-rc.d $ROOTFS/usr/sbin/policy-rc.d
+
 # mysql presseed
 chroot $ROOTFS bash -c "echo 'mysql-server-5.5 mysql-server/root_password password labpass' > /tmp/mysql.preseed"
 chroot $ROOTFS bash -c "echo 'mysql-server-5.5 mysql-server/root_password_again password labpass' >> /tmp/mysql.preseed"
@@ -35,6 +38,8 @@ chroot $ROOTFS /bin/bash --userspec lab:lab -c "cd /home/lab ; rbenv install 1.9
 
 # start mysql by default
 chroot $ROOTFS -c bash "update-rc.d -f mysql-server remove"
+
+#rm $ROOTFS/usr/sbin/policy-rc.d
 
 # TODO profile.d
 
