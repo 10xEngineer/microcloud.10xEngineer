@@ -13,6 +13,13 @@ server = restify.createServer
 	name: "microcloud.10xengineer.me"
 	version: "0.1.0"
 
+# Set default headers
+oldDefaultResponseHeaders = require('http').ServerResponse.prototype.defaultResponseHeaders
+restify.defaultResponseHeaders = (data) ->
+	oldDefaultResponseHeaders.call(this, data)
+	this.header('Access-Control-Allow-Methods', 'OPTIONS,GET,HEAD,POST,PUT,DELETE,TRACE,CONNECT')
+	this.header('Access-Control-Allow-Headers', 'Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Requested-With')
+
 # setup default Platform API client
 platform_api.setup(
 	config.get("platform:token"), 
