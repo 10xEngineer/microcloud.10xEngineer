@@ -32,7 +32,7 @@ module.exports.setup = (server, auth_helper, rules) ->
 				return next(new restify.InvalidCredentialsError("Invalid credentials (special rules)"))
 
 		# enforce Date header
-		if (!req.headers.date && !req.headers["x-labs-date"])
+		if (!req.headers["x-labs-date"] && !req.headers.date)
 			e = new restify.PreconditionFailedError("HTTP Date header missing")
 
 			return next(e)
@@ -44,6 +44,11 @@ module.exports.setup = (server, auth_helper, rules) ->
 		unless date
 			return next(new restify.PreconditionFailedError("Invalid date specified"))
 
+		clockSkew = defaultSkew * 1000
+
+		sent = new Date(Date.now()).getTime()
+		if (sent - date) > clockSkew
+			return next(new restify.RequestExpiredError("Date header is too old"))
 
 		if (!req.headers["x-labs-token"] | !req.headers["x-labs-signature"])
 			e = new restify.PreconditionFailedError("Missing authentication headers (X-Labs-Token and/or X-Labs-Signature")
