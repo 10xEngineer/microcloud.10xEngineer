@@ -18,7 +18,7 @@ oldDefaultResponseHeaders = require('http').ServerResponse.prototype.defaultResp
 restify.defaultResponseHeaders = (data) ->
 	oldDefaultResponseHeaders.call(this, data)
 	this.header('Access-Control-Allow-Methods', 'OPTIONS,GET,HEAD,POST,PUT,DELETE,TRACE,CONNECT')
-	this.header('Access-Control-Allow-Headers', 'Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Requested-With')
+	this.header('Access-Control-Allow-Headers', 'Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Requested-With, X-Labs-Token, X-Labs-Signature')
 
 # setup default Platform API client
 platform_api.setup(
