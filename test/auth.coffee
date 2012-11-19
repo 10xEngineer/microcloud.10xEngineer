@@ -4,7 +4,8 @@ auth 			= require "../utils/auth"
 
 describe 'Authentication', () ->
 	describe "Preconditions", () ->
-		server = platform_api(auth, auth)
+		platform_api.setup()
+		server = platform_api.run(auth, auth)
 
 		it "should require HTTP Date Header", (done) ->
 			exp_response = 
@@ -49,6 +50,7 @@ describe 'Authentication', () ->
 
 
 	describe "HMAC", () ->
-		server = platform_api(auth, auth)
+		platform_api.setup()
+		server = platform_api.run(auth, auth)
 
 		#it "should call get_token with X-Labs-Token header value", (done) ->

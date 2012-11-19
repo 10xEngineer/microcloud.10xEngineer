@@ -4,7 +4,8 @@ auth 			= require "./support/fake_auth"
 
 describe 'Routes', () ->
 	describe "Status", () ->
-		server = platform_api(auth)
+		platform_api.setup()
+		server = platform_api.run(auth)
 
 		it "should respond to GET /ping", (done) ->
 			response =
