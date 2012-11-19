@@ -32,12 +32,14 @@ module.exports.setup = (server, auth_helper, rules) ->
 				return next(new restify.InvalidCredentialsError("Invalid credentials (special rules)"))
 
 		# enforce Date header
-		if (!req.headers.date)
+		if (!req.headers.date && !req.headers["x-labs-date"])
 			e = new restify.PreconditionFailedError("HTTP Date header missing")
 
 			return next(e)
 
-		date = new Date(req.headers.date).getTime();
+		header_date = req.headers["x-labs-date"] || req.headers.date
+
+		date = new Date(req.headers["x-labs-date"] || req.headers.date).getTime();
 
 		unless date
 			return next(new restify.PreconditionFailedError("Invalid date specified"))
@@ -63,7 +65,7 @@ module.exports.setup = (server, auth_helper, rules) ->
 			hmac = crypto.createHmac('sha256', token["auth_secret"])
 			hmac.update(req.method)
 			hmac.update(req.url)
-			hmac.update(req.headers.date)
+			hmac.update(header_date)
 			hmac.update(req.headers["x-labs-token"])
 			hmac.update(req.body) if req.body
 
@@ -79,7 +81,7 @@ module.exports.setup = (server, auth_helper, rules) ->
 
 			next()	
 
-	server.use restify.dateParser(defaultSkew)
+	#server.use restify.dateParser(defaultSkew)
 	server.use verifyHMAC
 
 module.exports.verify = (account_handle, auth_helper, callback) ->
