@@ -7,6 +7,7 @@ broker 		= require "../server/broker"
 param_helper= require "../server/utils/param_helper"
 async 		= require "async"
 Key 		= mongoose.model 'Key'
+customer_io = require("../utils/customer_io").getClient()
 
 #
 # Key management
@@ -80,11 +81,16 @@ module.exports.create = (req, res, next) ->
 
 			callback(null, key)
 
+	reportKey = (callback, results) ->
+		customer_io.send_event req.user, "key_created", report_data
+
 	async.auto
 		params: checkParams
 		fingerprint: ['params', validateKey]
 		unique: ['fingerprint', uniqueKey]
 		key: ['unique', saveKey]
+		report: ['key', reportKey]
+
 	, (err, results) ->
 		if err
 			return next(err)

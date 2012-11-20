@@ -31,7 +31,7 @@ chroot $ROOTFS apt-get -y install mysql-server libmysqlclient-dev
 chroot $ROOTFS /bin/bash -c "HOME=/root /usr/bin/gem install mysql2"
 
 # start mysql by default
-chroot $ROOTFS -c bash "update-rc.d -f mysql-server defaults"
+chroot $ROOTFS bash -c "update-rc.d -f mysql defaults"
 
 rm $ROOTFS/usr/sbin/policy-rc.d
 

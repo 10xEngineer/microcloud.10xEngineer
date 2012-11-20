@@ -199,6 +199,12 @@ module.exports.create = (req, res, next) ->
 
 			return callback(null, proxy)
 
+	reportMachine = (callback, results) ->
+		report_data = 
+			template: data.template
+
+		customer_io.send_event req.user, "machine_created", report_data
+
 	# TODO LRU for pool allocation
 
 	async.auto
@@ -214,6 +220,7 @@ module.exports.create = (req, res, next) ->
 		raw_machine: ['validate', createMachine]
 		machine: ['raw_machine', 'token', saveMachine]
 		snapshots: ['machine', saveSnapshots]
+		report: ['machine', reportMachine]
 
 	, (err, results) ->
 		if err

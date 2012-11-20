@@ -15,9 +15,6 @@ mkdir -p ${ROOTFS}
 
 copy_base_image $BASE_IMAGE $TMPL_ROOT
 
-# policy-rc.d
-cp blueprints/${TEMPLATE_NAME}/assets/invoke-rc.d $ROOTFS/usr/sbin/policy-rc.d
-
 # dependencies
 chroot $ROOTFS apt-get -y update
 chroot $ROOTFS apt-get -y install zlib1g-dev libreadline-dev libxml2-dev libxslt1-dev libsqlite3-dev libssl-dev imagemagick libmagickwand-dev ruby1.9.1 ruby1.9.1-dev libruby1.9.1 ri1.9.1
@@ -30,4 +27,10 @@ chroot $ROOTFS /bin/bash -c "HOME=/root /usr/bin/gem install sqlite3"
 chroot $ROOTFS /bin/bash -c "HOME=/root /usr/bin/gem install pry"
 chroot $ROOTFS /bin/bash -c "HOME=/root /usr/bin/gem install sinatra"
 
+# node.js
+chroot $ROOTFS /usr/bin/apt-add-repository -y ppa:chris-lea/node.js
+chroot $ROOTFS apt-get -y install nodejs npm
+
 create_archive $TMPL_ROOT $TEMPLATE_NAME $ARCH
+
+rm -Rf $TMPL_ROOT

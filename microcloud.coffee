@@ -5,6 +5,9 @@ config 			= require("./server/config")
 auth 			= require("./utils/auth")
 platform_api 	= require("./server/api/platform/client")
 stats 			= require("./server/stats")
+customer_io = require("./utils/customer_io")
+				.setupClient("d98bb6ac9f4e37c473b7", "9aa1813a41e948025b76")
+
 
 # TODO configure mongodb
 mongoose.connect(config.get('mongodb'))
