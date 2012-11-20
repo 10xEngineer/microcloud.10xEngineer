@@ -2,6 +2,8 @@ log 		= require("log4js").getLogger()
 restify 	= require("restify")
 mongoose 	= require("mongoose")
 config 		= require("./config")
+customer_io = require("../utils/customer_io")
+				.setupClient("d98bb6ac9f4e37c473b7", "9aa1813a41e948025b76")
 
 module.exports.setup = () ->
 	require("./model/microcloud").register()
@@ -9,6 +11,8 @@ module.exports.setup = () ->
 	require("./model/account").register()
 	require("./model/access_token").register()
 	require("./model/key").register()
+
+
 
 
 module.exports.run = (auth, auth_helper) ->

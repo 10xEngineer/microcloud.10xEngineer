@@ -16,6 +16,9 @@ Pool 			= mongoose.model 'Pool'
 Machine 		= mongoose.model 'Machine'
 Snapshot 		= mongoose.model 'Snapshot'
 
+customer_io 	= require("../../utils/customer_io").getClient()
+
+
 # FIXME refactor getMachine for better reusability (first attempt failed on inconsistent mongo
 #       persistence, ie. destroy wasn't updating object properly).
 

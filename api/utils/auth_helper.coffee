@@ -6,6 +6,7 @@ AccessToken		= mongoose.model('AccessToken')
 account			= mongoose.model('Account')
 
 User 			= mongoose.model('User')
+customer_io 	= require("../../utils/customer_io").getClient()
 
 module.exports.get_token = (token, next) ->
 	getToken = (callback, results) ->
@@ -37,9 +38,12 @@ module.exports.get_token = (token, next) ->
 			user:
 				id: results.user._id	
 				account_id: results.user.def_account
+				service: results.user.service
 				limits: results.user.limits
 
 			auth_secret: results.token.auth_secret
+
+		customer_io.send_event data.user, "token_validated"
 
 		return next(null, data)
 
