@@ -205,6 +205,8 @@ module.exports.create = (req, res, next) ->
 
 		customer_io.send_event req.user, "machine_created", report_data
 
+		return callback(null)
+
 	# TODO LRU for pool allocation
 
 	async.auto

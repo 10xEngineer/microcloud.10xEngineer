@@ -14,8 +14,6 @@ format_data = (data, opts) ->
 	out = data
 
 	for key of opts
-		console.log key
-
 		out += "&"
 		out += "data[#{key}]="
 		out += opts[key]

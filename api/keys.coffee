@@ -84,6 +84,8 @@ module.exports.create = (req, res, next) ->
 	reportKey = (callback, results) ->
 		customer_io.send_event req.user, "key_created", report_data
 
+		return callback(null)
+
 	async.auto
 		params: checkParams
 		fingerprint: ['params', validateKey]
@@ -112,7 +114,6 @@ module.exports.destroy = (req, res, next) ->
 				return callback(null, key)
 
 	removeKey = (callback, results) ->
-		console.log results
 		results.key.deleted_at = Date.now()
 		results.key.save (err) ->
 			if err
