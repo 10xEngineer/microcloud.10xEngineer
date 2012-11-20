@@ -7,7 +7,7 @@ use_cache 		= config.get("platform:cache")
 # cache support
 options =
 	max: 50
-	maxAge: 15*1000
+	maxAge: 30*1000
 
 cache = lru(options)
 
