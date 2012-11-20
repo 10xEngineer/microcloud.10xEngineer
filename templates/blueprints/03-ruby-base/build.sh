@@ -23,11 +23,11 @@ chroot $ROOTFS apt-get -y update
 chroot $ROOTFS apt-get -y install zlib1g-dev libreadline-dev libxml2-dev libxslt1-dev libsqlite3-dev libssl-dev imagemagick libmagickwand-dev ruby1.9.1 ruby1.9.1-dev libruby1.9.1 ri1.9.1
 
 # ruby gems
-chroot $ROOTFS /bin/bash -c "/usr/bin/gem install rails"
-chroot $ROOTFS /bin/bash -c "/usr/bin/gem install nokogiri"
-chroot $ROOTFS /bin/bash -c "/usr/bin/gem install rmagick"
-chroot $ROOTFS /bin/bash -c "/usr/bin/gem install rmagick"
-chroot $ROOTFS /bin/bash -c "/usr/bin/gem install sqlite3"
-chroot $ROOTFS /bin/bash -c "/usr/bin/gem install pry"
-chroot $ROOTFS /bin/bash -c "/usr/bin/gem install sinatra"
+chroot $ROOTFS /bin/bash -c "HOME=/root /usr/bin/gem install rails"
+chroot $ROOTFS /bin/bash -c "HOME=/root /usr/bin/gem install nokogiri"
+chroot $ROOTFS /bin/bash -c "HOME=/root /usr/bin/gem install rmagick"
+chroot $ROOTFS /bin/bash -c "HOME=/root /usr/bin/gem install sqlite3"
+chroot $ROOTFS /bin/bash -c "HOME=/root /usr/bin/gem install pry"
+chroot $ROOTFS /bin/bash -c "HOME=/root /usr/bin/gem install sinatra"
 
+create_archive $TMPL_ROOT $TEMPLATE_NAME $ARCH
