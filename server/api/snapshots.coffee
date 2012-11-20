@@ -10,6 +10,9 @@ Machine 	= mongoose.model 'Machine'
 Snapshot 	= mongoose.model 'Snapshot'
 Node 		= mongoose.model 'Node'
 
+customer_io 	= require("../../utils/customer_io").getClient()
+
+
 getMachine = (callback, results) ->
 	Machine
 		.findOne({name: results.req.params.machine, account: results.req.user.account_id, archived: false, deleted_at: null})
@@ -123,6 +126,11 @@ module.exports.create = (req, res, next) ->
 
 			return callback(null)
 
+	reportSnapshot = (callback, results) ->
+		customer_io.send_event req.user, "snapshot_created"
+
+		return callback(null)
+
 	async.auto
 		req:		(callback) -> return callback(null, req)
 		name:		['req', verifyName]
@@ -130,6 +138,7 @@ module.exports.create = (req, res, next) ->
 		node: 		['machine',getNode]
 		snapshot:	['node', createSnapshot]
 		store:		['snapshot', saveSnapshot]
+		report:		['snapshot', reportSnapshot]
 	, (err, results) ->
 		if err
 			return next(err)

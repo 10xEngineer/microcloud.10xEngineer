@@ -378,9 +378,16 @@ module.exports.destroy = (req, res, next) ->
 				snapshot.delete (err) ->
 					return iter_next(err)
 
+		reportMachine = (callback, results) ->
+			customer_io.send_event req.user, "machine_destroyed"
+
+			return callback(null)
+
 		async.auto
 			snapshots: getSnapshots
 			remove: ['snapshots', removeSnapshots]
+			report: ['snapshots', reportMachine]
+
 		, (err, n_results) ->
 			if err
 				log.warn "unable to finish machine=#{results.machine._id} cleanup"

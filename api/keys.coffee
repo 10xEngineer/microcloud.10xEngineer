@@ -82,7 +82,8 @@ module.exports.create = (req, res, next) ->
 			callback(null, key)
 
 	reportKey = (callback, results) ->
-		customer_io.send_event req.user, "key_created", report_data
+		log.info "key_created"
+		customer_io.send_event req.user, "key_created"
 
 		return callback(null)
 
@@ -121,9 +122,16 @@ module.exports.destroy = (req, res, next) ->
 
 			callback(null)
 
+	reportKey = (callback, results) ->
+		customer_io.send_event req.user, "key_destroyed"
+
+		return callback(null)
+
+
 	async.auto
 		key: getKey
 		remove: ['key', removeKey]
+		report: ['remove, reportKey']
 	, (err, results) ->
 		if err
 			return next(err)
