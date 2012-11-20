@@ -5,7 +5,7 @@ set -x -e
 . shared/build-logic.sh
 
 TEMPLATE_NAME=$1
-BASE_IMAGE=01-ubuntu-precise
+BASE_IMAGE=03-ruby-base
 TMPL_ROOT=`/bin/mktemp -d`
 ROOTFS=${TMPL_ROOT}/rootfs
 ARCH=amd64
@@ -28,7 +28,7 @@ chroot $ROOTFS bash -c "cat /tmp/mysql.preseed | debconf-set-selections"
 chroot $ROOTFS apt-get -y update
 chroot $ROOTFS apt-get -y install mysql-server libmysqlclient-dev
 
-chroot --userspec lab:lab $ROOTFS /bin/bash -c "cd /home/lab ; HOME=/home/lab PATH=/home/lab/.rbenv/shims:/home/lab/.rbenv/bin:/bin:/usr/bin:/usr/sbin gem install mysql2"
+chroot $ROOTFS /bin/bash -c "/usr/bin/gem install mysql2"
 
 # start mysql by default
 chroot $ROOTFS -c bash "update-rc.d -f mysql-server defaults"
