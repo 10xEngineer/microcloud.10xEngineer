@@ -39,7 +39,7 @@ getMachine = (token, callback) ->
 		return callback(err, machine)
 
 proxyServer =  httpProxy.createServer (req, res, proxy) ->
-	host_re = /^([a-e0-9]+)\.([\w-]+)\.10xlabs\.(net|dev)(\:(\d+)){0,1}$/
+	host_re = /^([a-f0-9]+)\.([\w-]+)\.10xlabs\.(net|dev)(\:(\d+)){0,1}$/
 	host_match = host_re.exec(req.headers.host)
 
 	unless host_match 
