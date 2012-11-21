@@ -10,6 +10,9 @@ Snapshot = new Schema
 
 	name: String
 
+	uuid: String
+	hostname: String
+
 	used_size: Number
 	real_size: Number
 
