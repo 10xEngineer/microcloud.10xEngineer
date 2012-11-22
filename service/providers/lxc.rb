@@ -11,7 +11,7 @@ class LxcService < Provider
 
   before_filter :validate_hostname
   before_filter :validate_vm, :only => [:bootstrap, :start, :stop, :status, :destroy, 
-    :snapshot, :revert, :delshot, :ps_exec]
+    :snapshot, :persist, :revert, :delshot, :ps_exec]
   before_filter :setup_ssh
 
   def create(request)
@@ -54,6 +54,29 @@ class LxcService < Provider
     command = ["/usr/bin/sudo", "/usr/local/bin/lab-vm", "-j", "snapshot"]
     command << "--id #{@uuid}"
     command << "--name #{name}" if name
+
+    begin
+      res = ssh_exec('mchammer', @hostname, command.join(' '), @ssh_options)
+
+      options = Yajl::Parser.parse(res)
+
+      response :ok, options
+    rescue Net::SSH::AuthenticationFailed => e
+      response :fail, {:reason => "Hostnode authentication failed"}
+    rescue Exception => e
+      error = json_message(e.message)
+      error[:source] = "lab-vm"
+
+      response :fail, error
+    end
+  end
+
+  def persist(request)
+    name = request["options"]["name"]
+
+    command = ["/usr/bin/sudo", "/usr/local/bin/lab-vm", "-j", "persist"]
+    command << "--id #{@uuid}"
+    command << "--name #{name}"
 
     begin
       res = ssh_exec('mchammer', @hostname, command.join(' '), @ssh_options)

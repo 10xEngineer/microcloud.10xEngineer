@@ -94,8 +94,71 @@ module.exports.index_all = (req, res, next) ->
 
 		res.send results.snapshots
 
-module.exports.create_persistent = (req, res, next) ->
+module.exports.persist = (req, res, next) ->
+	try
+		data = JSON.parse req.body
+	catch e
+		return next(new restify.BadRequestError("Invalid data"))
 
+	# TODO validate snapshot name & unique
+
+	checkParams = (callback, results) -> 
+		param_helper.checkPresenceOf data, ['name'], callback
+
+	persistSnapshot = (callback, results) ->
+		broker_data = 
+			server: results.machine.node.hostname
+			uuid: results.machine.uuid
+
+		broker_data["name"] = req.params.snapshot
+
+		sreq = broker.dispatch 'lxc', 'persist', broker_data
+		sreq.on 'data', (message) ->
+			snapshot = 
+				name: data.name
+				uuid: message.options.id
+				used_size: message.options.used_size
+				real_size: message.options.real_size
+
+			log.info "snapshot=#{snapshot.name} uuid=#{snapshot.uuid} created"
+
+			return callback(null, snapshot)
+
+		sreq.on 'error', (message) ->
+			log.error "unable to create snapshot machine=#{results.machine._id} reason='#{message.options.reason}'"
+
+			return callback(new restify.InternalError(message.options.reason))
+
+	saveSnapshot = (callback, results) ->
+		timestamp = new Date().getTime()
+
+		snapshot = new Snapshot(results.snapshot)
+		snapshot.name = data.name
+		snapshot.uuid = results.snapshot.uuid
+		snapshot.account = results.machine.account
+		snapshot.timestamp = timestamp
+		snapshot.save (err) ->
+			if err 
+				return next(new restify.InternalError("Unable to save machine snapshot: #{err}"))
+
+			return callback(null)
+
+	async.auto
+		req:		(callback) -> return callback(null, req)
+		params: 	checkParams
+		machine:	['params', getMachine]
+		check:	 	['machine', getSnapshot]
+		snapshot:	['check', persistSnapshot]
+		save: 		['snapshot', saveSnapshot]
+
+	, (err, results) ->
+		if err
+			return next(err)
+
+		# TODO
+		snapshot_data = {}
+
+		res.send 201, results.snapshot
 
 module.exports.create = (req, res, next) ->
 	try

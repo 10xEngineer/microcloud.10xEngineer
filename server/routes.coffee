@@ -28,11 +28,11 @@ module.exports.registerRoutes = (server) ->
 
 	# Snapshots
 	server.get 		'/snapshots', api.snapshots.index_all
-	#server.post		'/snapshots', api.snapshots.create_persistent
 	server.get 		'/machines/:machine/snapshots', api.snapshots.index
 	server.post 	'/machines/:machine/snapshots', api.snapshots.create
 	server.put 		'/machines/:machine/snapshots', api.snapshots.revert
 	server.del 		'/machines/:machine/snapshots/:snapshot', api.snapshots.destroy
+	server.post		'/machines/:machine/snapshots/:snapshot/persist', api.snapshots.persist
 
 	server.get 		'/proxy_users/:user', api.proxy_users.show
 
