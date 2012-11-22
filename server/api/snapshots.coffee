@@ -100,10 +100,30 @@ module.exports.persist = (req, res, next) ->
 	catch e
 		return next(new restify.BadRequestError("Invalid data"))
 
-	# TODO validate snapshot name & unique
-
 	checkParams = (callback, results) -> 
 		param_helper.checkPresenceOf data, ['name'], callback
+
+	# TODO merge with the one from #create
+	verifyName = (callback, results) ->
+		return callback(null) unless data.name
+
+		unless /[\w\-]{3,32}$/.test(data.name)
+			return callback(new restify.BadRequestError("Invalid snapshot name"))
+
+		reserved_names = ['head', 'template', 'labs', 'lab', 'image']
+		if reserved_names.indexOf(data.name) >= 0
+			return callback(new restify.BadRequestError("Snapshot name is reserved"))
+
+		return callback(null)
+
+	checkName = (callback, results) ->
+		Snapshot
+			.findOne({account: results.req.user.account_id, name: data.name})
+			.exec (err, vm) ->
+				if err || vm
+					return callback(new restify.ConflictError("Snapshot with name '#{data.name}' already exists!"))
+
+				return callback(null)
 
 	persistSnapshot = (callback, results) ->
 		broker_data = 
@@ -146,9 +166,11 @@ module.exports.persist = (req, res, next) ->
 	async.auto
 		req:		(callback) -> return callback(null, req)
 		params: 	checkParams
-		machine:	['params', getMachine]
+		verify: 	['params', verifyName]
+		machine:	['verify', getMachine]
 		check:	 	['machine', getSnapshot]
-		snapshot:	['check', persistSnapshot]
+		unique:		['check', checkName]
+		snapshot:	['unique', persistSnapshot]
 		save: 		['snapshot', saveSnapshot]
 
 	, (err, results) ->
