@@ -138,7 +138,7 @@ module.exports.create = (req, res, next) ->
 		node: 		['machine',getNode]
 		snapshot:	['node', createSnapshot]
 		store:		['snapshot', saveSnapshot]
-		report:		['snapshot', reportSnapshot]
+		report:		['store', reportSnapshot]
 	, (err, results) ->
 		if err
 			return next(err)
