@@ -6,7 +6,6 @@ auth = require("../utils/auth")
 module.exports.registerRoutes = (server) ->	
 	server.get 		'/ping', api.status.ping
 
-
 	# Lab Templates
 	server.get 		'/templates', api.templates.index
 
@@ -28,6 +27,8 @@ module.exports.registerRoutes = (server) ->
 	server.get 		'/machines/token/:token', api.machines.show_by_token
 
 	# Snapshots
+	server.get 		'/snapshots', api.snapshots.index_all
+	#server.post		'/snapshots', api.snapshots.create_persistent
 	server.get 		'/machines/:machine/snapshots', api.snapshots.index
 	server.post 	'/machines/:machine/snapshots', api.snapshots.create
 	server.put 		'/machines/:machine/snapshots', api.snapshots.revert

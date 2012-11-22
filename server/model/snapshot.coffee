@@ -7,6 +7,7 @@ timestamps = require "../utility/timestamp_plugin"
 
 Snapshot = new Schema
 	machine_id: ObjectId
+	machine_name: String
 
 	name: String
 	state: String

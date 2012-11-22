@@ -2,8 +2,7 @@ log 			= require("log4js").getLogger()
 https 			= require("https")
 config 			= require("nconf")
 
-
-# config.get('NODE_ENV')
+env = config.get('NODE_ENV')
 
 client = null
 
@@ -26,6 +25,8 @@ class CustomerIO
 		@secret_key = secret_key
 
 	send_event: (user, event_name, attributes = {}) ->
+		return if env == "development"
+		
 		path = "/api/v1/customers/#{get_user_id(user)}/events"
 		# &data[price]=11
 		data = "name=#{event_name}"

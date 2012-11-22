@@ -57,6 +57,18 @@ getSnapshots = (callback, results) ->
 
 			callback(null, snapshots)
 
+getAllSnapshots = (callback, results) ->
+	Snapshot
+		.find({account: results.req.user.account_id, deleted_at: null})
+		.select({_id: 0, real_size: 0, machine_id: 0})
+		.sort('machine_id timestamp')
+		.exec (err, snapshots) ->
+			if err
+				return callback(new restify.InternalError("Unable to retrieve the list of snapshots: #{err}"))
+
+			callback(null, snapshots)
+
+
 #
 # Snapshots commands
 #
@@ -71,6 +83,19 @@ module.exports.index = (req, res, next) ->
 			return next(err)
 
 		res.send results.snapshots
+
+module.exports.index_all = (req, res, next) ->
+	async.auto
+		req:		(callback) -> return callback(null, req)
+		snapshots: 	['req', getAllSnapshots]
+	, (err, results) ->
+		if err
+			return next(err)
+
+		res.send results.snapshots
+
+module.exports.create_persistent = (req, res, next) ->
+
 
 module.exports.create = (req, res, next) ->
 	try
@@ -118,6 +143,7 @@ module.exports.create = (req, res, next) ->
 
 		snapshot = new Snapshot(results.snapshot)
 		snapshot.machine_id = results.machine._id
+		snapshot.machine_name = results.machine.name
 		snapshot.account = results.machine.account
 		snapshot.timestamp = timestamp
 		snapshot.save (err) ->
