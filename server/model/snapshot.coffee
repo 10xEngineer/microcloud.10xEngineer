@@ -9,7 +9,6 @@ Snapshot = new Schema
 	machine_id: ObjectId
 
 	name: String
-
 	state: String
 
 	uuid: String
