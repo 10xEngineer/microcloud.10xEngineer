@@ -68,6 +68,13 @@ getAllSnapshots = (callback, results) ->
 
 			callback(null, snapshots)
 
+deleteSnapshot = (callback, results) ->
+	results.snapshot.delete (err) ->
+		if err
+			return callback(new restify.InternalError("Unable to mark snapshot as deleted: #{err}"))
+
+		return callback(null)
+
 
 #
 # Snapshots commands
@@ -351,13 +358,6 @@ module.exports.revert = (req, res, next) ->
 
 
 module.exports.destroy = (req, res, next) ->
-	deleteSnapshot = (callback, results) ->
-		results.snapshot.delete (err) ->
-			if err
-				return callback(new restify.InternalError("Unable to mark snapshot as deleted: #{err}"))
-
-			return callback(null)
-
 	destroySnapshot = (callback, results) ->
 		broker_data = 
 			server: results.node.hostname
@@ -382,6 +382,46 @@ module.exports.destroy = (req, res, next) ->
 		snapshot:	['node', getSnapshot]
 		deleteSnap:	['snapshot', deleteSnapshot]
 		wipeSnap:	['deleteSnap', destroySnapshot]
+	, (err, results) ->
+		if err
+			return next(err)
+
+		res.send 200
+
+module.exports.destroy_persistent = (req, res, next) ->
+	getPersistentSnapshot = (callback, results) ->
+		Snapshot
+			.findOne({name: results.req.params.snapshot, machine_id: null, account: results.req.user.account_id, deleted_at: null})
+			.exec (err, snapshot) ->
+				if err
+					return callback(new restify.InternalError("Unable to retrieve snapshot: #{err}"))
+
+				unless snapshot
+					return callback(new restify.NotFoundError("Snapshot not found"))
+
+				callback(null, snapshot)
+
+	destroyPersistentSnapshot = (callback, results) ->
+		broker_data = 
+			server: results.snapshot.hostname
+			snapshot_id: results.snapshot.uuid
+
+		sreq = broker.dispatch 'lxc', 'delpshot', broker_data
+		sreq.on 'data', (message) ->
+			log.info "persistent snapshot=#{results.snapshot.name} destroyed"
+
+			return callback(null)
+
+		sreq.on 'error', (message) ->
+			log.error "unable to destroy snapshot=#{results.snapshot.uuid} reason='#{message.options.reason}'"
+
+			return callback(new restify.InternalError(message.options.reason))
+
+	async.auto
+		req:		(callback) -> return callback(null, req)
+		snapshot:	['req', getPersistentSnapshot]
+		deleteSnap:	['snapshot', deleteSnapshot]
+		wipeSnap:	['deleteSnap', destroyPersistentSnapshot]
 	, (err, results) ->
 		if err
 			return next(err)

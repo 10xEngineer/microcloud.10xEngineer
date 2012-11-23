@@ -143,6 +143,30 @@ class LxcService < Provider
     end
   end
 
+  # TODO refactor into delshot to handle both instant/persistant snapshots
+  def delpshot(request)
+    name = request["options"]["snapshot_id"]
+    raise "Snapshot id required" unless name and !name.empty?
+
+    command = ["/usr/bin/sudo", "/usr/local/bin/lab-vm", "-j", "delpshot"]
+    command << "--snapshot #{name}" 
+
+    begin
+      res = ssh_exec('mchammer', @hostname, command.join(' '), @ssh_options)
+
+      options = Yajl::Parser.parse(res)
+
+      response :ok, options
+    rescue Net::SSH::AuthenticationFailed => e
+      response :fail, {:reason => "Hostnode authentication failed"}
+    rescue Exception => e
+      error = json_message(e.message)
+      error[:source] = "lab-vm"
+
+      response :fail, error
+    end
+  end  
+
   def ps_exec(request)
     command = ["/usr/bin/sudo", "/usr/local/bin/lab-vm", "-j", "ps"]
     command << "--id #{@uuid}"

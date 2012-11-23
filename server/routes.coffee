@@ -28,6 +28,7 @@ module.exports.registerRoutes = (server) ->
 
 	# Snapshots
 	server.get 		'/snapshots', api.snapshots.index_all
+	server.del 		'/snapshots/:snapshot', api.snapshots.destroy_persistent
 	server.get 		'/machines/:machine/snapshots', api.snapshots.index
 	server.post 	'/machines/:machine/snapshots', api.snapshots.create
 	server.put 		'/machines/:machine/snapshots', api.snapshots.revert
