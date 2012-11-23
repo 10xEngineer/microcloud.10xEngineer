@@ -62,6 +62,18 @@ module.exports.create = (req, res, next) ->
 			
 			return callback(null)
 
+	validateName = (callback, results) ->
+		return unless data.name
+
+		unless /^[\w\-]{3,32}$/.test(data.name)
+			return callback(new restify.BadRequestError("Invalid machine name"))
+
+		reserved_names = ['lab', '10xengineer', 'image', 'template']
+		if reserved_names.indexOf(data.name) >= 0
+			return callback(new restify.BadRequestError("Name is reserved"))
+
+		return callback(null)
+
 	generateIP = (callback, results) ->
 		return callback(null, ip.generate())
 
@@ -212,7 +224,8 @@ module.exports.create = (req, res, next) ->
 	async.auto
 		params: checkParams
 		limits: ['params', verifyLimits]
-		pool: ['limits', getPool]
+		name: ['limits', validateName]
+		pool: ['name', getPool]
 		ip: ['pool', generateIP]
 		key: ['ip', getKey]
 		node: ['key', getNode]
