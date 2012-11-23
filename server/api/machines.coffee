@@ -63,7 +63,7 @@ module.exports.create = (req, res, next) ->
 			return callback(null)
 
 	validateName = (callback, results) ->
-		return unless data.name
+		return callback(null) unless data.name
 
 		unless /^[\w\-]{3,32}$/.test(data.name)
 			return callback(new restify.BadRequestError("Invalid machine name"))
