@@ -162,6 +162,7 @@ module.exports.persist = (req, res, next) ->
 		snapshot = new Snapshot(results.snapshot)
 		snapshot.name = data.name
 		snapshot.uuid = results.snapshot.uuid
+		snapshot.hostname = results.machine.node.hostname
 		snapshot.account = results.machine.account
 		snapshot.timestamp = timestamp
 		snapshot.save (err) ->
@@ -420,8 +421,8 @@ module.exports.destroy_persistent = (req, res, next) ->
 	async.auto
 		req:		(callback) -> return callback(null, req)
 		snapshot:	['req', getPersistentSnapshot]
-		deleteSnap:	['snapshot', deleteSnapshot]
-		wipeSnap:	['deleteSnap', destroyPersistentSnapshot]
+		wipeSnap:	['snapshot', destroyPersistentSnapshot]
+		deleteSnap:	['wipeSnap', deleteSnapshot]
 	, (err, results) ->
 		if err
 			return next(err)
