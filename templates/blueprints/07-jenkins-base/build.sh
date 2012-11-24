@@ -17,6 +17,9 @@ copy_base_image $BASE_IMAGE $TMPL_ROOT
 
 # dependencies
 chroot $ROOTFS apt-get -y update
+# sonar
+chroot $ROOTFS add-apt-repository -y 'deb http://downloads.sourceforge.net/project/sonar-pkg/deb binary/'
+# nginx
 chroot $ROOTFS /usr/bin/apt-get -y install nginx
 
 # install jenkins - from https://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+on+Ubuntu
@@ -25,7 +28,6 @@ chroot $ROOTFS /bin/bash -c "HOME=/root /usr/bin/wget -q -O - http://pkg.jenkins
 chroot $ROOTFS /bin/bash -c "HOME=/root /bin/echo deb http://pkg.jenkins-ci.org/debian binary/ > /etc/apt/sources.list.d/jenkins.list"
 chroot $ROOTFS apt-get -y update
 chroot $ROOTFS /usr/bin/apt-get -y install jenkins
-
 
 # Set up an Nginx to Proxy for port 80 -> 8080
 # remove the default configuration
@@ -60,6 +62,17 @@ chroot $ROOTFS /bin/bash -c 'HOME=/root /bin/ln -s /etc/nginx/sites-available/je
 
 # restart nginx
 chroot $ROOTFS /bin/bash -c 'HOME=/root /usr/sbin/service nginx restart'
+
+
+# Sonar
+# also see http://stackoverflow.com/questions/7890320/how-do-i-correctly-integrate-maven-jenkins-sonar-and-cobertura
+# and http://docs.codehaus.org/display/SONAR/Hudson+and+Jenkins+Plugin
+# and https://github.com/SonarSource/jenkins-sonar-plugin
+chroot $ROOTFS apt-get -y install sonar
+# download the jenkins-sonar plugin - TODO: What is default JENKINS_HOME - and we need to set it!
+chroot $ROOTFS /bin/bash -c "HOME=/root /usr/bin/wget -q -O $JENKINS_HOME/plugins http://updates.jenkins-ci.org/latest/sonar.hpi"
+# restart jenkins
+chroot $ROOTFS /bin/bash -c 'HOME=/root /usr/sbin/service jenkins restart'
 
 create_archive $TMPL_ROOT $TEMPLATE_NAME $ARCH
 
