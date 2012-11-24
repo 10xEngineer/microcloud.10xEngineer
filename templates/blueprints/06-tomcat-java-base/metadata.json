@@ -1,0 +1,5 @@
+{
+	"description":"Tomcat and Java based development stack (with JDK, Maven, Ant, Tomcat)\nBased on java-base template",
+	"maintainer":"support@10xengineer.me",
+	"handlers": "base,lab_uid"
+}

@@ -1,0 +1,5 @@
+{
+	"description":"Jenkins CI stack (with JDK, Maven, Ant)\nBased on java-base template",
+	"maintainer":"support@10xengineer.me",
+	"handlers": "base,lab_uid"
+}

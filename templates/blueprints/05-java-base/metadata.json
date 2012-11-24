@@ -1,0 +1,5 @@
+{
+	"description":"Java based development stack (with JDK, Maven, Ant)\nBased on ubuntu-precise64 template",
+	"maintainer":"support@10xengineer.me",
+	"handlers": "base,lab_uid"
+}
