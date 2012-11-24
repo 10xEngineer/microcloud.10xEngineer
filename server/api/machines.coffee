@@ -312,6 +312,57 @@ module.exports.show_by_token = (req, res, next) ->
 			
 		res.send 200, results.machine
 
+module.exports.update = (req, res, next) ->
+	# "port_mapping" : {
+	# 	"http" : 8080
+	# }
+
+	try
+		data = JSON.parse req.body
+	catch e
+		return next(new restify.BadRequestError("Invalid data"))
+
+	getMachine = (callback, results) ->
+		Machine
+			.findOne({account: req.user.account_id, name: req.params.machine, archived: false})
+			.exec (err, machine) ->
+				if err
+					return callback(new restify.InternalError("Unable to retrieve machine: #{err}"))
+
+				unless machine
+					return callback(new restify.NotFoundError("Machine not found"))
+
+				return callback(null, machine)
+
+	setPortMapping = (callback, results) ->
+		return callback(null, results.machine) unless data.port_mapping
+
+		port_mapping = results.machine.port_mapping || {}		
+
+		# http only for now
+		if data.port_mapping.http
+			if data.port_mapping.http == 0
+				delete port_mapping["http"]
+			else
+				port_mapping["http"] = data.port_mapping.http
+
+		machine = results.machine
+		machine.port_mapping = port_mapping unless machine.port_mapping
+		machine.save (err) ->
+			if err
+				return next(new restify.InternalError("Unable to update machine: #{err}"))
+
+			callback(null, machine)
+
+	async.auto
+		machine: getMachine
+		updated_machine: ['machine', setPortMapping]
+	, (err, results) ->
+		if err
+			next(err)
+
+		res.send 200, results.updated_machine
+
 module.exports.destroy = (req, res, next) ->
 	getMachine = (callback, results) ->
 		Machine

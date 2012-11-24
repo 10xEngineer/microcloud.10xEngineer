@@ -18,6 +18,7 @@ module.exports.registerRoutes = (server) ->
 	server.post 	'/machines', api.machines.create
 	server.get 		'/machines', api.machines.index
 	server.get 		'/machines/:machine', api.machines.show
+	server.put		'/machines/:machine', api.machines.update
 	server.del 		'/machines/:machine', api.machines.destroy
 
 	server.get 		'/machines/:machine/processes', api.machines.ps_exec
