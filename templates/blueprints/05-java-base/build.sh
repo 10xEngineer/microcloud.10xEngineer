@@ -29,16 +29,6 @@ chroot $ROOTFS apt-get -y update
 chroot $ROOTFS /bin/bash -c "HOME=/root /bin/echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections"
 chroot $ROOTFS /usr/bin/apt-get -y install oracle-java7-installer
 
-# Set JAVA_HOME environment variable
-chroot $ROOTFS /bin/bash -c 'HOME=/root /bin/cat >> ~/.bashrc <<EOF
-
-JAVA_HOME=/usr/bin/
-export JAVA_HOME
-PATH=$PATH:$JAVA_HOME
-export PATH
-
-EOF'
-
 # Select a default JDK - TODO set the location of the 2 jdk's if we install both
 #chroot $ROOTFS /usr/sbin/update-alternatives --install "/usr/bin/java" "java" "/usr/bin/java" 1
 #chroot $ROOTFS /usr/sbin/update-alternatives --install "/usr/bin/javac" "javac" "/usr/bin/javac" 1
