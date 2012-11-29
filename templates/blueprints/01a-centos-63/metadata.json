@@ -1,5 +1,6 @@
 {
-	"description":"Ubuntu 12.04 LTS (64-bit) template",
+	"description":"Centos 6.3 (64-bit) template",
 	"maintainer":"support@10xengineer.me",
+	"handler_class": "rh",
 	"handlers": "base,lab_uid"
 }

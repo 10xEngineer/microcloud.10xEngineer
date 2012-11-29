@@ -1,5 +1,6 @@
 {
 	"description":"Ruby based develoment stack (with MySQL)\nBased on ubuntu-precise64 template",
 	"maintainer":"support@10xengineer.me",
+	"handler_class": "ubuntu",
 	"handlers": "base,lab_uid"
 }

@@ -39,14 +39,15 @@ download_centos()
     # download centos
     echo "Downloading centos..."
     PARTIAL_ROOT=$cache/partial-$ARCH
-    URL="http://www.mirrorservice.org/sites/mirror.centos.org/${RELASE}/os/${ARCH}/Packages/centos-release-${RELEASE}.el6.centos.9.${ARCH}.rpm"
+    #URL="http://www.mirrorservice.org/sites/mirror.centos.org/${RELEASE}/os/${ARCH}/Packages/centos-release-${RELEASE}.el6.centos.9.${ARCH}.rpm"
+    URL="http://www.mirrorservice.org/sites/mirror.centos.org/6.3/os/x86_64/Packages/centos-release-6-3.el6.centos.9.x86_64.rpm"
     curl $URL >$PARTIAL_ROOT/centos-release-${RELEASE}.${ARCH}.rpm
 
     mkdir -p $PARTIAL_ROOT/var/lib/rpm
     rpm --root $PARTIAL_ROOT --initdb
     rpm --root $PARTIAL_ROOT -ivh $PARTIAL_ROOT/centos-release-${RELEASE}.${ARCH}.rpm
 
-    YUM="yum --installroot $PARTIAL_ROOT --y --nogpgcheck"
+    YUM="yum --installroot $PARTIAL_ROOT -y --nogpgcheck"
     BASE_PACKAGES="yum initscripts passwd rsyslog vim-minimal dhclient chkconfig rootfiles policycoreutils"
     BASE_PACKAGES="$BASE_PACKAGES git openssh-server openssh-clients zsh sudo tree ntp curl "
     $YUM install $BASE_PACKAGES
@@ -107,8 +108,6 @@ post_process()
     chroot ${ROOTFS} chkconfig udev-post off
     chroot ${ROOTFS} chkconfig network on
     chroot ${ROOTFS} chkconfig sshd on
-    chroot ${ROOTFS} chkconfig ntpd on
-    chroot ${ROOTFS} chkconfig postfix off    
 }
 
 type yum

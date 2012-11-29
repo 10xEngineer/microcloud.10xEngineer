@@ -1,5 +1,6 @@
 {
 	"description":"Base Node.js development stack (node, mongo)\nBased on ubuntu-precise64 template",
 	"maintainer":"support@10xengineer.me",
+	"handler_class": "ubuntu",
 	"handlers": "base,lab_uid"
 }
