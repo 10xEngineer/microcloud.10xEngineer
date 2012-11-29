@@ -1,0 +1,5 @@
+{
+	"description":"Ubuntu 12.04 LTS (64-bit) template",
+	"maintainer":"support@10xengineer.me",
+	"handlers": "base,lab_uid"
+}
