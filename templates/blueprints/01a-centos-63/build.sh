@@ -108,6 +108,35 @@ post_process()
     chroot ${ROOTFS} chkconfig udev-post off
     chroot ${ROOTFS} chkconfig network on
     chroot ${ROOTFS} chkconfig sshd on
+
+    sed -i 's|.sbin.start_udev||' ${ROOTFS}/etc/rc.sysinit
+    sed -i 's|.sbin.start_udev||' ${ROOTFS}/etc/rc.d/rc.sysinit
+    # don't mount devpts, for pete's sake
+    sed -i 's/^.*dev.pts.*$/#\0/' ${ROOTFS}/etc/rc.sysinit
+    sed -i 's/^.*dev.pts.*$/#\0/' ${ROOTFS}/etc/rc.d/rc.sysinit
+
+    chroot ${ROOTFS} chkconfig udev-post off
+    chroot ${ROOTFS} chkconfig network on
+
+    dev_path="${ROOTFS}/dev"
+    rm -rf $dev_path
+    mkdir -p $dev_path
+    mknod -m 666 ${dev_path}/null c 1 3
+    mknod -m 666 ${dev_path}/zero c 1 5
+    mknod -m 666 ${dev_path}/random c 1 8
+    mknod -m 666 ${dev_path}/urandom c 1 9
+    mkdir -m 755 ${dev_path}/pts
+    mkdir -m 1777 ${dev_path}/shm
+    mknod -m 666 ${dev_path}/tty c 5 0
+    mknod -m 666 ${dev_path}/tty0 c 4 0
+    mknod -m 666 ${dev_path}/tty1 c 4 1
+    mknod -m 666 ${dev_path}/tty2 c 4 2
+    mknod -m 666 ${dev_path}/tty3 c 4 3
+    mknod -m 666 ${dev_path}/tty4 c 4 4
+    mknod -m 600 ${dev_path}/console c 5 1
+    mknod -m 666 ${dev_path}/full c 1 7
+    mknod -m 600 ${dev_path}/initctl p
+    mknod -m 666 ${dev_path}/ptmx c 5 2    
 }
 
 type yum
