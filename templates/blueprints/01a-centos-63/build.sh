@@ -150,6 +150,7 @@ mkdir -p rootfs
 
 # copy static assets
 cp -R blueprints/$TEMPLATE_NAME/assets/* $TMPL_ROOT/
+cp -R blueprints/$TEMPLATE_NAME/metadata.json $TMPL_ROOT/metadata.json
 
 install_centos
 if [ $? -ne 0 ]; then

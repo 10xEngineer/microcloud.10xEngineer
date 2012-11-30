@@ -156,6 +156,7 @@ mkdir -p rootfs
 
 # copy static assets
 cp -R blueprints/$TEMPLATE_NAME/assets/* $TMPL_ROOT/
+cp -R blueprints/$TEMPLATE_NAME/metadata.json $TMPL_ROOT/metadata.json
 
 # install ubuntu
 install_ubuntu 
