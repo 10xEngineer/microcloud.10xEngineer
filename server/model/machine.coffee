@@ -58,7 +58,10 @@ Machine.statics.archive = (callback) ->
 
 	mongoose.model('Machine')
 		.update {deleted_at: {"$lt": threshold}, archived:false}, {archived: true}, {multi: true}, (err, count, raw) ->
-			log.info "archived count=#{count} machines threshold=#{threshold}"
+			if err
+				log.error "archived failed reason=#{err}"
+			else
+				log.info "archived count=#{count} machines threshold=#{threshold}"
 
 Machine.statics.getCurrentUsage = (user, callback) ->
 	mongoose.model('Machine')
