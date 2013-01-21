@@ -12,6 +12,9 @@ class VSphereService < Provider
 
   before_filter :user_data, :only => [:start]
 
+# Could consider starting by simply cloning a vm template which would be the most common use case
+#  new_vm=f.vm_clone('instance_uuid' => '501b12d9-18c1-e123-ceff-97292ef15bdf', 'name' => 'clonedvm'){"vm_ref"=>"vm-14", "task_ref"=>"task-5"}
+
   def start(request)
     connection = Fog::Compute.new({
       :provider => 'vsphere',
