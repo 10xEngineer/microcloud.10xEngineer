@@ -1,6 +1,7 @@
 require 'fog'
 require 'erb'
 require 'yajl'
+require 'rbvmomi'
 
 class VSphereService < Provider
 
@@ -13,10 +14,11 @@ class VSphereService < Provider
 
   def start(request)
     connection = Fog::Compute.new({
-      :provider => 'VSphere',
-      :vsphere_secret_access_key => request["options"]["data"]["secret_access_key"],
-      :vsphere_access_key_id => request["options"]["data"]["access_key_id"]
-      # :region => request["options"]["data"]["region"] || "us-east-1"
+      :provider => 'vsphere',
+      :vsphere_username => request["options"]["data"]["vsphere_username"],
+      :vsphere_password => request["options"]["data"]["vsphere_password"],
+      :vsphere_server => request["options"]["data"]["vsphere_server"],
+      :vsphere_expected_pubkey_hash => request["options"]["data"]["vsphere_expected_pubkey_hash"] || "74e6f3f9a9d50be352aa0fabcdc1df9977016af38da538cf76b3ba56a6363d11"      
     })
 
     provider_name = request["options"]["name"]
@@ -52,10 +54,11 @@ class VSphereService < Provider
 
     # TODO really ugly to pass such a complex structures - options.provider.data 
     connection = Fog::Compute.new({
-      :provider => 'AWS',
-      :aws_secret_access_key => request["options"]["provider"]["data"]["secret_access_key"],
-      :aws_access_key_id => request["options"]["provider"]["data"]["access_key_id"],
-      :region => request["options"]["provider"]["data"]["region"] || "us-east-1"
+      :provider => 'vsphere',
+      :vsphere_username => request["options"]["data"]["vsphere_username"],
+      :vsphere_password => request["options"]["data"]["vsphere_password"],
+      :vsphere_server => request["options"]["data"]["vsphere_server"],
+      :vsphere_expected_pubkey_hash => request["options"]["data"]["vsphere_expected_pubkey_hash"] || "74e6f3f9a9d50be352aa0fabcdc1df9977016af38da538cf76b3ba56a6363d11"      
     })
 
     server = connection.servers.get(request["options"]["server_id"])
@@ -69,10 +72,11 @@ class VSphereService < Provider
     raise "No server id provided." unless request["options"].include?("server_id")
 
     connection = Fog::Compute.new({
-      :provider => 'VSphere',
-      :aws_secret_access_key => request["options"]["secret_access_key"],
-      :aws_access_key_id => request["options"]["access_key_id"]
-      # :region => request["options"]["region"] || "us-east-1"
+      :provider => 'vsphere',
+      :vsphere_username => request["options"]["data"]["vsphere_username"],
+      :vsphere_password => request["options"]["data"]["vsphere_password"],
+      :vsphere_server => request["options"]["data"]["vsphere_server"],
+      :vsphere_expected_pubkey_hash => request["options"]["data"]["vsphere_expected_pubkey_hash"] || "74e6f3f9a9d50be352aa0fabcdc1df9977016af38da538cf76b3ba56a6363d11"      
     })
 
     server = connection.servers.get(request["options"]["id"])
@@ -94,10 +98,11 @@ class VSphereService < Provider
 
   def lxc_user_data(request)
     s3 = Fog::Storage.new({
-      :provider => 'VSphere',
-      :aws_secret_access_key => request["options"]["data"]["secret_access_key"],
-      :aws_access_key_id => request["options"]["data"]["access_key_id"]
-      # :region => request["options"]["data"]["region"] || "us-east-1"
+      :provider => 'vsphere',
+      :vsphere_username => request["options"]["data"]["vsphere_username"],
+      :vsphere_password => request["options"]["data"]["vsphere_password"],
+      :vsphere_server => request["options"]["data"]["vsphere_server"],
+      :vsphere_expected_pubkey_hash => request["options"]["data"]["vsphere_expected_pubkey_hash"] || "74e6f3f9a9d50be352aa0fabcdc1df9977016af38da538cf76b3ba56a6363d11"      
     })
 
     # TODO re-use signed URLs (general quite slow)
