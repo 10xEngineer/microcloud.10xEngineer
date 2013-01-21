@@ -3,6 +3,9 @@ require 'erb'
 require 'yajl'
 require 'rbvmomi'
 
+# TODO: reference code in foreman for correctly handling vcenter 
+# https://github.com/theforeman/foreman/pull/242/files
+
 class VSphereService < Provider
 
   BINARY_DIST = {
