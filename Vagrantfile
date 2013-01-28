@@ -12,7 +12,7 @@ end
 
 Vagrant::Config.run do |config|
   # default Vagrant box - 10xeng-precise32
-  config.vm.box = '10xeng-precise32-zfs'
+  config.vm.box = '10xeng-precise32' # '10xeng-precise32-zfs'
 
   config.vm.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
 
@@ -26,8 +26,8 @@ Vagrant::Config.run do |config|
   # microcloud root for hostnode
   config.vm.share_folder "10xeng_root", "/var/lib/10xeng", "."
   # use for hostnode CLI tool development
-  config.vm.share_folder "cli", "/cli", "/Users/radim/Projects/10xeng/10xlabs-hostnode"
-  #config.vm.share_folder "compile", "/compile", "/Users/radim/Projects/10xeng/10xlabs-compile-service"
+  config.vm.share_folder "cli", "/cli", "/Users/velniukas/dev/10xlabs-hostnode"
+  #config.vm.share_folder "compile", "/compile", "/Users/velniukas/dev/10xlabs-compile-service"
 
   # 
   # chef-solo provisioner
