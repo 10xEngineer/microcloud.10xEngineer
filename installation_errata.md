@@ -1,7 +1,6 @@
 Errata: Microcloud installation and setup
 
 1. Vagrantfile
-
 - comment out the shared cli and compile folders for now
 
 2. npm install 
@@ -30,11 +29,9 @@ for starting Microcloud API services (service/ not server/ ?)
 - bundle install
 
 5. Procfile not found but service/Procfile.sample exists
-
 - cp service/Procfile.sample service/Procfile
 
 6. Running foreman fails with function not found in libzmq
-
 - wget http://download.zeromq.org/zeromq-3.2.2.tar.gz
 - sudo apt-get install libtool autoconf automake
 - sudo apt-get install uuid-dev
@@ -51,12 +48,10 @@ for starting Microcloud API services (service/ not server/ ?)
 - rvm install 1.9.3
 
 Need to ensure that ffi = 1.3.1 and ffi-rzmq = 1.0.0
-
 - updated service/Gemfile
 - sudo gem install ffi  ffi-rzmq zmqmachine
 - sudo bundle update ffi
 - bundle exec foreman start
 
 7. Cannot connect to mongodb database
-
 - run mongo on a different server!!!!
