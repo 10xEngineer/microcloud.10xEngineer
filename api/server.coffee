@@ -20,6 +20,13 @@ module.exports.run = (auth, auth_helper) ->
 	server = restify.createServer
 		name: "api.10xlabs.net"
 
+	# Set default headers
+	oldDefaultResponseHeaders = require('http').ServerResponse.prototype.defaultResponseHeaders
+	restify.defaultResponseHeaders = (data) ->
+		oldDefaultResponseHeaders.call(this, data)
+		this.header('Access-Control-Allow-Methods', 'OPTIONS,GET,HEAD,POST,PUT,DELETE,TRACE,CONNECT')
+		this.header('Access-Control-Allow-Headers', 'Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Requested-With, X-Labs-Date, X-Labs-Token, X-Labs-Signature')
+
 	auth.setup server, auth_helper,
 		microclouds: 
 			url_match: new RegExp("^/microclouds$")
