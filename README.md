@@ -74,5 +74,20 @@ then navigate to `server/` and run tests
 		
 (Tests are located in folder `server/test/`)
 
-(c) 2012 All works in this repository are the sole ownership and use jointly by 10xEngineer.me, Messina Ltd and Steve Messina.
+Setting up on Ubuntu
+
+	git clone https://github.com/10xEngineer/microcloud.10xEngineer.me.git
+
+	# install node.js and npm
+	sudo apt-get install python-software-properties
+	sudo add-apt-repository ppa:chris-lea/node.js
+	sudo apt-get update
+	sudo apt-get install nodejs npm
+
+	# install redis-server
+	sudo apt-get install redis-server
+	
+	# install mongodb
+	
+(c) 2012-2013 All works in this repository are the sole ownership and use jointly by 10xEngineer.me, Messina Ltd and Steve Messina.
 And may not be reproduced, reused, stolen for commercial or non-commercial means without explicit written permission from Steve Messina.
