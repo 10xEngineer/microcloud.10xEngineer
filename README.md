@@ -88,6 +88,29 @@ Setting up on Ubuntu
 	sudo apt-get install redis-server
 	
 	# install mongodb
+	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
+	
+	# Create a /etc/apt/sources.list.d/10gen.list file and include the following line for the 10gen repository.
+	deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen
+	
+	sudo apt-get install mongodb-10gen
+	
+Restoring the backup data (for testing)
+	
+	# From your laptop 
+	scp mongobackup.tar.gz gpiXX:~
+	
+	# ssh into the server 
+	ssh gpiXX
+	
+	# unpack the tar and change the 'backup' folder name to 'dump'
+	tar xvf mongobackup.tar.gz && mv backup dump
+	
+	# restore the data
+	cd dump
+	mongorestore
+	
+	
 	
 (c) 2012-2013 All works in this repository are the sole ownership and use jointly by 10xEngineer.me, Messina Ltd and Steve Messina.
 And may not be reproduced, reused, stolen for commercial or non-commercial means without explicit written permission from Steve Messina.
