@@ -75,6 +75,7 @@ then navigate to `server/` and run tests
 (Tests are located in folder `server/test/`)
 
 Setting up on Ubuntu
+====================
 
 	git clone https://github.com/10xEngineer/microcloud.10xEngineer.me.git
 
@@ -93,6 +94,7 @@ Setting up on Ubuntu
 	# Create a /etc/apt/sources.list.d/10gen.list file and include the following line for the 10gen repository.
 	deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen
 	
+	sudo apt-get update
 	sudo apt-get install mongodb-10gen
 	
 Restoring the backup data (for testing)
