@@ -2,7 +2,7 @@
   "name": "terminal_serv.microcloud.10xEngineer",
   "version": "0.1.0",
   "engines": {
-    "node": ">= 0.6.x < 0.9.0"
+    "node": ">= 0.10.x"
   },
   "scripts": {
     "test": "vows tests/*.js"
